@@ -78,13 +78,7 @@ public class OttoCore {
         robotPose.y += dy;
         robotPose.heading += -1 * dtheta;
 
-        // Wrap angle between -pi and pi
-//        while (robotPose.heading < -Math.PI) {
-//            robotPose.heading += Math.PI * 2;
-//        }
-//        while (robotPose.heading > Math.PI) {
-//            robotPose.heading -= Math.PI * 2;
-//        }
+//        robotPose.heading = Pose.angleWrap(robotPose.heading);
 
         prev_ticks_back = ticks_back;
         prev_ticks_left = ticks_left;
@@ -98,9 +92,6 @@ public class OttoCore {
      * @param turnSpeed Robot's turn speed
      */
     public static void moveTowards(Pose targetPose, double movementSpeed, double turnSpeed) {
-        updatePosition();
-        displayPosition();
-
         // Update coefficients in case changed in dashboard
         lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
         vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
@@ -112,10 +103,15 @@ public class OttoCore {
 
         double clampVert = Math.max(-1, Math.min(1, vertSignal));
         double clampLat = Math.max(-1, Math.min(1, latSignal));
-        double clampRot = Math.max(-1, Math.min(1, rotSignal));
+        double clampRot = -Math.max(-1, Math.min(1, rotSignal));
 
         double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
         double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
+
+//        Actuation.packet.put("vertical signal", vertSignal);
+//        Actuation.packet.put("lateral signal", latSignal);
+//        Actuation.packet.put("rotational signal", rotSignal);
+//        Actuation.updateTelemetry();
 
         Actuation.drive(move * movementSpeed, clampRot * turnSpeed, strafe * movementSpeed);
     }

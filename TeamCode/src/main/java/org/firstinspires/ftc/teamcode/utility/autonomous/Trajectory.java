@@ -80,9 +80,22 @@ public class Trajectory {
     }
 
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
+        double w1 = Pose.angleWrapPItoPI(OttoCore.robotPose.heading);
+        double w2 = Pose.angleWrapZEROto2PI(OttoCore.robotPose.heading);
+
+        if (Math.abs(targetPose.heading - w1) < Math.abs(targetPose.heading - w2))
+            OttoCore.robotPose.heading = w1;
+        else
+            OttoCore.robotPose.heading = w2;
+
         while(!OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(5))) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
+
+//            Actuation.packet.put("Target Pose", targetPose);
+//            Actuation.packet.put("Actual Pose", OttoCore.robotPose);
+//            Actuation.packet.put("Target Heading", Pose.angleWrap(OttoCore.robotPose.heading));
+//            Actuation.updateTelemetry();
 
             OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
         }

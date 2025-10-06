@@ -38,7 +38,7 @@ public class Pose {
     public boolean withinRange(Pose p, double xRange, double yRange, double hRange) {
         boolean withinX = (p.x >= x - xRange && p.x <= x + xRange);
         boolean withinY = (p.y >= y - yRange && p.y <= y + yRange);
-        boolean withinHeading = (angleWrap(p.heading) >= angleWrap(heading - hRange) && angleWrap(p.heading) <= angleWrap(heading + hRange));
+        boolean withinHeading = (p.heading >= heading - hRange && p.heading <= heading + hRange);
         return withinX && withinY && withinHeading;
     }
 
@@ -53,18 +53,29 @@ public class Pose {
     @NonNull
     @Override
     public String toString() {
-        return "X: " + x + ", Y: " + y + ", H: " + heading;
+        return "X: " + (int)(x * 100)/100.0 + ", Y: " + (int)(y*100)/100.0 + ", H: " + heading;
     }
 
     public boolean equals(Pose other) {
         return (x == other.x) && (y == other.y) && (heading == other.heading);
     }
 
-    public static double angleWrap(double angle) {
+    public static double angleWrapPItoPI(double angle) {
         while (angle < -Math.PI) {
             angle += Math.PI * 2;
         }
         while (angle > Math.PI) {
+            angle -= Math.PI * 2;
+        }
+
+        return angle;
+    }
+
+    public static double angleWrapZEROto2PI(double angle) {
+        while (angle < 0) {
+            angle += Math.PI * 2;
+        }
+        while (angle > 2*Math.PI) {
             angle -= Math.PI * 2;
         }
 
