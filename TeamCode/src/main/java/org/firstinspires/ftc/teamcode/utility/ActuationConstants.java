@@ -28,8 +28,8 @@ public class ActuationConstants {
 
     @Config
     public static class Movement {
-        public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 0.0, 0.03); // Control for move
-        public static PIDCoeffs lateralGains = new PIDCoeffs(0.0, 0.0, 0.0); // Control for strafe
-        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 0.0, 0.1); // Control for turn
+        public static PIDCoeffs lateralGains = new PIDCoeffs(0.2, 45, 0.08); // Control for strafe
+        public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09); // Control for move
+        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 30, 0.2); // Control for turn
     }
 }

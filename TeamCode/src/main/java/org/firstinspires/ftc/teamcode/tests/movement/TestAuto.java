@@ -13,11 +13,10 @@ public class TestAuto extends LinearOpMode {
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
 
-        Trajectory movement = new Trajectory()
+
+        Trajectory movement = new Trajectory(new Pose(0, 0, Math.toRadians(90)))
                 .lineTo(new Pose(0, 10, Math.toRadians(90)))
-                .lineTo(new Pose(10, 10, Math.toRadians(180)))
-                .lineTo(new Pose(10, 0, Math.toRadians(90)))
-                .lineTo(new Pose(0, 0, Math.toRadians(0)));
+                .lineTo(new Pose(10, 10, Math.toRadians(90)));
 
         waitForStart();
 

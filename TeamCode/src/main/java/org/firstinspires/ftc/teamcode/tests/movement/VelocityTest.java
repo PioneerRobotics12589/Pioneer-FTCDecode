@@ -15,9 +15,10 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 public class VelocityTest extends OpMode {
     FtcDashboard dashboard;
 
-    PIDController lateral, heading;
-    public static PIDCoeffs lateralGains = new PIDCoeffs(0.25, 0.0, 0.03);
-    public static PIDCoeffs headingGains = new PIDCoeffs(4.0, 0.0, 0.1);
+    PIDController vertical, lateral, heading;
+    public static PIDCoeffs lateralGains = new PIDCoeffs(0.2, 45, 0.08);
+    public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09);
+    public static PIDCoeffs headingGains = new PIDCoeffs(4.0, 30, 0.2);
 
     public static double xTarget = 0;
     public static double yTarget = 0;
@@ -27,8 +28,9 @@ public class VelocityTest extends OpMode {
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
 
-        lateral = new PIDController(lateralGains);
+        vertical = new PIDController(verticalGains);
         heading = new PIDController(headingGains);
+        lateral = new PIDController(lateralGains);
 
         dashboard = FtcDashboard.getInstance();
     }
@@ -37,10 +39,11 @@ public class VelocityTest extends OpMode {
     public void loop() {
         OttoCore.updatePosition();
         OttoCore.displayPosition();
-        lateral.updateCoeffs(lateralGains);
+        vertical.updateCoeffs(verticalGains);
         heading.updateCoeffs(headingGains);
+        lateral.updateCoeffs(lateralGains);
 
-        double xSignal = lateral.calculateSignal(xTarget, OttoCore.robotPose.x);
+        double xSignal = vertical.calculateSignal(xTarget, OttoCore.robotPose.x);
         double ySignal = lateral.calculateSignal(yTarget, OttoCore.robotPose.y);
         double headingSignal = heading.calculateSignal(headingTarget, OttoCore.robotPose.heading);
 
@@ -53,10 +56,10 @@ public class VelocityTest extends OpMode {
 
         Actuation.drive(move * 0.8, clampHeading * 0.8, strafe * 0.8);
 
-        Actuation.packet.put("x pos", OttoCore.robotPose.x);
-        Actuation.packet.put("heading", OttoCore.robotPose.heading);
-        Actuation.packet.put("target heading", headingTarget);
-        Actuation.packet.put("heading signal", headingSignal);
+        Actuation.packet.put("target y", yTarget);
+        Actuation.packet.put("target x", xTarget);
+        Actuation.packet.put("target h", headingTarget);
+        Actuation.packet.put("H", OttoCore.robotPose.heading);
 
         Actuation.updateTelemetry();
     }

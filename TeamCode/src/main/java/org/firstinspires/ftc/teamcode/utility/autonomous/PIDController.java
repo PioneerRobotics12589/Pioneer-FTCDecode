@@ -61,7 +61,7 @@ public class PIDController {
 
         error = target - current;
 
-        integral += (error * dt);
+        integral = (error * dt);
         derivative = (error - prevError) / dt;
 
         double p = Kp * error;

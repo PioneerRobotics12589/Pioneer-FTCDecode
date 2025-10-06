@@ -76,14 +76,7 @@ public class Trajectory {
     }
 
     private void runLineTo(Pose targetPose) {
-        while(!OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(5))) {
-            OttoCore.updatePosition();
-            OttoCore.displayPosition();
-
-            OttoCore.moveTowards(targetPose, moveSpeed, turnSpeed);
-        }
-
-        Actuation.drive(0, 0, 0);
+        runLineTo(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
     }
 
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {

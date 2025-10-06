@@ -36,7 +36,10 @@ public class Pose {
      * @return if p is within [-range, range] of pose
      */
     public boolean withinRange(Pose p, double xRange, double yRange, double hRange) {
-        return (p.x >= x - xRange && p.x <= x + xRange) && (p.y >= y - yRange && p.y <= y + yRange) && (p.heading >= heading - hRange && p.heading <= heading + hRange);
+        boolean withinX = (p.x >= x - xRange && p.x <= x + xRange);
+        boolean withinY = (p.y >= y - yRange && p.y <= y + yRange);
+        boolean withinHeading = (angleWrap(p.heading) >= angleWrap(heading - hRange) && angleWrap(p.heading) <= angleWrap(heading + hRange));
+        return withinX && withinY && withinHeading;
     }
 
     public Pose augment(Pose newPose) {
@@ -55,5 +58,16 @@ public class Pose {
 
     public boolean equals(Pose other) {
         return (x == other.x) && (y == other.y) && (heading == other.heading);
+    }
+
+    public static double angleWrap(double angle) {
+        while (angle < -Math.PI) {
+            angle += Math.PI * 2;
+        }
+        while (angle > Math.PI) {
+            angle -= Math.PI * 2;
+        }
+
+        return angle;
     }
 }

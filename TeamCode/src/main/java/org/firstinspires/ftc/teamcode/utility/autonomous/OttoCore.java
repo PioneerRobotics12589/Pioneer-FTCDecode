@@ -79,12 +79,12 @@ public class OttoCore {
         robotPose.heading += -1 * dtheta;
 
         // Wrap angle between -pi and pi
-        while (robotPose.heading < -Math.PI) {
-            robotPose.heading += Math.PI * 2;
-        }
-        while (robotPose.heading > Math.PI) {
-            robotPose.heading -= Math.PI * 2;
-        }
+//        while (robotPose.heading < -Math.PI) {
+//            robotPose.heading += Math.PI * 2;
+//        }
+//        while (robotPose.heading > Math.PI) {
+//            robotPose.heading -= Math.PI * 2;
+//        }
 
         prev_ticks_back = ticks_back;
         prev_ticks_left = ticks_left;
@@ -98,6 +98,10 @@ public class OttoCore {
      * @param turnSpeed Robot's turn speed
      */
     public static void moveTowards(Pose targetPose, double movementSpeed, double turnSpeed) {
+        updatePosition();
+        displayPosition();
+
+        // Update coefficients in case changed in dashboard
         lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
         vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
         rotational.updateCoeffs(ActuationConstants.Movement.rotationalGains);
@@ -120,8 +124,6 @@ public class OttoCore {
      * Displays the robot's position on the FTC dashboard
      */
     public static void displayPosition(){
-        TelemetryPacket packet = new TelemetryPacket();
-
         double[] xs = {(SIDE_LENGTH * Math.cos(robotPose.heading) - SIDE_LENGTH * Math.sin(robotPose.heading)) + robotPose.x,
                 (-SIDE_LENGTH * Math.cos(robotPose.heading) - SIDE_LENGTH * Math.sin(robotPose.heading)) + robotPose.x,
                 (-SIDE_LENGTH * Math.cos(robotPose.heading) + SIDE_LENGTH * Math.sin(robotPose.heading)) + robotPose.x,
