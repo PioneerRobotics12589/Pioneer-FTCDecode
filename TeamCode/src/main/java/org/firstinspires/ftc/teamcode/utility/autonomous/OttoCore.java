@@ -78,8 +78,6 @@ public class OttoCore {
         robotPose.y += dy;
         robotPose.heading += -1 * dtheta;
 
-//        robotPose.heading = Pose.angleWrap(robotPose.heading);
-
         prev_ticks_back = ticks_back;
         prev_ticks_left = ticks_left;
         prev_ticks_right = ticks_right;

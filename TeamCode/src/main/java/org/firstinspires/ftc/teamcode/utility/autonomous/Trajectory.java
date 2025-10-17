@@ -80,22 +80,23 @@ public class Trajectory {
     }
 
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
-        double w1 = Pose.angleWrapPItoPI(OttoCore.robotPose.heading);
-        double w2 = Pose.angleWrapZEROto2PI(OttoCore.robotPose.heading);
+        if (targetPose.heading > OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading += 2 * Math.PI;
+            }
+        }
+        else if (targetPose.heading < OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading -= 2 * Math.PI;
+            }
+        }
 
-        if (Math.abs(targetPose.heading - w1) < Math.abs(targetPose.heading - w2))
-            OttoCore.robotPose.heading = w1;
-        else
-            OttoCore.robotPose.heading = w2;
-
-        while(!OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(5))) {
+        while(!OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(3))) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
-//            Actuation.packet.put("Target Pose", targetPose);
-//            Actuation.packet.put("Actual Pose", OttoCore.robotPose);
-//            Actuation.packet.put("Target Heading", Pose.angleWrap(OttoCore.robotPose.heading));
-//            Actuation.updateTelemetry();
+            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.updateTelemetry();
 
             OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
         }

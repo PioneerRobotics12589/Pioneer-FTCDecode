@@ -16,8 +16,8 @@ public class ActuationConstants {
         public static final double ticksPerRev = 2000;
 
         public static double centerMultiplier = 0.3922; // responsible for move
-        public static double lateralMultiplier = 2.5171; // responsible for turn
-        public static double perpendicularMultiplier = -0.3923; // responsible for strafe
+        public static double lateralMultiplier = 2.499555; // responsible for turn
+        public static double perpendicularMultiplier = -0.39446041777312446; // responsible for strafe
 
         public static double wheel_circ = 10.05; // cm
         public static double track_width = 11.25 * lateralMultiplier; // inches distance between drive wheels
@@ -31,5 +31,10 @@ public class ActuationConstants {
         public static PIDCoeffs lateralGains = new PIDCoeffs(0.2, 45, 0.08); // Control for strafe
         public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09); // Control for move
         public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 30, 0.2); // Control for turn
+    }
+
+    @Config
+    public static class Launcher {
+        public static int motorRPM = 1840;
     }
 }
