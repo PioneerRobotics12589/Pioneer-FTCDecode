@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 
@@ -35,6 +36,9 @@ public class ActuationConstants {
 
     @Config
     public static class Launcher {
-        public static int motorRPM = 1840;
+        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(280, 2, 0, 0);
+
+        public static int shortLaunch = 1400;
+        public static int longLaunch = 1840;
     }
 }
