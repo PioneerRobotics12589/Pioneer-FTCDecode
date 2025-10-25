@@ -24,11 +24,18 @@ public class StarterAuto extends LinearOpMode {
         waitForStart();
 
         sleep(1000);
-        left.setPower(-1);
-        right.setPower(-1);
+        left.setPower(1);
+        right.setPower(1);
         sleep(5000);
         left.setPower(1);
         right.setPower(-1);
         sleep(5000);
+        left.setPower(-1);
+        right.setPower(1);
+        sleep(5000);
+        left.setPower(-1);
+        right.setPower(-1);
+        sleep(5000);
+
     }
 }
