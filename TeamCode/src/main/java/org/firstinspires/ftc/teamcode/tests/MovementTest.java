@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
@@ -20,11 +22,14 @@ import java.io.IOException;
 public class MovementTest extends OpMode {
     private Pose pos1, pos2, pos3, pos4;
     private final ElapsedTime runtime = new ElapsedTime();
+    private final DataLogger dl = new DataLogger("MovementTestData");
     private double t0, t1, t2;
     private double time, prevTime;
     public static long delay;
-    public static double move, turn, strafe, turnInt;
-    private BufferedWriter writer;
+    public static double move, turn, strafe, moveInt, turnInt, strafeInt;
+
+    public MovementTest() throws IOException {
+    }
 
     @Override
     public void init() {
@@ -33,13 +38,6 @@ public class MovementTest extends OpMode {
         pos1 = pos2 = pos3 = pos4 = OttoCore.robotPose;
         time = runtime.seconds();
         prevTime = time;
-        try {
-            File logFile = AppUtil.getInstance().getSettingsFile("MovementLog.txt");
-            writer = new BufferedWriter(new FileWriter(logFile, false)); // false = overwrite
-            writer.write("time move vf vs\n");
-        } catch (IOException e) {
-            telemetry.addLine("Error creating log file: " + e.getMessage());
-        }
     }
 
     @Override
@@ -71,6 +69,8 @@ public class MovementTest extends OpMode {
         double vf = vx*Math.sin(pos4.heading) + vy*Math.cos(pos4.heading);
         double vs = vx*Math.cos(pos4.heading) + vy*Math.sin(pos4.heading);
 
+        moveInt += move * dt;
+        strafeInt += strafe * dt;
         turnInt += turn * dt;
 
         Actuation.packet.put("vf", vf);
@@ -83,26 +83,18 @@ public class MovementTest extends OpMode {
         Actuation.packet.addLine("move="+move+" turn="+turn+" strafe="+strafe);
         Actuation.updateTelemetry();
 
-        if (writer != null) {
-            try {
-                writer.write(("r"+vf+"c"+vs+"c"+pos4.heading+"c"+move+"c"+strafe+"c"+turn+"c"+turnInt));
-                writer.flush();
-            } catch (IOException e) {
-                telemetry.addLine("Error writing to log: " + e.getMessage());
-            }
+        try {
+            dl.addDataLine("r"+currentTime+"c"+move+"c"+turn+"c"+strafe+"c"+turnInt+"c"+vx+"c"+vy+"c"+pos4.heading);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
         }
+
     }
 
     @Override
     public void stop() {
-        try {
-            if (writer != null) {
-                writer.flush();
-                writer.close();
-            }
-        } catch (IOException e) {
-            telemetry.addLine("Error closing log file: " + e.getMessage());
-        }
+        dl.close();
     }
 
     public void updatePoses() {
