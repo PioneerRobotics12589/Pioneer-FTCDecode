@@ -72,6 +72,11 @@ public class Actuation {
         packet = new TelemetryPacket();
     }
 
+    public static void starterDrive(double move, double turn) {
+        frontLeft.setPower(move + turn);
+        frontRight.setPower(move - turn);
+    }
+
     public static void drive(double move, double turn, double strafe) {
         frontLeft.setPower(move + turn + strafe);
         frontRight.setPower(move - turn - strafe);
@@ -95,9 +100,6 @@ public class Actuation {
     public static void setFlywheel(int velocity) {
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         flywheel.setVelocity(velocity);
-        packet.put("target vel", velocity);
-        packet.put("actual vel", flywheel.getVelocity());
-        updateTelemetry();
     }
 
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {

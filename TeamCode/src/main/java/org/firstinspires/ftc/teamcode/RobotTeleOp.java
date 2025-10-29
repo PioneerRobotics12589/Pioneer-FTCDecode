@@ -15,6 +15,8 @@ public class RobotTeleOp extends OpMode {
 
     @Override
     public void loop() { // O(rohan stinks) time complexity
+        Actuation.starterDrive(gamepad1.left_stick_y, -gamepad1.right_stick_x);
+
         if (gamepad1.right_bumper) {
             Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
             Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
@@ -27,6 +29,9 @@ public class RobotTeleOp extends OpMode {
             Actuation.setFlywheel(0);
             Actuation.checkFlywheelSpeed(gamepad1, 0);
         }
+
+        Actuation.packet.put("actual vel", Actuation.flywheel.getVelocity());
+        Actuation.updateTelemetry();
 
         Actuation.setLoaders(gamepad1.right_trigger > 0.5);
     }

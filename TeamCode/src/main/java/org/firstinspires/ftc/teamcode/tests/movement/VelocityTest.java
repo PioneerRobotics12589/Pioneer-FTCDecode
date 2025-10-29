@@ -56,9 +56,12 @@ public class VelocityTest extends OpMode {
 
         Actuation.drive(move * 0.8, clampHeading * 0.8, strafe * 0.8);
 
-        Actuation.packet.put("xSignal", xSignal);
-        Actuation.packet.put("ySignal", ySignal);
-        Actuation.packet.put("hSignal", headingSignal);
+//        Actuation.packet.put("xSignal", xSignal);
+//        Actuation.packet.put("ySignal", ySignal);
+//        Actuation.packet.put("hSignal", headingSignal);
+        Actuation.packet.put("X", OttoCore.robotPose.x);
+        Actuation.packet.put("Y", OttoCore.robotPose.y);
+        Actuation.packet.put("H", OttoCore.robotPose.heading);
 
         Actuation.updateTelemetry();
     }

@@ -29,14 +29,14 @@ public class ActuationConstants {
 
     @Config
     public static class Movement {
-        public static PIDCoeffs lateralGains = new PIDCoeffs(0.2, 45, 0.08); // Control for strafe
+        public static PIDCoeffs lateralGains = new PIDCoeffs(0.18, 45, 0.08); // Control for strafe
         public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09); // Control for move
-        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 30, 0.2); // Control for turn
+        public static PIDCoeffs rotationalGains = new PIDCoeffs(3.0, 30, 0.2); // Control for turn
     }
 
     @Config
     public static class Launcher {
-        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(280, 2, 0, 0);
+        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(280.0, 2.0, 0, 0);
 
         public static int shortLaunch = 1400;
         public static int longLaunch = 1840;
