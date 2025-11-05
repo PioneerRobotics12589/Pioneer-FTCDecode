@@ -26,3 +26,4 @@ Thumbs.db
 
 # Configuration files that are specific to your local setup
 gradle.properties
+/.gradle/
