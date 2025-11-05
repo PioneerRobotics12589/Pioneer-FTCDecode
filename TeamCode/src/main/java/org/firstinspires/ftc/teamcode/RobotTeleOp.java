@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 
-@TeleOp(name = "Awe(sigma) Sauce")
+@TeleOp(name = "Starter Robot (Awe∑ Sauce)")
 public class RobotTeleOp extends OpMode {
     FtcDashboard dashboard;
 
