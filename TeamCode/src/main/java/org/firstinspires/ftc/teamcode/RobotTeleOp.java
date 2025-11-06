@@ -19,7 +19,7 @@ public class RobotTeleOp extends OpMode {
     }
 
     public void loop() {
-        Actuation.driveStarter(gamepad1.left_stick_y, gamepad1.right_stick_x);
+        Actuation.driveStarter(gamepad1.left_stick_y, - gamepad1.right_stick_x);
         if (gamepad1.right_bumper) {
             Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
             Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
@@ -32,7 +32,7 @@ public class RobotTeleOp extends OpMode {
             Actuation.checkFlywheelSpeed(gamepad1, 0);
         }
 
-        if (gamepad1.left_trigger > 0.5) Actuation.setIntake(1.0);
+        if (gamepad1.left_trigger > 0.5) Actuation.setIntake(-1.0);
         else Actuation.setIntake(0.0);
 
         Actuation.setLoaders(gamepad1.right_trigger > 0.5);
