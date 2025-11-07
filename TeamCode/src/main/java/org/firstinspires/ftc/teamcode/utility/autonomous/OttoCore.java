@@ -14,7 +14,7 @@ import java.util.List;
 public class OttoCore {
     static final int SIDE_LENGTH = 6;
 
-    public static Pose robotPose;
+    public static Pose robotPose, lastPose;
     public static double ticks_left, ticks_right, ticks_back;
 
     static double dx, dy, dtheta;
@@ -25,6 +25,8 @@ public class OttoCore {
 
     static List<LynxModule> allHubs;
     static VoltageSensor voltageSensor;
+
+    static long lastTime;
 
     /**
      * Necessary in order to correctly initialize reading from odometry and accessing voltage sensor
@@ -44,6 +46,9 @@ public class OttoCore {
         rotational = new PIDController(ActuationConstants.Movement.rotationalGains);
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        lastTime = System.nanoTime();
+        lastPose = new Pose(robotPose);
     }
 
     /**
@@ -111,7 +116,19 @@ public class OttoCore {
 //        Actuation.packet.put("rotational signal", rotSignal);
 //        Actuation.updateTelemetry();
 
-        Actuation.drive(move * movementSpeed, clampRot * turnSpeed, strafe * movementSpeed);
+        double voltageComp = 12 / voltageSensor.getVoltage();
+
+        Actuation.drive(move * movementSpeed * voltageComp, clampRot * turnSpeed * voltageComp, strafe * movementSpeed * voltageComp);
+    }
+
+    public static Pose getVelocity() {
+        double dt = (System.nanoTime() - lastTime)/1000000000.00;
+
+        Pose vel = new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
+
+        lastPose = new Pose(robotPose);
+        lastTime = System.nanoTime();
+        return vel;
     }
 
     /**
@@ -135,7 +152,6 @@ public class OttoCore {
         Actuation.packet.fieldOverlay().setStroke("white");
         Actuation.packet.fieldOverlay().strokeLine(robotPose.x, robotPose.y, xs[4], ys[4]);
 
-        Actuation.packet.put("X", robotPose.x);
-        Actuation.packet.put("Y", robotPose.y);
+        Actuation.updateTelemetry();
     }
 }

@@ -1,0 +1,29 @@
+# Generated files and directories
+.gradle/
+build/
+app/build/
+TeamCode/build/
+.idea/
+*.iml
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aar
+*.jar
+*.hprof
+
+# Android Studio specific files
+.DS_Store
+# Windows specific files
+Thumbs.db
+
+# Log files and temporary files
+*.log
+*.tmp
+*.bak
+
+# Configuration files that are specific to your local setup
+gradle.properties
+/.gradle/

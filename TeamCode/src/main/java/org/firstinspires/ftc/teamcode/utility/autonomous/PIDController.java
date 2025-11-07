@@ -14,6 +14,8 @@ public class PIDController {
 
     long lastTime, startTime;
 
+    double prevTarget;
+
     public PIDController(double Kp, double Ki, double Kd) {
         this.Kp = Kp;
         this.Ki = Ki;

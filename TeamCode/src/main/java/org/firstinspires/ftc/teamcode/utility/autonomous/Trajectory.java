@@ -91,14 +91,29 @@ public class Trajectory {
             }
         }
 
-        while(!OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(3))) {
+        double vel = 1;
+        double rotVel = 1;
+
+        boolean hasRun = false;
+
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
+
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.packet.put("vel", vel);
+            Actuation.packet.put("rot vel", rotVel);
             Actuation.updateTelemetry();
 
             OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
+
+            vel = Math.sqrt(Math.pow(OttoCore.getVelocity().x, 2) + Math.pow(OttoCore.getVelocity().y, 2));
+            rotVel = OttoCore.getVelocity().heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
+
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
         }
 
         Actuation.drive(0, 0, 0);

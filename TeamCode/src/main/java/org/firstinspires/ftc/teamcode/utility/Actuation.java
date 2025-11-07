@@ -17,7 +17,8 @@ public class Actuation {
     public static boolean slowMode = false;
     private static boolean slowModeToggle = false;
 
-    public static DcMotor frontLeft, frontRight, backLeft, backRight, leftDrive, rightDrive;
+    public static DcMotor frontLeft, frontRight, backLeft, backRight;
+    public static DcMotor intake;
 
     public static DcMotorEx flywheel;
 
@@ -52,39 +53,10 @@ public class Actuation {
             backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.dcMotor.contains("flywheel")) {
-            flywheel = map.get(DcMotorEx.class, "flywheel");
-            flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
+        if (map.dcMotor.contains("intake")) {
+            intake = map.get(DcMotor.class, "intake");
         }
 
-        if (map.crservo.contains("leftLoader")) {
-            leftLoader = map.get(CRServo.class, "leftLoader");
-            leftLoader.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-        if (map.crservo.contains("rightLoader")) {
-            rightLoader = map.get(CRServo.class, "rightLoader");
-        }
-
-        dashboard = FtcDashboard.getInstance();
-        packet = new TelemetryPacket();
-    }
-
-    public static void setupStarter(HardwareMap map, Telemetry tel) {
-        OttoCore.setup(map);
-
-        telemetry = tel;
-
-        if (map.dcMotor.contains("leftDrive")) {
-            leftDrive = map.get(DcMotor.class, "leftDrive");
-            leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (map.dcMotor.contains("rightDrive")) {
-            rightDrive = map.get(DcMotor.class, "rightDrive");
-            rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
         if (map.dcMotor.contains("flywheel")) {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -113,8 +85,8 @@ public class Actuation {
     }
 
     public static void driveStarter(double move, double turn) {
-        leftDrive.setPower(move + turn);
-        rightDrive.setPower(move - turn);
+        frontLeft.setPower(move + turn);
+        frontRight.setPower(move - turn);
     }
 
     public static void teleDrive(boolean toggleSlowMode, double move, double turn, double strafe) {
@@ -128,6 +100,10 @@ public class Actuation {
         backRight.setPower((move+strafe-turn) * multip);
 
         slowModeToggle = toggleSlowMode;
+    }
+
+    public static void setIntake(double speed) {
+        intake.setPower(speed);
     }
 
     public static void setFlywheel(int velocity) {
