@@ -38,7 +38,7 @@ public class ActuationConstants {
     public static class Launcher {
         public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(280.0, 2.0, 0, 0);
 
-        public static int shortLaunch = 1400;
+        public static int shortLaunch = 1600;
         public static int longLaunch = 1840;
     }
 }
