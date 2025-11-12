@@ -24,8 +24,13 @@ public class StarterAuto extends LinearOpMode {
 
 
         waitForStart();
-        Actuation.driveStarter(0,-0.5);
-        sleep(190);
+
+
+
+
+
+                Actuation.driveStarter(0,-0.5);
+        sleep(210);
         Actuation.driveStarter(0,0);
         Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
         sleep(100);
@@ -34,7 +39,7 @@ public class StarterAuto extends LinearOpMode {
         Actuation.setLoaders(false);
         Actuation.setFlywheel(0);
         Actuation.driveStarter(0,0.5);
-        sleep(950);
+        sleep(940);
         Actuation.driveStarter(-0.5, 0);
         sleep(2500);
         Actuation.driveStarter(0, 0);
@@ -42,10 +47,7 @@ public class StarterAuto extends LinearOpMode {
         Actuation.driveStarter(0.5,0);
         sleep(2100);
         Actuation.driveStarter(0,-0.5);
-        sleep(660);
-        //System.out.println("67 mustard gooner");
-        //Pergie is very much gay
-        //I am 67 ing it guys
+        sleep(665);
         Actuation.driveStarter(0,0);
         Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
         sleep(500);
