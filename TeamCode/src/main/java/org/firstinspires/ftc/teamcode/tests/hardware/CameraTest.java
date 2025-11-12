@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 @TeleOp(name = "CameraTest", group = "tests")
-public class CameraTest extends OpMode{
+public class CameraTest extends OpMode {
     private Limelight3A limelight;
 
     @Override
