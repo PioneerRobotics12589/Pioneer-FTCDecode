@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.utility;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,19 +15,20 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 
+import java.io.InvalidObjectException;
+
 public class Actuation {
     public static boolean slowMode = false;
     private static boolean slowModeToggle = false;
 
-    public static DcMotor frontLeft, frontRight, backLeft, backRight;
-    public static DcMotor intake;
+    public static DcMotor frontLeft, frontRight, backLeft, backRight, leftDrive, rightDrive;
 
     public static DcMotorEx flywheel;
 
     public static CRServo leftLoader, rightLoader;
 
     public static Telemetry telemetry;
-
+    public static Limelight3A limelight;
     public static FtcDashboard dashboard;
     public static TelemetryPacket packet;
 
@@ -53,10 +56,43 @@ public class Actuation {
             backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.dcMotor.contains("intake")) {
-            intake = map.get(DcMotor.class, "intake");
+        if (map.dcMotor.contains("flywheel")) {
+            flywheel = map.get(DcMotorEx.class, "flywheel");
+            flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         }
 
+        if (map.crservo.contains("leftLoader")) {
+            leftLoader = map.get(CRServo.class, "leftLoader");
+            leftLoader.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (map.crservo.contains("rightLoader")) {
+            rightLoader = map.get(CRServo.class, "rightLoader");
+        }
+
+        if (map.allDeviceMappings.contains("limelight")) {
+            limelight = map.get(Limelight3A.class, "limelight");
+        }
+
+        dashboard = FtcDashboard.getInstance();
+        packet = new TelemetryPacket();
+    }
+
+    public static void setupStarter(HardwareMap map, Telemetry tel) {
+        OttoCore.setup(map);
+
+        telemetry = tel;
+
+        if (map.dcMotor.contains("leftDrive")) {
+            leftDrive = map.get(DcMotor.class, "leftDrive");
+            leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (map.dcMotor.contains("rightDrive")) {
+            rightDrive = map.get(DcMotor.class, "rightDrive");
+            rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         if (map.dcMotor.contains("flywheel")) {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -85,25 +121,26 @@ public class Actuation {
     }
 
     public static void driveStarter(double move, double turn) {
-        frontLeft.setPower(move + turn);
-        frontRight.setPower(move - turn);
+        leftDrive.setPower(move + turn);
+        rightDrive.setPower(move - turn);
     }
 
     public static void teleDrive(boolean toggleSlowMode, double move, double turn, double strafe) {
         if (toggleSlowMode && !slowModeToggle) slowMode = !slowMode;
 
+        double moveP = move > 0.05 ? move : 0;
+        double strafeP = strafe > 0.05 ? strafe : 0;
+        double turnP = turn > 0.05 ? strafe : 0;
+
+
         double multip = (slowMode) ? 0.5 : 1.0;
 
-        frontLeft.setPower((move+strafe+turn) * multip);
-        backLeft.setPower((move-strafe+turn) * multip);
-        frontRight.setPower((move-strafe-turn) * multip);
-        backRight.setPower((move+strafe-turn) * multip);
+        frontLeft.setPower((moveP+strafeP+turnP) * multip);
+        backLeft.setPower((moveP-strafeP+turnP) * multip);
+        frontRight.setPower((moveP-strafeP-turnP) * multip);
+        backRight.setPower((moveP+strafeP-turnP) * multip);
 
         slowModeToggle = toggleSlowMode;
-    }
-
-    public static void setIntake(double speed) {
-        intake.setPower(speed);
     }
 
     public static void setFlywheel(int velocity) {
@@ -132,6 +169,26 @@ public class Actuation {
             leftLoader.setPower(0.0);
             rightLoader.setPower(0.0);
         }
+    }
+
+    public static void setupLimelight(int pipeline) {
+        limelight.pipelineSwitch(pipeline);
+        limelight.start();
+    }
+
+    public static void setPipeline(int pipeline) {
+        /*
+        / Pipeline  Function
+        /    0      AprilTag Detection
+        /    1      Green Artifact Detection
+        /    2      Purple Artifact Detection
+         */
+
+        limelight.pipelineSwitch(pipeline);
+    }
+
+    public static LLResult getLLResult() {
+        return limelight.getLatestResult();
     }
 
     public static void updateTelemetry() {

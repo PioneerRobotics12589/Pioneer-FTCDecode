@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utility;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 
 public class ActuationConstants {
@@ -40,6 +41,17 @@ public class ActuationConstants {
 
         public static int shortLaunch = 1500;
         public static int longLaunch = 1800;
+    }
+
+    @Config
+    public static class ModelPID {
+        public static double kp_x = 0.0, ki_x = 0.0, kd_x = 0.0;
+        public static double kp_y = 0.0, ki_y = 0.0, kd_y = 0.0;
+        public static double kp_h = 0.0, ki_h = 0.0, kd_h = 0.0;
+
+        public static PIDController vX_PID = new PIDController(new PIDCoeffs(kp_x, ki_x, kd_x));
+        public static PIDController vY_PID = new PIDController(new PIDCoeffs(kp_y, ki_y, kd_y));
+        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_h, ki_h, kd_h));
     }
 }
 
