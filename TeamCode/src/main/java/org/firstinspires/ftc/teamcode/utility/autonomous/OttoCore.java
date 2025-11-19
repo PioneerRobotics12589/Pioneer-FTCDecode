@@ -141,6 +141,7 @@ public class OttoCore {
                 (SIDE_LENGTH * Math.cos(robotPose.heading) + SIDE_LENGTH * Math.sin(robotPose.heading)) + robotPose.x,
                 Math.cos(robotPose.heading) * SIDE_LENGTH + robotPose.x};
 
+        // ys refers to multiple ys
         double[] ys = {(SIDE_LENGTH * Math.sin(robotPose.heading) + SIDE_LENGTH * Math.cos(robotPose.heading)) + robotPose.y,
                 (-SIDE_LENGTH * Math.sin(robotPose.heading) + SIDE_LENGTH * Math.cos(robotPose.heading)) + robotPose.y,
                 (-SIDE_LENGTH * Math.sin(robotPose.heading) - SIDE_LENGTH * Math.cos(robotPose.heading)) + robotPose.y,

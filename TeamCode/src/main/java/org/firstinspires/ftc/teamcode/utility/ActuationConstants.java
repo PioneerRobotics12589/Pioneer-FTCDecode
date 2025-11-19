@@ -17,7 +17,7 @@ public class ActuationConstants {
     public static class Drivetrain {
         public static final double ticksPerRev = 2000;
 
-        public static double centerMultiplier = 0.3922; // responsible for move
+        public static double centerMultiplier = -0.3957180945679324; // responsible for move
         public static double lateralMultiplier = 2.499555; // responsible for turn
         public static double perpendicularMultiplier = -0.39446041777312446; // responsible for strafe
 
