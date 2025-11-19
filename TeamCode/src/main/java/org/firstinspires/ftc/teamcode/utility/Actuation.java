@@ -72,7 +72,7 @@ public class Actuation {
             rightLoader = map.get(CRServo.class, "rightLoader");
         }
 
-        if (map.allDeviceMappings.contains("limelight")) {
+        if (map.getAllNames(Limelight3A.class).contains("limelight")) {
             limelight = map.get(Limelight3A.class, "limelight");
         }
 

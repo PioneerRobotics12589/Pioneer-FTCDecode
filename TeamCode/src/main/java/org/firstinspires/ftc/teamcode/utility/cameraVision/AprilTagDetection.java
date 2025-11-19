@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
@@ -18,7 +19,11 @@ public class AprilTagDetection {
     private static int artifactPattern;
     private static String team;
 
+    public static int GOAL_BLUE = 20, GOAL_RED = 24;
+    public static int MOTIF_GPP = 21, MOTIF_PGP = 22, MOTIF_PPG = 23;
+
     public static List<LLResultTypes.FiducialResult> getFiducials() {
+        Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
         if (result != null && result.isValid()) {
             return result.getFiducialResults();
         }
@@ -33,7 +38,7 @@ public class AprilTagDetection {
     public static LLResultTypes.FiducialResult getMotif(List<LLResultTypes.FiducialResult> fiducials) {
         for (LLResultTypes.FiducialResult fid : fiducials) {
             int id = fid.getFiducialId();
-            if (id == 21 || id == 22 || id == 23) {
+            if (id == MOTIF_GPP || id == MOTIF_PGP || id == MOTIF_PPG) {
                 artifactPattern = id;
                 return fid;
             }
@@ -49,7 +54,7 @@ public class AprilTagDetection {
     public static LLResultTypes.FiducialResult getGoal(List<LLResultTypes.FiducialResult> fiducials) {
         for (LLResultTypes.FiducialResult fid : fiducials) {
             int id = fid.getFiducialId();
-            if (id == 20 && team.equals("red") || id == 24 && team.equals("blue")) {
+            if (id == GOAL_RED && team.equals("red") || id == GOAL_BLUE && team.equals("blue")) {
                 return fid;
             }
         }

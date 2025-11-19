@@ -53,5 +53,16 @@ public class ActuationConstants {
         public static PIDController vY_PID = new PIDController(new PIDCoeffs(kp_y, ki_y, kd_y));
         public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_h, ki_h, kd_h));
     }
+
+    @Config
+    public static class LimelightConsts {
+        // PID for pixel to heading
+        public static double kp_xh = 0.0, ki_xh = 0.0, kd_xh = 0.0;
+        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
+
+        public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 1;
+        public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
+
+    }
 }
 
