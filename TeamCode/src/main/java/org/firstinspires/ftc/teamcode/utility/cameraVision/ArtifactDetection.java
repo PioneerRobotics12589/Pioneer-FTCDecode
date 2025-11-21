@@ -10,6 +10,12 @@ import org.opencv.core.MatOfPoint;
 import java.security.InvalidParameterException;
 
 public class ArtifactDetection {
+
+    /**
+     * Finds the x-coordinate of the center of the closest artifact in front of the robot
+     * @param color color of desired artifact
+     * @return x-coordinate of artifact center
+     */
     public static double locateArtifact(String color) {
         // Switch pipeline to track desired color
         if (color.equals("green")) {
@@ -22,7 +28,7 @@ public class ArtifactDetection {
 
         LLResult pysnapResult = Actuation.getLLResult(); // Limelight result
 
-        double[] contour = pysnapResult.getPythonOutput(); // Coordinates of largest contour
+        double[] contour = pysnapResult.getPythonOutput(); // Center coordinates of largest contour
 
         // Center pixel of contour (0, 0) is the center of the image
         double pixelX = contour[0] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0, pixelY = contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_Y / 2.0;
@@ -30,6 +36,11 @@ public class ArtifactDetection {
         return pixelX;
     }
 
+    /**
+     * Finds the turn value to track the closest artifact
+     * @param color color of desired artifact
+     * @return turn value to track artifact
+     */
     public static double trackArtifact(String color) {
         double pixelX = locateArtifact(color); // X-coordinate of contour center
 

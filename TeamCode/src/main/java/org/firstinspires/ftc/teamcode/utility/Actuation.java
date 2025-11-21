@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.utility;
 
+import android.graphics.Point;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,8 +17,10 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.io.InvalidObjectException;
+import java.security.InvalidParameterException;
 
 public class Actuation {
     public static boolean slowMode = false;
@@ -154,12 +159,10 @@ public class Actuation {
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {
         if (Math.abs(flywheel.getVelocity() - targetVelocity) <= 20) {
             gamepad1.setLedColor(0, 1, 0, 100);
-        }
-        else {
+        } else {
             gamepad1.setLedColor(1, 0, 0, 100);
         }
     }
-
     public static void setLoaders(boolean control) {
         if (control) {
             leftLoader.setPower(1.0);
@@ -170,7 +173,6 @@ public class Actuation {
             rightLoader.setPower(0.0);
         }
     }
-
     public static void setupLimelight(int pipeline) {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
@@ -189,6 +191,31 @@ public class Actuation {
 
     public static LLResult getLLResult() {
         return limelight.getLatestResult();
+    }
+
+    public static double[] launchVals(String team) {
+        Point goal = null;
+        if (team.equals("red")) {
+            goal = new Point(-72, 72);
+        } else if (team.equals("blue")) {
+            goal = new Point(72, 72);
+        } else {
+            throw new InvalidParameterException("Actuation.launchVals(): Invalid Team");
+        }
+
+        OttoCore.updatePosition();
+        Pose pos = new Pose(OttoCore.robotPose);
+
+        double dist = Math.sqrt(Math.pow(pos.x - goal.x, 2) + Math.pow(pos.y - goal.y, 2));
+        double angle = Math.atan2(pos.x-goal.x, pos.y-goal.y);
+        double height = ActuationConstants.Launcher.targetHeight - ActuationConstants.Drivetrain.launcherHeight;
+
+        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0;
+        double linVel = Math.sqrt(-9.8*Math.pow(dist, 2) / ((height-dist*Math.tan(flywheelAngle))*(2*Math.pow(Math.cos(flywheelAngle), 2))));
+
+        double angVel = linVel / (2*Math.PI*(ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius));
+
+        return new double[] {angle, angVel, flywheelAngle};
     }
 
     public static void updateTelemetry() {

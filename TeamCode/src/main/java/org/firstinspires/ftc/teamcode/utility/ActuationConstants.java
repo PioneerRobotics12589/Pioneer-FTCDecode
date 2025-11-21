@@ -26,6 +26,10 @@ public class ActuationConstants {
         public static double forward_offset = 15.0; // inches distance from center of robot to perp wheel
 
         public static double scale = wheel_circ / ticksPerRev;
+
+        public static double launcherHeight = 0.25; // meters height from ground to launcher
+        public static double flwheelRad = 0.1; // meters flywheel radius
+
     }
 
     @Config
@@ -41,6 +45,9 @@ public class ActuationConstants {
 
         public static int shortLaunch = 1500;
         public static int longLaunch = 1800;
+
+        public static double targetHeight = 1.0;
+        public static double artifactRadius = 0.12446;
     }
 
     @Config
