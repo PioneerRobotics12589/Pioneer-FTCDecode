@@ -17,13 +17,12 @@ public class ActuationConstants {
     public static class Drivetrain {
         public static final double ticksPerRev = 2000;
 
-        public static double centerMultiplier = -0.3957180945679324; // responsible for move
-        public static double lateralMultiplier = 2.499555; // responsible for turn
-        public static double perpendicularMultiplier = -0.39446041777312446; // responsible for strafe
-
-        public static double wheel_circ = 10.05; // cm
-        public static double track_width = 11.25 * lateralMultiplier; // inches distance between drive wheels
-        public static double forward_offset = 15.0; // inches distance from center of robot to perp wheel
+        public static double centerMultiplier = -0.3979476218376241; // responsible for move
+        public static double lateralMultiplier = -2.031871740608806; // responsible for turn
+        public static double perpendicularMultiplier = 0.4060269440403744; // responsible for strafe
+        public static double wheel_circ = 10.05; // cm circumference of dead wheels
+        public static double track_width = 9.75 * lateralMultiplier; // inches distance between drive wheels
+        public static double forward_offset = -11; // inches distance from center of robot to perp wheel
 
         public static double scale = wheel_circ / ticksPerRev;
     }

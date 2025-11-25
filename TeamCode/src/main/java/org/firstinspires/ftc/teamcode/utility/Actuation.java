@@ -21,7 +21,7 @@ public class Actuation {
     public static boolean slowMode = false;
     private static boolean slowModeToggle = false;
 
-    public static DcMotor frontLeft, frontRight, backLeft, backRight, leftDrive, rightDrive;
+    public static DcMotor frontLeft, frontRight, backLeft, backRight;
 
     public static DcMotorEx flywheel;
 
@@ -80,49 +80,12 @@ public class Actuation {
         packet = new TelemetryPacket();
     }
 
-    public static void setupStarter(HardwareMap map, Telemetry tel) {
-        OttoCore.setup(map);
-
-        telemetry = tel;
-
-        if (map.dcMotor.contains("leftDrive")) {
-            leftDrive = map.get(DcMotor.class, "leftDrive");
-            leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (map.dcMotor.contains("rightDrive")) {
-            rightDrive = map.get(DcMotor.class, "rightDrive");
-            rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (map.dcMotor.contains("flywheel")) {
-            flywheel = map.get(DcMotorEx.class, "flywheel");
-            flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
-        }
-
-        if (map.crservo.contains("leftLoader")) {
-            leftLoader = map.get(CRServo.class, "leftLoader");
-            leftLoader.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-        if (map.crservo.contains("rightLoader")) {
-            rightLoader = map.get(CRServo.class, "rightLoader");
-        }
-
-        dashboard = FtcDashboard.getInstance();
-        packet = new TelemetryPacket();
-    }
 
     public static void drive(double move, double turn, double strafe) {
         frontLeft.setPower(move + turn + strafe);
         frontRight.setPower(move - turn - strafe);
         backLeft.setPower(move + turn - strafe);
         backRight.setPower(move - turn + strafe);
-    }
-
-    public static void driveStarter(double move, double turn) {
-        leftDrive.setPower(move + turn);
-        rightDrive.setPower(move - turn);
     }
 
     public static void teleDrive(boolean toggleSlowMode, double move, double turn, double strafe) {
