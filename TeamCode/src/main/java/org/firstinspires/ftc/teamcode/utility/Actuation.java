@@ -61,6 +61,7 @@ public class Actuation {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         }
