@@ -18,6 +18,7 @@ public class ArtifactTrackingTest extends OpMode {
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+        Actuation.setupLimelight(0);
     }
 
     @Override
