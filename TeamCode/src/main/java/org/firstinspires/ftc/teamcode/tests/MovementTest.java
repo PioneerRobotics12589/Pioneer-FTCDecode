@@ -9,7 +9,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
+import org.firstinspires.ftc.teamcode.utility.cameraVision.ArtifactDetection;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.io.BufferedWriter;

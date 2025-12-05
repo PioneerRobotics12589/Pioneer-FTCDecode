@@ -10,6 +10,9 @@
 
 
 // Custom definitions may go here
+
+// Include common definitions from above.
+
 buildscript {
     repositories {
         mavenCentral()
@@ -18,11 +21,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath "dev.frozenmilk:Load:0.2.1"
+        classpath "dev.frozenmilk:Load:0.2.4"
     }
 }
 
-// Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'dev.frozenmilk.sinister.sloth.load'
@@ -31,18 +33,18 @@ android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
     packagingOptions {
-        jniLibs {
-            pickFirsts += ['**/*.so']
-        }
         jniLibs.useLegacyPackaging true
     }
 }
-repositories {
-    maven {
-        url = "https://repo.dairy.foundation/releases" }
-}
+
 dependencies {
     implementation project(':FtcRobotController')
-    implementation("dev.frozenmilk.sinister:Sloth:0.2.2")
+    implementation("dev.frozenmilk.sinister:Sloth:0.2.4")
     implementation("com.acmerobotics.slothboard:dashboard:0.2.4+0.4.17")
+}
+
+repositories {
+    maven {
+        url = "https://repo.dairy.foundation/releases"
+    }
 }
