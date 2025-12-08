@@ -18,6 +18,7 @@ public class ArtifactTrackingTest extends OpMode {
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+        Actuation.setupLimelight(0);
     }
 
     @Override
@@ -25,5 +26,7 @@ public class ArtifactTrackingTest extends OpMode {
         ActuationConstants.LimelightConsts.head_PID = new PIDController(kp, ki, kd);
         double turnRate = ArtifactDetection.trackArtifact("purple");
         Actuation.drive(0.0, turnRate, 0.0);
+        Actuation.packet.addLine("Pixel X= " + ArtifactDetection.locateArtifact("purple"));
+        Actuation.updateTelemetry();
     }
 }

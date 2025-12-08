@@ -11,23 +11,21 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AprilTagDetection {
+    private static int motif = -1;
+    public static final int GOAL_BLUE = 20, GOAL_RED = 24;
+    public static final int MOTIF_GPP = 21, MOTIF_PGP = 22, MOTIF_PPG = 23;
 
-    private static LLResult result;
-    private static int artifactPattern;
-    private static String team;
-
-    public static int GOAL_BLUE = 20, GOAL_RED = 24;
-    public static int MOTIF_GPP = 21, MOTIF_PGP = 22, MOTIF_PPG = 23;
-
+    /**
+     * Updates the image and determines fiducials
+     * @return list of fiducials
+     */
     public static List<LLResultTypes.FiducialResult> getFiducials() {
         Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
-        if (result != null && result.isValid()) {
-            return result.getFiducialResults();
-        }
-        return null;
+        return Actuation.getLLResult().getFiducialResults();
     }
 
     /**
@@ -39,7 +37,7 @@ public class AprilTagDetection {
         for (LLResultTypes.FiducialResult fid : fiducials) {
             int id = fid.getFiducialId();
             if (id == MOTIF_GPP || id == MOTIF_PGP || id == MOTIF_PPG) {
-                artifactPattern = id;
+                motif = id;
                 return fid;
             }
         }
@@ -51,7 +49,7 @@ public class AprilTagDetection {
      * @param fiducials list of fiducials detected in the image
      * @return motif fiducial (21=GPP 22=PGP 23=PPG)
      */
-    public static LLResultTypes.FiducialResult getGoal(List<LLResultTypes.FiducialResult> fiducials) {
+    public static LLResultTypes.FiducialResult getGoal(List<LLResultTypes.FiducialResult> fiducials, String team) {
         for (LLResultTypes.FiducialResult fid : fiducials) {
             int id = fid.getFiducialId();
             if (id == GOAL_RED && team.equals("red") || id == GOAL_BLUE && team.equals("blue")) {
@@ -61,14 +59,19 @@ public class AprilTagDetection {
         return null;
     }
 
+    /**
+     * Determines if the obelisk's fiducial was detected
+     * @return true: detected; false: undetected
+     */
     public static boolean isPatternDetected() {
-        return artifactPattern != -1;
+        return motif != -1;
     }
 
-    public static void setTeam(String newTeam) {
-        team = newTeam;
-    }
-
+    /**
+     * Determines the position of the fiducial relative to the field
+     * @param fiducial fiducial who's position is to be detected
+     * @return fiducial position
+     */
     public static double[] getFiducialPosition(LLResultTypes.FiducialResult fiducial) {
         // Jayden, you got this...
         return new double[0];
