@@ -106,7 +106,7 @@ public class OttoCore {
 
         double clampVert = Math.max(-1, Math.min(1, vertSignal));
         double clampLat = Math.max(-1, Math.min(1, latSignal));
-        double clampRot = -Math.max(-1, Math.min(1, rotSignal));
+        double clampRot = Math.max(-1, Math.min(1, rotSignal));
 
         double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
         double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
