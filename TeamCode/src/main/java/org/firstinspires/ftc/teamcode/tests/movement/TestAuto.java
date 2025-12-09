@@ -15,9 +15,8 @@ public class TestAuto extends LinearOpMode {
         Actuation.setup(hardwareMap, telemetry);
 
         Trajectory movement = new Trajectory(new Pose(0, 0, Math.toRadians(0.0)))
-                .lineTo(new Pose(15, 0, Math.toRadians(0)))
-                .lineTo(new Pose(15, 0, Math.toRadians(180)))
-                .lineTo(new Pose(0, 0, Math.toRadians(0)));
+                .lineTo(new Pose(10, 0, Math.toRadians(0)), 0.5, 0.5)
+                .lineTo(new Pose(0, 0, Math.toRadians(0)), 0.5, 0.5);
 
         waitForStart();
 

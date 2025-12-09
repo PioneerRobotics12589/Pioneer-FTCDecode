@@ -18,7 +18,7 @@ public class ActuationConstants {
         public static final double ticksPerRev = 2000;
 
         public static double centerMultiplier = -0.3979476218376241; // responsible for move
-        public static double lateralMultiplier = -2.031871740608806; // responsible for turn
+        public static double lateralMultiplier = -2.288197550745648; // responsible for turn
         public static double perpendicularMultiplier = 0.4060269440403744; // responsible for strafe
         public static double wheel_circ = 10.05; // cm circumference of dead wheels
         public static double track_width = 9.75 * lateralMultiplier; // inches distance between drive wheels
