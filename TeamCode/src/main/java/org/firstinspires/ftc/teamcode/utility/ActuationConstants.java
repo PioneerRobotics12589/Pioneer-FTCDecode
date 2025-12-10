@@ -50,6 +50,12 @@ public class ActuationConstants {
     }
 
     @Config
+    public static class Intake {
+        public static double intakeSpeed = -1.0;
+        public static double transferSpeed = -1.0;
+    }
+
+    @Config
     public static class ModelPID {
         public static double kp_x = 0.0, ki_x = 0.0, kd_x = 0.0;
         public static double kp_y = 0.0, ki_y = 0.0, kd_y = 0.0;
