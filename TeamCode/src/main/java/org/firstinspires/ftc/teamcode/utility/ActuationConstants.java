@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utility;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 
 public class ActuationConstants {
@@ -16,15 +17,18 @@ public class ActuationConstants {
     public static class Drivetrain {
         public static final double ticksPerRev = 2000;
 
-        public static double centerMultiplier = 0.3922; // responsible for move
-        public static double lateralMultiplier = 2.499555; // responsible for turn
-        public static double perpendicularMultiplier = -0.39446041777312446; // responsible for strafe
-
-        public static double wheel_circ = 10.05; // cm
-        public static double track_width = 11.25 * lateralMultiplier; // inches distance between drive wheels
-        public static double forward_offset = 15.0; // inches distance from center of robot to perp wheel
+        public static double centerMultiplier = -0.3979476218376241; // responsible for move
+        public static double lateralMultiplier = -2.288197550745648; // responsible for turn
+        public static double perpendicularMultiplier = 0.4060269440403744; // responsible for strafe
+        public static double wheel_circ = 10.05; // cm circumference of dead wheels
+        public static double track_width = 9.75 * lateralMultiplier; // inches distance between drive wheels
+        public static double forward_offset = -11; // inches distance from center of robot to perp wheel
 
         public static double scale = wheel_circ / ticksPerRev;
+
+        public static double launcherHeight = 0.25; // meters height from ground to launcher
+        public static double flwheelRad = 0.1; // meters flywheel radius
+
     }
 
     @Config
@@ -36,9 +40,40 @@ public class ActuationConstants {
 
     @Config
     public static class Launcher {
-        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(280.0, 2.0, 0, 0);
+        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(800, 7, 1, 0);
 
-        public static int shortLaunch = 1600;
-        public static int longLaunch = 1770;
+        public static int shortLaunch = 1540;
+        public static int longLaunch = 1820;
+
+        public static double targetHeight = 1.0;
+        public static double artifactRadius = 0.12446;
+    }
+
+    @Config
+    public static class Intake {
+        public static double intakeSpeed = 1.0;
+        public static double transferSpeed = -1.0;
+    }
+
+    @Config
+    public static class ModelPID {
+        public static double kp_x = 0.0, ki_x = 0.0, kd_x = 0.0;
+        public static double kp_y = 0.0, ki_y = 0.0, kd_y = 0.0;
+        public static double kp_h = 0.0, ki_h = 0.0, kd_h = 0.0;
+
+        public static PIDController vX_PID = new PIDController(new PIDCoeffs(kp_x, ki_x, kd_x));
+        public static PIDController vY_PID = new PIDController(new PIDCoeffs(kp_y, ki_y, kd_y));
+        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_h, ki_h, kd_h));
+    }
+
+    @Config
+    public static class LimelightConsts {
+        // PID for pixel to heading
+        public static double kp_xh = 0.0, ki_xh = 0.0, kd_xh = 0.0;
+        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
+
+        public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 1;
+        public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
+
     }
 }

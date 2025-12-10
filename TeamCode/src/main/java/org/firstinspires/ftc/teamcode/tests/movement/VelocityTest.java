@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 @TeleOp(name= "VelocityTest")
 @Config
@@ -27,6 +28,8 @@ public class VelocityTest extends OpMode {
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+
+        OttoCore.robotPose = new Pose(0, 0, 0);
 
         vertical = new PIDController(verticalGains);
         heading = new PIDController(headingGains);
@@ -47,18 +50,18 @@ public class VelocityTest extends OpMode {
         double ySignal = lateral.calculateSignal(yTarget, OttoCore.robotPose.y);
         double headingSignal = heading.calculateSignal(headingTarget, OttoCore.robotPose.heading);
 
-        double clampX = Math.max(-1.0, Math.min(1, xSignal));
-        double clampY = Math.max(-1.0, Math.min(1, ySignal));
-        double clampHeading = -Math.max(-1.0, Math.min(1, headingSignal));
+        double clampX = -Math.max(-1.0, Math.min(1, xSignal));
+        double clampY = -Math.max(-1.0, Math.min(1, ySignal));
+        double clampHeading = Math.max(-1.0, Math.min(1, headingSignal));
 
         double move = clampX * Math.cos(OttoCore.robotPose.heading) + clampY * Math.sin(OttoCore.robotPose.heading);
         double strafe = clampX * Math.sin(OttoCore.robotPose.heading) - clampY * Math.cos(OttoCore.robotPose.heading);
 
         Actuation.drive(move * 0.8, clampHeading * 0.8, strafe * 0.8);
 
-//        Actuation.packet.put("xSignal", xSignal);
-//        Actuation.packet.put("ySignal", ySignal);
-//        Actuation.packet.put("hSignal", headingSignal);
+        Actuation.packet.put("xSignal", xSignal);
+        Actuation.packet.put("ySignal", ySignal);
+        Actuation.packet.put("hSignal", headingSignal);
         Actuation.packet.put("X", OttoCore.robotPose.x);
         Actuation.packet.put("Y", OttoCore.robotPose.y);
         Actuation.packet.put("H", OttoCore.robotPose.heading);

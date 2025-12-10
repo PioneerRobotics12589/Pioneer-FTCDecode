@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 
 public class PolyPath {
-    private final double[][] coefficients;
+    private final double[][] coefficients; // [[x-coeffs], [y-coeffs], [head coeffs]]
     private final ElapsedTime runtime = new ElapsedTime();
-    private final Pose endPose;
+    private final Pose endPose; // Endpoint
     private final double endTime;
 
     public PolyPath(double[][] coeffs, Pose endPose, double endTime) {
@@ -23,9 +23,9 @@ public class PolyPath {
     }
 
     /**
-     * Calculates movement values from the prespecified polynomial functions
-     * @param time Current time
-     * @return
+     * Calculates movement values from the prespecified polynomial motion functions
+     * @param time Time relative to the beginning of the path execution
+     * @return path x-velocity, y-velocity, and heading
      */
     private double[] motionValues(double time) {
         double[] values = new double[3];
@@ -47,9 +47,21 @@ public class PolyPath {
 
         return values;
     }
+
+    /**
+     * Clamps value between -1 and 1
+     * @param value value to be clamped
+     * @return clamped value
+     */
     private static double clamp(double value) {
         return Math.max(-1, Math.min(1, value));
     }
+
+    /**
+     * Determines the drive powers to set the robot to certain x-velocity, y-velocity, and heading using PID
+     * @param motionPoint array for x-velocity, y-velocity, and heading
+     * @return drive powers
+     */
     private double[] toMotionPoint(double[] motionPoint) {
         double[] powers = new double[3];
 
@@ -76,6 +88,11 @@ public class PolyPath {
         powers[2] = clamp(head_signal);
         return powers;
     }
+
+    /**
+     * Drives to a certain pose using PID
+     * @param pose pose of x-coordinate, y-coordinate, and heading
+     */
     private void toPose(Pose pose) {
         if (pose.heading > OttoCore.robotPose.heading) {
             while (Math.abs(pose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
@@ -94,6 +111,11 @@ public class PolyPath {
 
         Actuation.drive(0, 0, 0);
     }
+
+    /**
+     * Determines the average x and y velocities of the robot during a short moment of time
+     * @return array of the x-velocity and y-velocity
+     */
     private double[] getVelocity() {
         double[] velocities = new double[2];
 
@@ -112,6 +134,10 @@ public class PolyPath {
 
         return velocities;
     }
+
+    /**
+     * Runs the path & corrects to final position
+     */
     public void runPath() {
         runtime.reset();
         double time = runtime.seconds();
