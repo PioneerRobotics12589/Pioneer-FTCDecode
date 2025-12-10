@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 @Config
 public class RobotTeleOp extends OpMode {
     FtcDashboard dashboard;
-    public static int flywheelVel = 0;
-    public static boolean isTesting = true, servos = false;
+    //public static int flywheelVel = 0;
+    //public static boolean isTesting = true, servos = false;
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -23,9 +23,29 @@ public class RobotTeleOp extends OpMode {
     }
 
     public void loop() {
-        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, gamepad1.left_stick_x);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
 
-//        if (!isTesting) {
+        if (gamepad1.right_bumper) {
+            Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
+            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
+        }
+        else if (gamepad1.left_bumper) {
+            Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
+            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.shortLaunch);
+        }
+        else {
+            Actuation.setFlywheel(0);
+            Actuation.checkFlywheelSpeed(gamepad1, 0);
+        }
+        Actuation.setIntake(gamepad1.right_trigger > 0.5);
+        Actuation.reverseIntake(gamepad1.dpad_down);
+        Actuation.setTransfer(gamepad1.left_trigger > 0.5);
+
+
+
+        Actuation.updateTelemetry();
+
+            //        if (!isTesting) {
 //            if (gamepad1.right_bumper) {
 //                Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
 //                Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);

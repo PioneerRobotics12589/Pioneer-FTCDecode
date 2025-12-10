@@ -40,9 +40,9 @@ public class ActuationConstants {
 
     @Config
     public static class Launcher {
-        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(400, 3.75, 0, 0);
+        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(800, 7, 1, 0);
 
-        public static int shortLaunch = 1500;
+        public static int shortLaunch = 1540;
         public static int longLaunch = 1820;
 
         public static double targetHeight = 1.0;

@@ -26,7 +26,7 @@ public class Actuation {
     public static boolean slowMode = false;
     private static boolean slowModeToggle = false;
 
-    public static DcMotor frontLeft, frontRight, backLeft, backRight, leftDrive, rightDrive;
+    public static DcMotor frontLeft, frontRight, backLeft, backRight, leftDrive, rightDrive, intake, transfer;
 
     public static DcMotorEx flywheel;
 
@@ -60,12 +60,20 @@ public class Actuation {
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
+        if (map.dcMotor.contains("transfer")) {
+            transfer = map.get(DcMotor.class, "transfer");
+            transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (map.dcMotor.contains("intake")) {
+            intake = map.get(DcMotor.class, "intake");
+            intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
         if (map.dcMotor.contains("flywheel")) {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+            flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         }
 
@@ -172,6 +180,33 @@ public class Actuation {
         else {
             leftLoader.setPower(0.0);
             rightLoader.setPower(0.0);
+        }
+    }
+    public static void setIntake(boolean control) {
+        if (control) {
+            intake.setPower(-1.0);
+        }
+        else {
+            intake.setPower(0.0);
+        }
+    }
+    public static void setTransfer(boolean control) {
+        if (control) {
+            transfer.setPower(-1.0);
+        }
+        else {
+            transfer.setPower(0.0);
+        }
+    }
+    public static void reverseIntake(boolean control) {
+        if (control) {
+            intake.setPower(1.0);
+            transfer.setPower(1.0);
+            setFlywheel(-200);
+        }
+        else {
+            intake.setPower(0.0);
+            transfer.setPower(0.0);
         }
     }
     public static void setupLimelight(int pipeline) {
