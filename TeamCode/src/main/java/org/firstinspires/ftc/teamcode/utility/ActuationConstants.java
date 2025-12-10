@@ -51,7 +51,7 @@ public class ActuationConstants {
 
     @Config
     public static class Intake {
-        public static double intakeSpeed = -1.0;
+        public static double intakeSpeed = 1.0;
         public static double transferSpeed = -1.0;
     }
 

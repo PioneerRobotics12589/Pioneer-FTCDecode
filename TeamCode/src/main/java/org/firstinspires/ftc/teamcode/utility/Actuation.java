@@ -59,11 +59,10 @@ public class Actuation {
         }
         if (map.dcMotor.contains("transfer")) {
             transfer = map.get(DcMotor.class, "transfer");
-            transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
-            intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.dcMotor.contains("flywheel")) {
@@ -124,6 +123,9 @@ public class Actuation {
         } else {
             gamepad1.setLedColor(1, 0, 0, 100);
         }
+
+        packet.put("flywheel velocity", flywheelSpeed);
+        updateTelemetry();
     }
 
     public static void setIntake(boolean control) {
@@ -145,8 +147,8 @@ public class Actuation {
 
     public static void runBackwards(boolean control) {
         if (control) {
-            intake.setPower(1.0);
-            transfer.setPower(1.0);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             setFlywheel(-200);
         }
         else {
