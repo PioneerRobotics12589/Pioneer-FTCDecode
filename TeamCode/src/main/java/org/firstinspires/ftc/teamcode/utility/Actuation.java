@@ -132,7 +132,7 @@ public class Actuation {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed / 1.5);
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
-            setFlywheel(-200);
+            setFlywheel(-670);
         }
         else {
             intake.setPower(0.0);
@@ -151,7 +151,7 @@ public class Actuation {
         if (control) {
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
             //transfer.setPower(-ActuationConstants.Intake.transferSpeed);
-            setFlywheel(-800);
+            //setFlywheel(-800);
         }
         else {
             intake.setPower(0.0);
