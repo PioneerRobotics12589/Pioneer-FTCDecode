@@ -31,8 +31,8 @@ public class RobotTeleOp extends OpMode {
             Actuation.checkFlywheelSpeed(gamepad1, 0);
         }
 
-        Actuation.setIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runBackwards(gamepad1.dpad_down);
+        Actuation.setIntake(gamepad1.dpad_down);
+        Actuation.runBackwards(gamepad1.right_trigger > 0.5);
         Actuation.setTransfer(gamepad1.left_trigger > 0.5);
     }
 }
