@@ -42,8 +42,8 @@ public class ActuationConstants {
     public static class Launcher {
         public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(380, 40, 20, 0);
 
-        public static int shortLaunch = 1540;
-        public static int longLaunch = 1820;
+        public static int shortLaunch = 1600;
+        public static int longLaunch = 1750;
 
         public static double targetHeight = 1.0;
         public static double artifactRadius = 0.12446;
