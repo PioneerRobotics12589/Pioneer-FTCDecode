@@ -130,7 +130,9 @@ public class Actuation {
 
     public static void setIntake(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed / 1.5);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
+            setFlywheel(-670);
         }
         else {
             intake.setPower(0.0);
@@ -148,8 +150,8 @@ public class Actuation {
     public static void runBackwards(boolean control) {
         if (control) {
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
-            setFlywheel(-200);
+            //transfer.setPower(-ActuationConstants.Intake.transferSpeed);
+            //setFlywheel(-800);
         }
         else {
             intake.setPower(0.0);
