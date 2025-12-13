@@ -133,8 +133,7 @@ public class Actuation {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             setFlywheel(-670);
-        }
-        else {
+        } else {
             intake.setPower(0.0);
         }
     }
@@ -179,11 +178,11 @@ public class Actuation {
     }
 
     public static double[] launchVals(String team) {
-        Point goal;
+        double[] goal;
         if (team.equals("red")) {
-            goal = new Point(-72, 72);
+            goal = {-1.8288, 1.8288};
         } else if (team.equals("blue")) {
-            goal = new Point(-72, -72);
+            goal = {-1.8288, -1.8288};
         } else {
             throw new InvalidParameterException("Actuation.launchVals(): Invalid Team");
         }
@@ -191,8 +190,8 @@ public class Actuation {
         OttoCore.updatePosition();
         Pose pos = new Pose(OttoCore.robotPose);
 
-        double dist = Math.sqrt(Math.pow(pos.x - goal.x, 2) + Math.pow(pos.y - goal.y, 2));
-        double angle = Math.atan2(pos.x-goal.x, pos.y-goal.y);
+        double dist = Math.sqrt(Math.pow(pos.x - goal[0], 2) + Math.pow(pos.y - goal[1], 2));
+        double angle = Math.atan2(pos.x-goal[0], pos.y-goal[1]);
         double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
 
 //        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0;
