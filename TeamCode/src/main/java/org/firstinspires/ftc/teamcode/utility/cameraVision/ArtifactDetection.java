@@ -30,10 +30,19 @@ public class ArtifactDetection {
 
         double[] contour = pysnapResult.getPythonOutput(); // Center coordinates of largest contour
 
-        // Center pixel of contour (0, 0) is the center of the image
-        double pixelX = contour[0] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0, pixelY = contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_Y / 2.0;
+//        StringBuilder arrStr = new StringBuilder();
+//        for (double c : contour) {
+//            arrStr.append(c).append(", ");
+//        }
 
-        return pixelX;
+//        Actuation.packet.put("CONTOUR:", arrStr.toString());
+
+        // Center pixel of contour (0, 0) is the center of the image
+//        double pixelX = contour[0] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0, pixelY = contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_Y / 2.0;
+        if (contour[1] == 0.0) {
+            return 0.0;
+        }
+        return contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0;
     }
 
     /**

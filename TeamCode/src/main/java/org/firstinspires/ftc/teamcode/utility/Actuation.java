@@ -130,7 +130,7 @@ public class Actuation {
 
     public static void setIntake(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed / 1.5);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             setFlywheel(-670);
         }
@@ -183,7 +183,7 @@ public class Actuation {
         if (team.equals("red")) {
             goal = new Point(-72, 72);
         } else if (team.equals("blue")) {
-            goal = new Point(72, 72);
+            goal = new Point(-72, -72);
         } else {
             throw new InvalidParameterException("Actuation.launchVals(): Invalid Team");
         }
@@ -200,6 +200,9 @@ public class Actuation {
         double linVel = Math.sqrt(-9.8*Math.pow(dist, 2.0) / ((height-dist*Math.tan(flywheelAngle))*(2.0*Math.pow(Math.cos(flywheelAngle), 2.0))));
 
         double angVel = linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI;
+
+        telemetry.addData("Angular Velocity", angVel);
+        telemetry.addData("Robot Angle", angle);
 
         return new double[] {angle, angVel, flywheelAngle};
     }
