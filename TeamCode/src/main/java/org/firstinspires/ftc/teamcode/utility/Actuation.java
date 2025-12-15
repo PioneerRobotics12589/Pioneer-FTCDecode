@@ -179,27 +179,27 @@ public class Actuation {
     }
 
     public static double[] launchVals(String team) {
-        double[] goal;
+        Point goal;
         if (team.equals("red")) {
-            goal = new double[] {-1.8288, 1.8288}; // Red goal coordinates in meters
+            goal = new Point(-72, 72);
         } else if (team.equals("blue")) {
-            goal = new double[] {-1.8288, -1.8288}; // Blue goal coordinates in meters
+            goal = new Point(-72, -72);
         } else {
             throw new InvalidParameterException("Actuation.launchVals(): Invalid Team");
         }
 
         OttoCore.updatePosition();
-        double[] pos = new double[] {OttoCore.robotPose.x / 39.37, OttoCore.robotPose.y / 39.37}; // Current position in meters
+        Pose pos = new Pose(OttoCore.robotPose);
 
-        double dist = Math.sqrt(Math.pow(pos[0] - goal[0], 2) + Math.pow(pos[1] - goal[1], 2)); // Find distance to goal
-        double angle = Math.atan2(pos[0]-goal[0], pos[1]-goal[1]); // Find the angle between the robot and the goal
-        double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight; // Change in heigh between the launcher and the goal
+        double dist = Math.sqrt(Math.pow(pos.x - goal.x, 2) + Math.pow(pos.y - goal.y, 2));
+        double angle = Math.atan2(pos.x-goal.x, pos.y-goal.y);
+        double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
 
 //        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0;
-        double flywheelAngle = 55.0 * Math.PI/180; // Current flywheel angle in radians
-        double linVel = Math.sqrt(-9.8*Math.pow(dist, 2.0) / ((height-dist*Math.tan(flywheelAngle))*(2.0*Math.pow(Math.cos(flywheelAngle), 2.0)))); // Linear velocity calculation
+        double flywheelAngle = 55.0 * Math.PI/180;
+        double linVel = Math.sqrt(-9.8*Math.pow(dist, 2.0) / ((height-dist*Math.tan(flywheelAngle))*(2.0*Math.pow(Math.cos(flywheelAngle), 2.0))));
 
-        double angVel = linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI; // Convert to angular velocity
+        double angVel = linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI;
 
         telemetry.addData("Angular Velocity", angVel);
         telemetry.addData("Robot Angle", angle);
