@@ -137,11 +137,6 @@ public class OttoCore {
         double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
         double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
 
-//        Actuation.packet.put("vertical signal", vertSignal);
-//        Actuation.packet.put("lateral signal", latSignal);
-//        Actuation.packet.put("rotational signal", rotSignal);
-//        Actuation.updateTelemetry();
-
         double voltageComp = 12 / voltageSensor.getVoltage();
 
         return new double[] {move * movementSpeed * voltageComp, clampRot * turnSpeed * voltageComp, strafe * movementSpeed * voltageComp};
