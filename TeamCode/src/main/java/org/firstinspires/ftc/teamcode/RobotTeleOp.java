@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 @TeleOp(name = "Awe(sigma) Sauce")
 @Config
 public class RobotTeleOp extends OpMode {
-
     private boolean trackPurple = false, trackGreen = false;
 
     public void init() {
@@ -26,6 +25,7 @@ public class RobotTeleOp extends OpMode {
         boolean triangle = gamepad1.triangleWasPressed();
         boolean square = gamepad1.squareWasPressed();
 
+        // Toggle tracking
         if (triangle) {
             trackGreen = !trackGreen;
             trackPurple = false;
@@ -35,7 +35,7 @@ public class RobotTeleOp extends OpMode {
         }
 
         if (trackPurple) {
-
+            // Track purple artifacts (while moving)
             double turnRate = ArtifactDetection.trackArtifact("purple");
             telemetry.addData("Pixel X", ArtifactDetection.trackArtifact("purple"));
             telemetry.update();
@@ -43,7 +43,7 @@ public class RobotTeleOp extends OpMode {
             Actuation.drive(gamepad1.left_stick_y, turnRate, -gamepad1.left_stick_x);
 
         } else if (trackGreen) {
-
+            // Track green artifacts (while moving)
             double turnRate = ArtifactDetection.trackArtifact("green");
             telemetry.addData("Pixel X", ArtifactDetection.trackArtifact("green"));
             telemetry.update();
@@ -52,27 +52,23 @@ public class RobotTeleOp extends OpMode {
 
         } else {
             if (gamepad1.right_bumper) {
-
+                // Speed up flywheel to shoot from the long launch zone
                 Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
                 Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
 
             } else if (gamepad1.left_bumper) {
-
+                // Speed up flywheel to shoot from the short launch zone
                 Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
                 Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.shortLaunch);
 
             } else if (gamepad1.cross) {
+                // Turn towards the goal and determines the correct launch velocity to shoot into the goal
+
                 double[] vals = Actuation.launchVals("blue");
                 Pose position = new Pose(OttoCore.robotPose);
-                double robotAngle = vals[0];
-                int flyVel = (int) vals[1];
 
-                while (position.heading < robotAngle - Math.PI/72 || position.heading > robotAngle + Math.PI/72) {
-                    double[] moveValues = OttoCore.moveTowardsSignals(new Pose(position.x, position.y, robotAngle), 0.0, 0.5);
-                    Actuation.drive(gamepad1.left_stick_y, moveValues[1], -gamepad1.left_stick_x);
-                    OttoCore.updatePosition();
-                    position = new Pose(OttoCore.robotPose);
-                }
+
+                int flyVel = (int) vals[1];
 
                 Actuation.setFlywheel(flyVel);
                 Actuation.checkFlywheelSpeed(gamepad1, flyVel);

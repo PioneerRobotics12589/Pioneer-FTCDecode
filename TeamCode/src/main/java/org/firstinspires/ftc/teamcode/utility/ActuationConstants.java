@@ -69,7 +69,7 @@ public class ActuationConstants {
     @Config
     public static class LimelightConsts {
         // PID for pixel to heading
-        public static double kp_xh = -0.002, ki_xh = 0.0, kd_xh = 0.0;
+        private static final double kp_xh = -0.002, ki_xh = 0.0, kd_xh = 0.0;
         public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
 
         public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 2;

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utility.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 public class FieldConstants {
@@ -30,5 +31,11 @@ public class FieldConstants {
         public static Pose redShort = new Pose(12.0, -23.0, 46.0);
         public static Pose blueLong = new Pose(-16.0, 56.0, -15.0);
         public static Pose blueShort = new Pose(-12.0, -23.0, -46);
+    }
+
+    @Config
+    public static class Goal {
+        public static Point red = new Point(72, 72);
+        public static Point blue = new Point(-72, 72);
     }
 }

@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
@@ -13,16 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTagDetection {
-
-    private static LLResult result;
     private static int artifactPattern;
     private static String team;
 
     public static List<LLResultTypes.FiducialResult> getFiducials() {
-        if (result != null && result.isValid()) {
-            return result.getFiducialResults();
-        }
-        return null;
+        Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
+        return Actuation.getLLResult().getFiducialResults();
     }
 
     /**

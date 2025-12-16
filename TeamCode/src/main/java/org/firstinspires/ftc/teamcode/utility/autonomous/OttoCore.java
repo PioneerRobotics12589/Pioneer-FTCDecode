@@ -120,28 +120,6 @@ public class OttoCore {
         Actuation.drive(move * movementSpeed * voltageComp, clampRot * turnSpeed * voltageComp, strafe * movementSpeed * voltageComp);
     }
 
-    public static double[] moveTowardsSignals(Pose targetPose, double movementSpeed, double turnSpeed) {
-        // Update coefficients in case changed in dashboard
-        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
-        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
-        rotational.updateCoeffs(ActuationConstants.Movement.rotationalGains);
-
-        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x);
-        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y);
-        double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading);
-
-        double clampVert = Math.max(-1, Math.min(1, vertSignal));
-        double clampLat = Math.max(-1, Math.min(1, latSignal));
-        double clampRot = Math.max(-1, Math.min(1, rotSignal));
-
-        double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
-        double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
-
-        double voltageComp = 12 / voltageSensor.getVoltage();
-
-        return new double[] {move * movementSpeed * voltageComp, clampRot * turnSpeed * voltageComp, strafe * movementSpeed * voltageComp};
-    }
-
     public static Pose getVelocity() {
         double dt = (System.nanoTime() - lastTime)/1000000000.00;
 

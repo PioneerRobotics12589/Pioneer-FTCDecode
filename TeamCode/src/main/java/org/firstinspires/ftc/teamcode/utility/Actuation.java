@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.utility;
 
-import android.graphics.Point;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -13,7 +11,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.security.InvalidParameterException;
@@ -76,6 +76,7 @@ public class Actuation {
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
             limelight = map.get(Limelight3A.class, "limelight");
+            setupLimelight(0);
         }
 
         dashboard = FtcDashboard.getInstance();
@@ -106,18 +107,16 @@ public class Actuation {
 
         slowModeToggle = toggleSlowMode;
     }
-
     public static void setFlywheel(int velocity) {
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         flywheel.setVelocity(velocity);
+        flywheelSpeed = flywheel.getVelocity();
         packet.put("target vel", velocity);
         packet.put("actual vel", flywheel.getVelocity());
         updateTelemetry();
-
-        flywheelSpeed = flywheel.getVelocity();
     }
-
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {
+        flywheelSpeed = flywheel.getVelocity();
         if (Math.abs(flywheelSpeed - targetVelocity) <= 20) {
             gamepad1.setLedColor(0, 1, 0, 100);
         } else {
@@ -127,7 +126,6 @@ public class Actuation {
         packet.put("flywheel velocity", flywheelSpeed);
         updateTelemetry();
     }
-
     public static void setIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
@@ -146,7 +144,6 @@ public class Actuation {
             transfer.setPower(0.0);
         }
     }
-
     public static void runBackwards(boolean control) {
         if (control) {
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
@@ -162,7 +159,6 @@ public class Actuation {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
-
     public static void setPipeline(int pipeline) {
         /*
         / Pipeline  Function
@@ -173,32 +169,43 @@ public class Actuation {
 
         limelight.pipelineSwitch(pipeline);
     }
-
     public static LLResult getLLResult() {
         return limelight.getLatestResult();
     }
 
+    /**
+     * Determines the robot angle, flywheel angular velocity, and the flywheel angle to launch from the current position
+     * @param team team color
+     * @return array containing the robot angle, flywheel angular velocity, and the flywheel angle
+     */
     public static double[] launchVals(String team) {
         Point goal;
-        if (team.equals("red")) {
-            goal = new Point(-72, 72);
-        } else if (team.equals("blue")) {
-            goal = new Point(-72, -72);
+        if (team.equalsIgnoreCase("blue")) {
+            goal = FieldConstants.Goal.blue;
         } else {
-            throw new InvalidParameterException("Actuation.launchVals(): Invalid Team");
+            goal = FieldConstants.Goal.red;
         }
 
         OttoCore.updatePosition();
-        Pose pos = new Pose(OttoCore.robotPose);
+        Pose position = new Pose(OttoCore.robotPose); // Get current position
 
-        double dist = Math.sqrt(Math.pow(pos.x - goal.x, 2) + Math.pow(pos.y - goal.y, 2));
-        double angle = Math.atan2(pos.x-goal.x, pos.y-goal.y);
+        // Distance in inches
+        double dist = Math.sqrt(Math.pow(position.x - goal.x, 2) + Math.pow(position.x - goal.x, 2));
+        dist = dist/39.37; // Convert from inches to meters
+
+        // Angle between robot and goal
+        double angle = Math.atan2(position.x-goal.x, position.y-goal.y);
+
+        // Change in height from launcher to goal
         double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
 
-//        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0;
-        double flywheelAngle = 55.0 * Math.PI/180;
+//        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0; // Optimal flywheel angle
+        double flywheelAngle = 55.0 * Math.PI/180; // Angle of the flywheel
+
+        // Linear velocity of the flywheel
         double linVel = Math.sqrt(-9.8*Math.pow(dist, 2.0) / ((height-dist*Math.tan(flywheelAngle))*(2.0*Math.pow(Math.cos(flywheelAngle), 2.0))));
 
+        // Convert from linear to angular velocity
         double angVel = linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI;
 
         telemetry.addData("Angular Velocity", angVel);
