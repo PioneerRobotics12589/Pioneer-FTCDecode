@@ -25,7 +25,7 @@ public class LateralTuner extends OpMode {
 
         Actuation.packet.put("Heading", Math.toDegrees(OttoCore.robotPose.heading));
         Actuation.packet.put("diff", Math.toRadians(measuredAngle) / OttoCore.robotPose.heading);
-        Actuation.packet.put("new lateral multiplier", ActuationConstants.Drivetrain.lateralMultiplier / (Math.toRadians(measuredAngle)/OttoCore.robotPose.heading));
+//        Actuation.packet.put("new lateral multiplier", ActuationConstants.Drivetrain.lateralMultiplier / (Math.toRadians(measuredAngle)/OttoCore.robotPose.heading));
         Actuation.updateTelemetry();
     }
 }
