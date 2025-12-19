@@ -40,10 +40,10 @@ public class ActuationConstants {
 
     @Config
     public static class Launcher {
-        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(800, 7, 1, 0);
+        public static PIDFCoefficients pidCoeffs = new PIDFCoefficients(380, 40, 20, 0);
 
-        public static int shortLaunch = 1540;
-        public static int longLaunch = 1820;
+        public static int shortLaunch = 1600;
+        public static int longLaunch = 1800;
 
         public static double targetHeight = 1.0;
         public static double artifactRadius = 0.12446;
@@ -69,10 +69,10 @@ public class ActuationConstants {
     @Config
     public static class LimelightConsts {
         // PID for pixel to heading
-        public static double kp_xh = 0.0, ki_xh = 0.0, kd_xh = 0.0;
+        private static final double kp_xh = -0.002, ki_xh = 0.0, kd_xh = 0.0;
         public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
 
-        public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 1;
+        public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 2;
         public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
 
     }

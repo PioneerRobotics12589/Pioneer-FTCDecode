@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -30,10 +32,7 @@ public class ArtifactDetection {
 
         double[] contour = pysnapResult.getPythonOutput(); // Center coordinates of largest contour
 
-        // Center pixel of contour (0, 0) is the center of the image
-        double pixelX = contour[0] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0, pixelY = contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_Y / 2.0;
-
-        return pixelX;
+        return contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0;
     }
 
     /**
