@@ -28,9 +28,9 @@ public class ActuationConstants {
 
     @Config
     public static class Movement {
-        public static PIDCoeffs lateralGains = new PIDCoeffs(0.18, 50, 0.08); // Control for strafe
-        public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09); // Control for move
-        public static PIDCoeffs rotationalGains = new PIDCoeffs(3.0, 30, 0.2); // Control for turn
+        public static PIDCoeffs lateralGains = new PIDCoeffs(0.2, 50, 0.08);
+        public static PIDCoeffs verticalGains = new PIDCoeffs(0.25, 40, 0.09);
+        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 30, 0.2);
     }
 
     @Config
@@ -46,7 +46,7 @@ public class ActuationConstants {
 
     @Config
     public static class Intake {
-        public static double intakeSpeed = 1.0;
+        public static double intakeSpeed = -1.0;
         public static double transferSpeed = -1.0;
     }
 

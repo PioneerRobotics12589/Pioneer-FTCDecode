@@ -90,6 +90,10 @@ public class OttoCore {
             dx = delta_center * ((Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta))) / delta_theta) + delta_perp * ((Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta)) / delta_theta);
             dy = delta_center * ((Math.sin(robotPose.heading) * Math.sin(delta_theta) - Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta))) / delta_theta) + delta_perp * ((Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta)) / delta_theta);
         }
+        else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
+            dx = delta_center * Math.cos(robotPose.heading) - delta_perp * Math.sin(robotPose.heading);
+            dy = delta_center * Math.sin(robotPose.heading) + delta_perp * Math.cos(robotPose.heading);
+        }
 
         // Update the robots position
         robotPose.x -= dx;
@@ -117,21 +121,25 @@ public class OttoCore {
         double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y);
         double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading);
 
-        double clampVert = Math.max(-1, Math.min(1, vertSignal));
-        double clampLat = Math.max(-1, Math.min(1, latSignal));
-        double clampRot = Math.max(-1, Math.min(1, rotSignal));
+        double clampVert = -Math.max(-1.0, Math.min(1, vertSignal));
+        double clampLat = -Math.max(-1.0, Math.min(1, latSignal));
+        double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
 
         double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
         double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
 
-//        Actuation.packet.put("vertical signal", vertSignal);
-//        Actuation.packet.put("lateral signal", latSignal);
-//        Actuation.packet.put("rotational signal", rotSignal);
-//        Actuation.updateTelemetry();
+//        double voltageComp = 12 / voltageSensor.getVoltage();
 
-        double voltageComp = 12 / voltageSensor.getVoltage();
+        Actuation.drive(move * movementSpeed, clampRot * turnSpeed, strafe * movementSpeed);
 
-        Actuation.drive(move * movementSpeed * voltageComp, clampRot * turnSpeed * voltageComp, strafe * movementSpeed * voltageComp);
+        Actuation.packet.put("xSignal", vertSignal);
+        Actuation.packet.put("ySignal", latSignal);
+        Actuation.packet.put("hSignal", rotSignal);
+        Actuation.packet.put("X", OttoCore.robotPose.x);
+        Actuation.packet.put("Y", OttoCore.robotPose.y);
+        Actuation.packet.put("H", OttoCore.robotPose.heading);
+
+        Actuation.updateTelemetry();
     }
 
     public static Pose getVelocity() {

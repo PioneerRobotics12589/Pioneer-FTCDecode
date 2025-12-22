@@ -41,19 +41,23 @@ public class Actuation {
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (map.dcMotor.contains("frontRight")) {
             frontRight = map.get(DcMotor.class, "frontRight");
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         if (map.dcMotor.contains("backLeft")) {
             backLeft = map.get(DcMotor.class, "backLeft");
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (map.dcMotor.contains("backRight")) {
             backRight = map.get(DcMotor.class, "backRight");
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -126,17 +130,16 @@ public class Actuation {
         packet.put("flywheel velocity", flywheelSpeed);
         updateTelemetry();
     }
-    public static void setIntake(boolean control) {
+    public static void runIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
-            setFlywheel(-670);
         }
         else {
             intake.setPower(0.0);
         }
     }
-    public static void setTransfer(boolean control) {
+
+    public static void runTransfer(boolean control) {
         if (control) {
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
         }
@@ -144,17 +147,16 @@ public class Actuation {
             transfer.setPower(0.0);
         }
     }
-    public static void runBackwards(boolean control) {
+
+    public static void reverse(boolean control) {
         if (control) {
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            //transfer.setPower(-ActuationConstants.Intake.transferSpeed);
-            //setFlywheel(-800);
-        }
-        else {
-            intake.setPower(0.0);
-            transfer.setPower(0.0);
+            flywheel.setVelocity(-670);
         }
     }
+
+
     public static void setupLimelight(int pipeline) {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
