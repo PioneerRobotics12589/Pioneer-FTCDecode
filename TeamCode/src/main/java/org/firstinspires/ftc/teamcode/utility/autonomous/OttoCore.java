@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -9,7 +10,6 @@ import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.List;
-
 public class OttoCore {
     static final int SIDE_LENGTH = 6;
 
@@ -112,6 +112,7 @@ public class OttoCore {
      * @param turnSpeed Robot's turn speed
      */
     public static void moveTowards(Pose targetPose, double movementSpeed, double turnSpeed) {
+
         // Update coefficients in case changed in dashboard
         lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
         vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);

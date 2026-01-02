@@ -32,7 +32,7 @@ public class ArtifactDetection {
 
         double[] contour = pysnapResult.getPythonOutput(); // Center coordinates of largest contour
 
-        return contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0;
+        return contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0; // Displacement from artifact coordinates to image center
     }
 
     /**
@@ -41,10 +41,16 @@ public class ArtifactDetection {
      * @return turn value to track artifact
      */
     public static double trackArtifact(String color) {
-        double pixelX = locateArtifact(color); // X-coordinate of contour center
+        double pixelX = locateArtifact(color); // Displacement from artifact contour X-coordinate to the center of image
 
         OttoCore.updatePosition();
-        double head_signal = ActuationConstants.LimelightConsts.head_PID.calculateSignal(pixelX, OttoCore.robotPose.heading); // PID Signal
+
+        double head_signal = 0;
+        int avg_count = 10;
+        for (int i = 0; i < avg_count; i++) {
+            head_signal += ActuationConstants.LimelightConsts.head_PID.calculateSignal(0, pixelX); // PID Signal
+        }
+        head_signal /= avg_count;
 
         head_signal = Math.max(-1, Math.min(head_signal, 1)); // Clamp
 

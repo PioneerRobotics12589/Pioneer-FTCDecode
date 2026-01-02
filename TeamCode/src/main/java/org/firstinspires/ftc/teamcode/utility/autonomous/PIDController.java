@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 
 import java.util.concurrent.TimeUnit;
@@ -61,9 +63,9 @@ public class PIDController {
     public double calculateSignal(double target, double current) {
         double dt = (System.nanoTime() - lastTime)/1000000000.00;
 
-        error = target - current;
+        error = target-current;
 
-        integral = (error * dt);
+        integral = (error * dt); // NEEDS TO BE FIXED TO integral += error * dt;
         derivative = (error - prevError) / dt;
 
         double p = Kp * error;

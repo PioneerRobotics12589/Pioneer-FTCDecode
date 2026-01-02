@@ -10,7 +10,9 @@ public class ActuationConstants {
     @Config
     public static class Autonomous {
         public static double moveSpeed = 0.6;
+//        public static double moveSpeed = 0.2;
         public static double turnSpeed = 0.8;
+//        public static double turnSpeed = 0.26667; // haha, 67
     }
 
     @Config
@@ -18,7 +20,7 @@ public class ActuationConstants {
         public static final double ticksPerRev = 2000;
 
         public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
-        public static double track_width = 9.75; // inches distance between odo wheels
+        public static double track_width = 8.8; // inches distance between odo wheels
         public static double forward_offset = 6.75; // inches distance from center of robot to perp wheel
 
         public static double launcherHeight = 0.25; // meters height from ground to launcher
@@ -40,7 +42,7 @@ public class ActuationConstants {
         public static int shortLaunch = 1600;
         public static int longLaunch = 1800;
 
-        public static double targetHeight = 1.0;
+        public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
     }
 
@@ -64,9 +66,8 @@ public class ActuationConstants {
     @Config
     public static class LimelightConsts {
         // PID for pixel to heading
-        private static final double kp_xh = -0.002, ki_xh = 0.0, kd_xh = 0.0;
+        private static final double kp_xh = 0.002, ki_xh = 0.0, kd_xh = 0.0;
         public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
-
         public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 2;
         public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
 

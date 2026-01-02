@@ -1,0 +1,70 @@
+package org.firstinspires.ftc.teamcode.auto;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
+import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.Trajectory;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+
+@Autonomous(name="ShortRed", group="Red Auto")
+public class ShortRed extends LinearOpMode {
+    @Override
+    public void runOpMode() {
+        Actuation.setup(hardwareMap, telemetry);
+
+        Pose start = new Pose(48.6, -52, Math.toRadians(-55.6));
+        Pose spike1A = new Pose(9.3, -28, Math.toRadians(-92.0));
+        Pose spike1B = new Pose(9.3, -52.5, Math.toRadians(-94));
+        Pose spike2A = new Pose(-15.5, -28, Math.toRadians(-94.0));
+        Pose spike2B = new Pose(-15.5, -52, Math.toRadians(-96.0));
+        Pose gatePose = new Pose(-7.4, -49, Math.toRadians(-92.0));
+
+        Pose launchPose = new Pose(16.0, -17.6, Math.toRadians(-50.3));
+
+        Trajectory preloads = new Trajectory(start);
+
+        Trajectory launch = new Trajectory()
+                .action(() -> AutoMovement.autoFlywheelVel(launchPose, FieldConstants.Goal.red))
+                .lineTo(new Pose(launchPose.x, launchPose.y, AutoMovement.goalRotation(launchPose, FieldConstants.Goal.red)))
+                .action(() -> {
+                    try {
+                        AutoMovement.launch();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+        Trajectory spike1 = new Trajectory()
+                .lineTo(spike1A)
+                .action(() -> Actuation.runIntake(true))
+                .action(() -> Actuation.runTransfer(true, false, ActuationConstants.Intake.transferSpeed*0.5))
+                .lineTo(spike1B, 0.4, 0.5)
+                .action(() -> Actuation.runTransfer(false, false))
+                .action(() -> Actuation.runIntake(false));
+
+        Trajectory spike2 = new Trajectory()
+                .lineTo(spike2A)
+                .action(() -> Actuation.runIntake(true))
+                .action(() -> Actuation.runTransfer(true, false, ActuationConstants.Intake.transferSpeed*0.3))
+                .lineTo(spike2B, 0.4, 0.5)
+                .action(() -> Actuation.runTransfer(false, false))
+                .action(() -> Actuation.runIntake(false));
+
+        Trajectory gate = new Trajectory()
+                .lineTo(gatePose);
+
+        waitForStart();
+
+        preloads.run();
+        launch.run();
+        spike1.run();
+        launch.run();
+        spike2.run();
+        launch.run();
+        gate.run();
+    }
+}

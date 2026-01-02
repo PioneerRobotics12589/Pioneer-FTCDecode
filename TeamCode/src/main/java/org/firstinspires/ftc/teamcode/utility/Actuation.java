@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.utility;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
+import android.graphics.Color;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -9,6 +13,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
@@ -27,6 +33,8 @@ public class Actuation {
     public static DcMotor intake, transfer;
 
     public static DcMotorEx flywheel;
+
+    public static NormalizedColorSensor colorSensor;
     private static double flywheelSpeed = 0.0;
 
     public static Telemetry telemetry;
@@ -77,6 +85,12 @@ public class Actuation {
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
         }
 
+        try {
+            colorSensor = map.get(NormalizedColorSensor.class, "colorSensor");
+        } catch (Exception e) {
+            colorSensor = null;
+        }
+
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
             limelight = map.get(Limelight3A.class, "limelight");
@@ -93,7 +107,6 @@ public class Actuation {
         backLeft.setPower(move + turn - strafe);
         backRight.setPower(move - turn + strafe);
     }
-
     public static void teleDrive(boolean toggleSlowMode, double move, double turn, double strafe) {
         if (toggleSlowMode && !slowModeToggle) slowMode = !slowMode;
 
@@ -119,6 +132,9 @@ public class Actuation {
         packet.put("actual vel", flywheel.getVelocity());
         updateTelemetry();
     }
+    public static double getFlywheel() {
+        return flywheel.getVelocity();
+    }
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {
         flywheelSpeed = flywheel.getVelocity();
         if (Math.abs(flywheelSpeed - targetVelocity) <= 20) {
@@ -139,9 +155,35 @@ public class Actuation {
         }
     }
 
-    public static void runTransfer(boolean control) {
+    public static void runTransfer(boolean control, boolean shooting) {
         if (control) {
-            transfer.setPower(ActuationConstants.Intake.transferSpeed);
+            if (!shooting) {
+                if (!senseArtifact()) {
+                    transfer.setPower(ActuationConstants.Intake.transferSpeed);
+                } else {
+                    transfer.setPower(-0.1*ActuationConstants.Intake.transferSpeed);
+                    setFlywheel(-670);
+                }
+            } else {
+                transfer.setPower(ActuationConstants.Intake.transferSpeed);
+            }
+        }
+        else {
+            transfer.setPower(0.0);
+        }
+    }
+
+    public static void runTransfer(boolean control, boolean shooting, double speed) {
+        if (control) {
+            if (!shooting) {
+                if (!senseArtifact()) {
+                    transfer.setPower(speed);
+                } else {
+                    transfer.setPower(-0.1 * speed);
+                }
+            } else {
+                transfer.setPower(speed);
+            }
         }
         else {
             transfer.setPower(0.0);
@@ -152,15 +194,29 @@ public class Actuation {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            flywheel.setVelocity(-670);
         }
     }
 
+    public static boolean senseArtifact() {
+        NormalizedRGBA sense = colorSensor.getNormalizedColors();
+        int[] colors = new int[3];
+        colors[0] = (int) (sense.red * 255);
+        colors[1] = (int) (sense.green * 255);
+        colors[2] = (int) (sense.blue * 255);
+
+        float[] hsvValues = new float[3];
+        Color.RGBToHSV(colors[0], colors[1], colors[2], hsvValues);
+
+        telemetry.addData("Color Sensor", hsvValues[2]);
+
+        return hsvValues[2] > 0.0;
+    }
 
     public static void setupLimelight(int pipeline) {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
+
     public static void setPipeline(int pipeline) {
         /*
         / Pipeline  Function
@@ -171,49 +227,9 @@ public class Actuation {
 
         limelight.pipelineSwitch(pipeline);
     }
+
     public static LLResult getLLResult() {
         return limelight.getLatestResult();
-    }
-
-    /**
-     * Determines the robot angle, flywheel angular velocity, and the flywheel angle to launch from the current position
-     * @param team team color
-     * @return array containing the robot angle, flywheel angular velocity, and the flywheel angle
-     */
-    public static double[] launchVals(String team) {
-        Point goal;
-        if (team.equalsIgnoreCase("blue")) {
-            goal = FieldConstants.Goal.blue;
-        } else {
-            goal = FieldConstants.Goal.red;
-        }
-
-        OttoCore.updatePosition();
-        Pose position = new Pose(OttoCore.robotPose); // Get current position
-
-        // Distance in inches
-        double dist = Math.sqrt(Math.pow(position.x - goal.x, 2) + Math.pow(position.x - goal.x, 2));
-        dist = dist/39.37; // Convert from inches to meters
-
-        // Angle between robot and goal
-        double angle = Math.atan2(position.x-goal.x, position.y-goal.y);
-
-        // Change in height from launcher to goal
-        double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
-
-//        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0; // Optimal flywheel angle
-        double flywheelAngle = 55.0 * Math.PI/180; // Angle of the flywheel
-
-        // Linear velocity of the flywheel
-        double linVel = Math.sqrt(-9.8*Math.pow(dist, 2.0) / ((height-dist*Math.tan(flywheelAngle))*(2.0*Math.pow(Math.cos(flywheelAngle), 2.0))));
-
-        // Convert from linear to angular velocity
-        double angVel = linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI;
-
-        telemetry.addData("Angular Velocity", angVel);
-        telemetry.addData("Robot Angle", angle);
-
-        return new double[] {angle, angVel, flywheelAngle};
     }
 
     public static void updateTelemetry() {

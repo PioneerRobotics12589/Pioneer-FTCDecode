@@ -29,9 +29,8 @@ public class AprilTagDetection {
      */
     public static LLResultTypes.FiducialResult getMotif(List<LLResultTypes.FiducialResult> fiducials) {
         for (LLResultTypes.FiducialResult fid : fiducials) {
-            int id = fid.getFiducialId();
-            if (id == 21 || id == 22 || id == 23) {
-                artifactPattern = id;
+            if (isMotif(fid)) {
+                artifactPattern = fid.getFiducialId();
                 return fid;
             }
         }
@@ -39,7 +38,7 @@ public class AprilTagDetection {
     }
 
     /**
-     * Determines the motif of the specified goal
+     * Determines the fiducial of the specified goal
      * @param fiducials list of fiducials detected in the image
      * @return motif fiducial (21=GPP 22=PGP 23=PPG)
      */
@@ -61,9 +60,44 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    public static double[] getFiducialPosition(LLResultTypes.FiducialResult fiducial) {
+    /**
+     * Determines if a fiducial is on the Obelisk
+     * @param fid fiducial
+     * @return true: fiducial is the motif, false otherwise
+     */
+    public static boolean isMotif(LLResultTypes.FiducialResult fid) {
+        int id = fid.getFiducialId();
+        return id == 21 || id == 22 || id == 23;
+    }
+
+    /**
+     * Determines the global position of the robot based on fiducial positions
+     * @param fiducial located fiducial
+     * @return Estimated global robot position
+     */
+    public static double[] getGlobalPosition(LLResultTypes.FiducialResult fiducial) {
         // Jayden, you got this...
         // No I don't bro := (
         return new double[0];
+    }
+
+    /**
+     * Updates the odometry based on the new estimated positions by the fiducials
+     */
+    public static void visualOdometryUpdate() {
+        Pose newRobotPose = new Pose(0, 0, OttoCore.robotPose.heading);
+
+        int fidCount = 0;
+        for (LLResultTypes.FiducialResult fid : getFiducials()) {
+            if (!isMotif(fid)) {
+                double[] posRel = getGlobalPosition(fid);
+                newRobotPose.x += posRel[0];
+                newRobotPose.y += posRel[1];
+                fidCount++;
+            }
+        }
+        if (fidCount != 0) {
+            OttoCore.robotPose = new Pose(newRobotPose.x / fidCount, newRobotPose.y / fidCount, OttoCore.robotPose.heading);
+        }
     }
 }

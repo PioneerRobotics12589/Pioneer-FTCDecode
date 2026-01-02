@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.ArtifactDetection;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 @TeleOp(name="Artifact Tracking Test")
