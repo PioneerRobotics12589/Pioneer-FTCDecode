@@ -23,6 +23,8 @@ public class AutoMovement {
 //        System.out.println("Ryan Pergola mad cute :)");
 //    }
 
+    public static final double closestLaunchDist = 30;
+
     /**
      * Determines the robot angle, flywheel angular velocity, and the flywheel angle to launch from the current position
      * Desmos Graph: <a href="https://www.desmos.com/calculator/strglw28yh">...</a>
@@ -74,9 +76,9 @@ public class AutoMovement {
         // Turn to goal
         OttoCore.updatePosition();
         Pose targetPose = new Pose(OttoCore.robotPose.x, OttoCore.robotPose.y, angleRobot);
-        if (!(OttoCore.robotPose.withinRange(targetPose, 0.2, 0.2, Math.toRadians(2)))) {
-            OttoCore.robotPose.heading = correctAngle(targetPose.heading, OttoCore.robotPose.heading);
-            OttoCore.moveTowards(targetPose, 0.3, 0.3);
+        if (!(OttoCore.robotPose.withinRange(targetPose, 0.2, 0.2, Math.toRadians(1)))) {
+            OttoCore.robotPose.heading = wrapAngle(targetPose.heading, OttoCore.robotPose.heading);
+            OttoCore.moveTowards(targetPose, 0.3, 0.8);
             OttoCore.updatePosition();
         }
 
@@ -131,7 +133,7 @@ public class AutoMovement {
         OttoCore.updatePosition();
         Pose targetPose = new Pose(OttoCore.robotPose.x, OttoCore.robotPose.y, angleRobot);
         while (!(OttoCore.robotPose.withinRange(targetPose, 10, 10, Math.toRadians(2)))) {
-            OttoCore.robotPose.heading = correctAngle(targetPose.heading, OttoCore.robotPose.heading);
+            OttoCore.robotPose.heading = wrapAngle(targetPose.heading, OttoCore.robotPose.heading);
             OttoCore.moveTowards(targetPose, 0.5, 0.8);
             OttoCore.updatePosition();
         }
@@ -234,7 +236,7 @@ public class AutoMovement {
         telemetry.addData("Flywheel Velocity", w_f);
 
         if (!(OttoCore.robotPose.withinRange(tp, 0.2, 0.2, Math.toRadians(2)))) {
-            OttoCore.robotPose.heading = correctAngle(tp.heading, OttoCore.robotPose.heading);
+            OttoCore.robotPose.heading = wrapAngle(tp.heading, OttoCore.robotPose.heading);
             OttoCore.moveTowards(targetPose, 0.3, 0.3);
             OttoCore.updatePosition();
 
@@ -322,12 +324,12 @@ public class AutoMovement {
 
         if (Math.abs(OttoCore.robotPose.heading - theta_r) > Math.toRadians(2)) {
             // Corrects robot heading to take the shortest angle
-            OttoCore.robotPose.heading = correctAngle(theta_r, OttoCore.robotPose.heading);
+            OttoCore.robotPose.heading = wrapAngle(theta_r, OttoCore.robotPose.heading);
 
             double rotSignal = rotational.calculateSignal(theta_r, OttoCore.robotPose.heading);
             double clampedRot = Math.max(-1, Math.min(1, rotSignal));
 
-            Actuation.drive(move, clampedRot, strafe);
+//            Actuation.drive(move, clampedRot, strafe);
             telemetry.addData("Rotation signal", clampedRot);
         }
 
@@ -353,8 +355,8 @@ public class AutoMovement {
 
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
-        double kMult = 0.655033; // Flywheel tunable multiplier
-        double kBias = 674.65202; // Flywheel tunable bias
+        double kMult = 0.868718; // Flywheel tunable multiplier
+        double kBias = 294.87254; // Flywheel tunable bias
 
         flyVel = (int) (flyVel * kMult + kBias);
         return flyVel;
@@ -434,6 +436,8 @@ public class AutoMovement {
             closest.x = x2;
         }
 
+        closest.x = Math.min(closestLaunchDist, Math.max(closest.x, -closestLaunchDist));
+
         closest.x = Math.max(minX, Math.min(maxX, closest.x));
 
         closest.y = Math.abs(closest.x) - 1.25;
@@ -445,14 +449,29 @@ public class AutoMovement {
      * Launches artifacts
      */
     public static void launch() throws InterruptedException {
-        sleep(1500);
+        sleep(1800);
 
         // Push artifacts into flywheel
         Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed*0.8);
         Actuation.transfer.setPower(ActuationConstants.Intake.transferSpeed*0.8);
 
         // Launch for 1.5s
-        sleep(2000);
+        sleep(2200);
+
+        Actuation.setFlywheel(0);
+        Actuation.runIntake(false);
+        Actuation.runTransfer(false, true);
+    }
+
+    public static void launch(int speedup_millis) throws InterruptedException {
+        sleep(speedup_millis);
+
+        // Push artifacts into flywheel
+        Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed*0.8);
+        Actuation.transfer.setPower(ActuationConstants.Intake.transferSpeed*0.8);
+
+        // Launch for 1.5s
+        sleep(2200);
 
         Actuation.setFlywheel(0);
         Actuation.runIntake(false);
@@ -477,7 +496,7 @@ public class AutoMovement {
      * @param current current angle
      * @return new current angle
      */
-    public static double correctAngle(double target, double current) {
+    public static double wrapAngle(double target, double current) {
         double newCurrent = current;
         if (target > current) {
             while (Math.abs(target - newCurrent) > Math.toRadians(180)) {

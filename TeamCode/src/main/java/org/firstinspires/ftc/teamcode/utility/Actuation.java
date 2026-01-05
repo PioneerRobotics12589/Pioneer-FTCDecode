@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -33,6 +34,7 @@ public class Actuation {
     public static DcMotor intake, transfer;
 
     public static DcMotorEx flywheel;
+    public static CRServo turret;
 
     public static NormalizedColorSensor colorSensor;
     private static double flywheelSpeed = 0.0;
@@ -82,7 +84,10 @@ public class Actuation {
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
-            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
+            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        }
+        if (map.crservo.contains("turret")) {
+            turret = map.get(CRServo.class, "turret");
         }
 
         try {
@@ -92,10 +97,10 @@ public class Actuation {
         }
 
 
-        if (map.getAllNames(Limelight3A.class).contains("limelight")) {
-            limelight = map.get(Limelight3A.class, "limelight");
-            setupLimelight(0);
-        }
+//        if (map.getAllNames(Limelight3A.class).contains("limelight")) {
+//            limelight = map.get(Limelight3A.class, "limelight");
+//            setupLimelight(0);
+//        }
 
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
@@ -125,7 +130,7 @@ public class Actuation {
         slowModeToggle = toggleSlowMode;
     }
     public static void setFlywheel(int velocity) {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.pidCoeffs);
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
         flywheel.setVelocity(velocity);
         flywheelSpeed = flywheel.getVelocity();
         packet.put("target vel", velocity);
@@ -154,7 +159,6 @@ public class Actuation {
             intake.setPower(0.0);
         }
     }
-
     public static void runTransfer(boolean control, boolean shooting) {
         if (control) {
             if (!shooting) {
@@ -172,7 +176,6 @@ public class Actuation {
             transfer.setPower(0.0);
         }
     }
-
     public static void runTransfer(boolean control, boolean shooting, double speed) {
         if (control) {
             if (!shooting) {
@@ -190,13 +193,17 @@ public class Actuation {
         }
     }
 
+    public static void setTurret(double angle) {
+
+    }
+
     public static void reverse(boolean control) {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            flywheel.setVelocity(-670);
         }
     }
-
     public static boolean senseArtifact() {
         NormalizedRGBA sense = colorSensor.getNormalizedColors();
         int[] colors = new int[3];
@@ -211,12 +218,10 @@ public class Actuation {
 
         return hsvValues[2] > 0.0;
     }
-
     public static void setupLimelight(int pipeline) {
         limelight.pipelineSwitch(pipeline);
         limelight.start();
     }
-
     public static void setPipeline(int pipeline) {
         /*
         / Pipeline  Function
@@ -227,11 +232,9 @@ public class Actuation {
 
         limelight.pipelineSwitch(pipeline);
     }
-
     public static LLResult getLLResult() {
         return limelight.getLatestResult();
     }
-
     public static void updateTelemetry() {
         dashboard.sendTelemetryPacket(packet);
         packet = new TelemetryPacket();

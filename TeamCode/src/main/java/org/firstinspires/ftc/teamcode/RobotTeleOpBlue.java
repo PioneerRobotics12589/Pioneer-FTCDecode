@@ -1,0 +1,92 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+
+@TeleOp(name = "Awe(sigma) Sauce Blue")
+@Config
+public class RobotTeleOpBlue extends OpMode {
+    private boolean trackPurple = false;
+    private boolean trackGreen = false;
+
+    public void init() {
+        Actuation.setup(hardwareMap, telemetry);
+//        OttoCore.robotPose = new Pose(-7.4, -45, Math.toRadians(-92.0));
+    }
+
+    public void loop() {
+        telemetry.addLine("X=" + OttoCore.robotPose.x + " Y=" + OttoCore.robotPose.y + "θ=" + Math.toDegrees(OttoCore.robotPose.heading));
+
+        boolean autoLaunch = gamepad1.cross;
+        boolean autoLaunch1 = gamepad1.circle;
+
+        // Toggles
+        if (gamepad1.squareWasPressed()) {
+            trackPurple = !trackPurple;
+            if (trackPurple) {
+                gamepad1.setLedColor(255, 0, 255, 3000);
+                trackGreen = false;
+            }
+        } else if (gamepad1.triangleWasPressed()) {
+            trackGreen = !trackGreen;
+            if (trackGreen) {
+                gamepad1.setLedColor(0, 255, 0, 3000);
+                trackPurple = false;
+            }
+        }
+
+
+        if (trackPurple) {
+            // Track purple artifacts (while moving)
+            AutoMovement.alignToArtifact("purple", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
+            telemetry.addLine("Tracking Purple");
+
+        } else if (trackGreen) {
+            // Track green artifacts (while moving)
+            AutoMovement.alignToArtifact("green", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
+            telemetry.addLine("Tracking Green");
+
+        } else if (autoLaunch) {
+            // Auto launch artifacts (while stationary)
+            gamepad1.setLedColor(255, 255, 0, 3000);
+            telemetry.addLine("Tracking Goal");
+            AutoMovement.autoLaunchStationary("blue", gamepad1.right_trigger > 0.5);
+
+        } else if (autoLaunch1) {
+            // Auto launch artifacts (while moving)
+            telemetry.addLine("Tracking Goal");
+            AutoMovement.autoLaunchMoving("blue", gamepad1.left_stick_y, -gamepad1.left_stick_x);
+
+        } else {
+            Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
+        }
+
+        if (gamepad1.right_bumper) {
+            // Speed up flywheel to shoot from the long launch zone
+            Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
+            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
+
+        } else if (gamepad1.left_bumper) {
+            // Speed up flywheel to shoot from the short launch zone
+            Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
+            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.shortLaunch);
+
+        } else if (!autoLaunch1 && !autoLaunch){
+            Actuation.setFlywheel(0);
+            Actuation.checkFlywheelSpeed(gamepad1, 0);
+        }
+
+        Actuation.runIntake(gamepad1.right_trigger > 0.5);
+        Actuation.runTransfer(gamepad1.right_trigger > 0.5, gamepad1.right_bumper || gamepad1.left_bumper || autoLaunch || autoLaunch1);
+        Actuation.reverse(gamepad1.left_trigger > 0.5);
+        Actuation.senseArtifact();
+        OttoCore.updatePosition();
+        telemetry.update();
+    }
+}

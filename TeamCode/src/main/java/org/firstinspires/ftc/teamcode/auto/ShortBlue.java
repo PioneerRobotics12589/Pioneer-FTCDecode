@@ -16,19 +16,18 @@ public class ShortBlue extends LinearOpMode {
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
 
-        Pose start = new Pose(48.6, -52, Math.toRadians(-55.6));
-        Pose spike1A = new Pose(9.3, -28, Math.toRadians(-92.0));
-        Pose spike1B = new Pose(9.3, -52.5, Math.toRadians(-94));
-        Pose spike2A = new Pose(-15.5, -28, Math.toRadians(-94.0));
-        Pose spike2B = new Pose(-15.5, -52, Math.toRadians(-96.0));
-        Pose gatePose = new Pose(-7.4, -49, Math.toRadians(-92.0));
-
-        Pose launchPose = new Pose(16.0, -17.6, Math.toRadians(-50.3));
+        Pose start = new Pose(52, 45, Math.toRadians(52.6));
+        Pose spike1A = new Pose(10, 27, Math.toRadians(92.0));
+        Pose spike1B = new Pose(10, 50, Math.toRadians(92.0));
+        Pose spike2A = new Pose(-15, 27, Math.toRadians(94.0));
+        Pose spike2B = new Pose(-15, 50, Math.toRadians(94.0));
+        Pose gatePose = new Pose(0, 40.0, Math.toRadians(0.0));
+        Pose launchPose = new Pose(12.0, 12, Math.toRadians(40.0)); // Make farther back
 
         Trajectory preloads = new Trajectory(start);
 
         Trajectory launch = new Trajectory()
-                .action(() -> AutoMovement.autoFlywheelVel(launchPose, FieldConstants.Goal.blue))
+                .action(() -> Actuation.setFlywheel(1600))
                 .lineTo(new Pose(launchPose.x, launchPose.y, AutoMovement.goalRotation(launchPose, FieldConstants.Goal.blue)))
                 .action(() -> {
                     try {
@@ -40,19 +39,11 @@ public class ShortBlue extends LinearOpMode {
 
         Trajectory spike1 = new Trajectory()
                 .lineTo(spike1A)
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true, false, ActuationConstants.Intake.transferSpeed*0.5))
-                .lineTo(spike1B, 0.4, 0.5)
-                .action(() -> Actuation.runTransfer(false, false))
-                .action(() -> Actuation.runIntake(false));
+                .lineToIntake(spike1B, 0.6, 0.7);
 
         Trajectory spike2 = new Trajectory()
                 .lineTo(spike2A)
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true, false, ActuationConstants.Intake.transferSpeed*0.3))
-                .lineTo(spike2B, 0.4, 0.5)
-                .action(() -> Actuation.runTransfer(false, false))
-                .action(() -> Actuation.runIntake(false));
+                .lineToIntake(spike2B, 0.6, 0.7);
 
         Trajectory gate = new Trajectory()
                 .lineTo(gatePose);

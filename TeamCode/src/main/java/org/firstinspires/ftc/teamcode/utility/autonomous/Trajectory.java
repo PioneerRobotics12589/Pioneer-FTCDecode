@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.rotational;
+
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
@@ -55,6 +57,14 @@ public class Trajectory {
         movements.add(() -> runLineTo(targetPose, moveSpeed, turnSpeed));
         return this;
     }
+    public Trajectory lineThrough(Pose targetPose, double moveSpeed) {
+        movements.add(() -> runLineThrough(targetPose, moveSpeed));
+        return this;
+    }
+    public Trajectory lineToIntake(Pose targetPose, double moveSpeed, double turnSpeed) {
+        movements.add(() -> runLineToIntake(targetPose, moveSpeed, turnSpeed));
+        return this;
+    }
 
     /**
      * Specifies an action for the robot to carry out
@@ -97,7 +107,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
 //        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.5));
 
         while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
             OttoCore.updatePosition();
@@ -116,7 +126,105 @@ public class Trajectory {
             if (vel != 0 || rotVel != 0) hasRun = true;
 
 //            withinField = OttoCore.robotPose.withinRange(center, 36, 36, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.75));
         }
+
+        Actuation.drive(0.0, 0.0, 0.0);
+    }
+
+    private void runLineThrough(Pose targetPose, double mSpeed) {
+        if (targetPose.heading > OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading += 2 * Math.PI;
+            }
+        } else if (targetPose.heading < OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading -= 2 * Math.PI;
+            }
+        }
+
+        double vel = 1;
+        double rotVel = 1;
+
+        boolean hasRun = false;
+
+        Pose center = new Pose(0, 0, 0);
+//        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.5));
+
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
+            OttoCore.updatePosition();
+            OttoCore.displayPosition();
+
+            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.packet.put("vel", vel);
+            Actuation.packet.put("rot vel", rotVel);
+            Actuation.updateTelemetry();
+
+            double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading);
+            double moveSignal = mSpeed*Math.cos(targetPose.heading-OttoCore.robotPose.heading);
+            double strafeSignal = mSpeed*Math.sin(targetPose.heading-OttoCore.robotPose.heading);
+
+            double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
+            double clampMove = Math.max(-1.0, Math.min(1, moveSignal));
+            double clampStrafe = Math.max(-1.0, Math.min(1, strafeSignal));
+
+            Actuation.drive(clampMove, clampRot, clampStrafe);
+
+            Pose robot_vel = OttoCore.getVelocity();
+            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
+            rotVel = robot_vel.heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
+
+//            withinField = OttoCore.robotPose.withinRange(center, 36, 36, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.75));
+        }
+    }
+
+    private void runLineToIntake(Pose targetPose, double mSpeed, double tSpeed) {
+        if (targetPose.heading > OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading += 2 * Math.PI;
+            }
+        } else if (targetPose.heading < OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading -= 2 * Math.PI;
+            }
+        }
+
+        double vel = 1;
+        double rotVel = 1;
+
+        boolean hasRun = false;
+
+        Pose center = new Pose(0, 0, 0);
+//        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(1.5));
+
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
+            Actuation.runTransfer(true, false);
+            Actuation.runIntake(true);
+            OttoCore.updatePosition();
+            OttoCore.displayPosition();
+
+            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.packet.put("vel", vel);
+            Actuation.packet.put("rot vel", rotVel);
+            Actuation.updateTelemetry();
+
+            OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
+
+            Pose robot_vel = OttoCore.getVelocity();
+            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
+            rotVel = robot_vel.heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
+
+//            withinField = OttoCore.robotPose.withinRange(center, 36, 36, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.75));
+        }
+
+        Actuation.drive(0.0, 0.0, 0.0);
+        Actuation.runTransfer(false, false);
+        Actuation.runIntake(false);
     }
 }
