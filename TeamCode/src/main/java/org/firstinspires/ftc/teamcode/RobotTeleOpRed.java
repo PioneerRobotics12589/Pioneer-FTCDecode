@@ -18,7 +18,7 @@ public class RobotTeleOpRed extends OpMode {
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
-        OttoCore.robotPose = new Pose(-7.4, -45, Math.toRadians(-92.0)); // Red Gate
+//        OttoCore.robotPose = new Pose(-7.4, -45, Math.toRadians(-92.0)); // Red Gate
     }
 
     public void loop() {

@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
@@ -31,10 +32,9 @@ public class Actuation {
 
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
 
-    public static DcMotor intake, transfer;
+    public static DcMotor intake, transfer, turret;
 
-    public static DcMotorEx flywheel;
-    public static CRServo turret;
+    public static DcMotorEx flywheel, flywheel1, flywheel2;
 
     public static NormalizedColorSensor colorSensor;
     private static double flywheelSpeed = 0.0;
@@ -79,15 +79,24 @@ public class Actuation {
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.dcMotor.contains("flywheel")) {
-            flywheel = map.get(DcMotorEx.class, "flywheel");
-            flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
-            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        if (map.dcMotor.contains("flywheel1")) {
+            flywheel1 = map.get(DcMotorEx.class, "flywheel1");
+            flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            flywheel1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
+            flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
         }
-        if (map.crservo.contains("turret")) {
-            turret = map.get(CRServo.class, "turret");
+        if (map.dcMotor.contains("flywheel2")) {
+            flywheel2 = map.get(DcMotorEx.class, "flywheel2");
+            flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+            flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        }
+
+        if (map.dcMotor.contains("turret")) {
+            turret = map.get(DcMotor.class, "turret");
+            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         try {
@@ -130,18 +139,20 @@ public class Actuation {
         slowModeToggle = toggleSlowMode;
     }
     public static void setFlywheel(int velocity) {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-        flywheel.setVelocity(velocity);
-        flywheelSpeed = flywheel.getVelocity();
+        flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        flywheel1.setVelocity(velocity);
+        flywheel2.setVelocity(velocity);
         packet.put("target vel", velocity);
-        packet.put("actual vel", flywheel.getVelocity());
+        packet.put("actual vel", flywheel1.getVelocity());
+        packet.put("actual vel", flywheel2.getVelocity());
         updateTelemetry();
     }
     public static double getFlywheel() {
-        return flywheel.getVelocity();
+        return flywheel1.getVelocity();
     }
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {
-        flywheelSpeed = flywheel.getVelocity();
+        flywheelSpeed = flywheel1.getVelocity();
         if (Math.abs(flywheelSpeed - targetVelocity) <= 20) {
             gamepad1.setLedColor(0, 1, 0, 100);
         } else {
@@ -193,8 +204,16 @@ public class Actuation {
         }
     }
 
-    public static void setTurret(double angle) {
+    public static void turretMoveTowards(double angle) {
+        double turretPos = turret.getCurrentPosition();
+        double turretAngle = turretPos / ActuationConstants.Launcher.turretTicks * (2 * Math.PI);
 
+        AutoMovement.wrapAngle(angle, turretAngle);
+
+        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(angle, turretAngle);
+        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
+
+        turret.setPower(clampedTurret);
     }
 
     public static void reverse(boolean control) {

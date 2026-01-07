@@ -37,10 +37,13 @@ public class ActuationConstants {
 
     @Config
     public static class Launcher {
+        // Two Motors: P = 40, I = 3, D = 0
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(380, 40, 20, 0);
 
         public static double kp = 0, ki = 0, kd = 0;
-        public static PIDFCoefficients turretPID = new PIDFCoefficients(kp, ki, kd, 0);
+        public static PIDController turretPID = new PIDController(kp, ki, kd);
+
+        public static long turretTicks = 2000;
 
         public static int shortLaunch = 1600;
         public static int longLaunch = 1800;
