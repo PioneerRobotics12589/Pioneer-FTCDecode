@@ -20,7 +20,7 @@ public class ActuationConstants {
         public static final double ticksPerRev = 2000;
 
         public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
-        public static double track_width = 8.8; // inches distance between odo wheels
+        public static double track_width = 8.711961409526124; // inches distance between odo wheels
         public static double forward_offset = 6.75; // inches distance from center of robot to perp wheel
 
         public static double launcherHeight = 0.25; // meters height from ground to launcher

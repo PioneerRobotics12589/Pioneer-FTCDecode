@@ -70,33 +70,37 @@ public class OttoCore {
 
         // Change in angle
         double delta_theta = ((delta_ticks_left - delta_ticks_right) / ActuationConstants.Drivetrain.track_width);
+
         // Change in the center position of the robot relative to itself (just the average of the parallel wheel diffs)
         // aka Vertical displacement
         double delta_center = ((delta_ticks_left + delta_ticks_right) / 2);
-        
 
         // Change in the perpendicular position of the robot relative to itself
         // aka Horizontal displacement
         double delta_perp = delta_ticks_back - (ActuationConstants.Drivetrain.forward_offset * delta_theta); // The other formula is negative of this
 
         // We divide each differential by ticks per revolution and multiply by the wheel circumference in order to account for real-world distance
-        delta_theta = delta_theta / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
-        delta_center = delta_center / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
-        delta_perp = delta_perp / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
+//        delta_theta = delta_theta / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
+//        delta_center = delta_center / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
+//        delta_perp = delta_perp / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
 
         double dx = 0;
         double dy = 0;
-        if (delta_theta != 0) { // Accounting for division by zero
-            dx = (delta_center * (Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                  + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
-
-            dy = (delta_center * (Math.sin(robotPose.heading) * Math.sin(delta_theta) + Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                  + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
-        }
-        else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
+//        if (delta_theta != 0) { // Accounting for division by zero
+//            dx = (delta_center * (Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta)))
+//                  + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+//
+//            dy = (delta_center * (Math.sin(robotPose.heading) * Math.sin(delta_theta) + Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta)))
+//                  + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+//        }
+//        else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
             dx = delta_center * Math.cos(robotPose.heading) - delta_perp * Math.sin(robotPose.heading);
             dy = delta_center * Math.sin(robotPose.heading) + delta_perp * Math.cos(robotPose.heading);
-        }
+//        }
+
+        dx = dx / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
+        dy = dy / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
+        delta_theta = delta_theta / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
 
         // Update the robots position
         robotPose.x -= dx;
