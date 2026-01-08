@@ -18,7 +18,6 @@ public class ActuationConstants {
     @Config
     public static class Drivetrain {
         public static final double ticksPerRev = 2000;
-
         public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
         public static double track_width = 8.711961409526124; // inches distance between odo wheels
         public static double forward_offset = 6.75; // inches distance from center of robot to perp wheel
@@ -26,6 +25,9 @@ public class ActuationConstants {
         public static double launcherHeight = 0.25; // meters height from ground to launcher
         public static double flwheelRad = 0.1; // meters flywheel radius
 
+        public static double scale;
+        public static double centerMultiplier;
+        public static double perpendicularMultiplier;
     }
 
     @Config
@@ -44,6 +46,8 @@ public class ActuationConstants {
         public static PIDController turretPID = new PIDController(kp, ki, kd);
 
         public static long turretTicks = 2000;
+        public static double turretRatio = 1.0/10.0; // 1:10 gear ratio
+        public static double turretMaxAngle = 2 * Math.PI; // 360 degrees for both rotations
 
         public static int shortLaunch = 1600;
         public static int longLaunch = 1800;
