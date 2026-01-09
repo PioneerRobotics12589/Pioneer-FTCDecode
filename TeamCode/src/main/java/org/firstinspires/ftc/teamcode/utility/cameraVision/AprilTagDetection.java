@@ -55,9 +55,21 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    public static double[] getGlobalPosition(LLResultTypes.FiducialResult fiducial) {
+    public static double[] getGlobalPosition(List<LLResultTypes.FiducialResult> fiducials) {
         // Jayden, you got this...
-        double[] position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
+        //position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
+        double sumX = 0, sumY = 0;
+        int numberOfFids = 0;
+
+        for(LLResultTypes.FiducialResult fiducial : fiducials){
+            int id = fiducial.getFiducialId();
+            if(id != 20 && id != 24) continue;
+            sumX += fiducial.getRobotPoseFieldSpace().getPosition().x;
+            sumY += fiducial.getRobotPoseFieldSpace().getPosition().y;
+            numberOfFids++;
+        }
+
+        double[] position = {(sumX/numberOfFids) * 39.3701, (sumY/numberOfFids) * 39.3701};
         return position;
     }
 }

@@ -30,13 +30,9 @@ public class CameraTest extends OpMode {
         LLResult result = limelight.getLatestResult();
         if(result != null && result.isValid()){
             List<LLResultTypes.FiducialResult> fids = result.getFiducialResults();
-
-            for (LLResultTypes.FiducialResult fiducial : fids) {
-                int id = fiducial.getFiducialId();
-                double[] position = AprilTagDetection.getGlobalPosition(fiducial);
-                telemetry.addData("X relative to field center", position[0]);
-                telemetry.addData("Y relative to field center", position[1]);
-            }
+            double[] position = AprilTagDetection.getGlobalPosition(fids);
+            telemetry.addData("X relative to field center", position[0]);
+            telemetry.addData("Y relative to field center", position[1]);
         }
 
         telemetry.update();
