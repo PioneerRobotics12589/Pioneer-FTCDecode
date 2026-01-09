@@ -1,16 +1,10 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
-import com.qualcomm.hardware.limelightvision.LLFieldMap;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
-import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTagDetection {
@@ -29,8 +23,9 @@ public class AprilTagDetection {
      */
     public static LLResultTypes.FiducialResult getMotif(List<LLResultTypes.FiducialResult> fiducials) {
         for (LLResultTypes.FiducialResult fid : fiducials) {
-            if (isMotif(fid)) {
-                artifactPattern = fid.getFiducialId();
+            int id = fid.getFiducialId();
+            if (id == 21 || id == 22 || id == 23) {
+                artifactPattern = id;
                 return fid;
             }
         }
@@ -38,7 +33,7 @@ public class AprilTagDetection {
     }
 
     /**
-     * Determines the fiducial of the specified goal
+     * Determines the motif of the specified goal
      * @param fiducials list of fiducials detected in the image
      * @return motif fiducial (21=GPP 22=PGP 23=PPG)
      */
@@ -60,44 +55,9 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    /**
-     * Determines if a fiducial is on the Obelisk
-     * @param fid fiducial
-     * @return true: fiducial is the motif, false otherwise
-     */
-    public static boolean isMotif(LLResultTypes.FiducialResult fid) {
-        int id = fid.getFiducialId();
-        return id == 21 || id == 22 || id == 23;
-    }
-
-    /**
-     * Determines the global position of the robot based on fiducial positions
-     * @param fiducial located fiducial
-     * @return Estimated global robot position
-     */
     public static double[] getGlobalPosition(LLResultTypes.FiducialResult fiducial) {
         // Jayden, you got this...
-        // No I don't bro := (
-        return new double[0];
-    }
-
-    /**
-     * Updates the odometry based on the new estimated positions by the fiducials
-     */
-    public static void visualOdometryUpdate() {
-        Pose newRobotPose = new Pose(0, 0, OttoCore.robotPose.heading);
-
-        int fidCount = 0;
-        for (LLResultTypes.FiducialResult fid : getFiducials()) {
-            if (!isMotif(fid)) {
-                double[] posRel = getGlobalPosition(fid);
-                newRobotPose.x += posRel[0];
-                newRobotPose.y += posRel[1];
-                fidCount++;
-            }
-        }
-        if (fidCount != 0) {
-            OttoCore.robotPose = new Pose(newRobotPose.x / fidCount, newRobotPose.y / fidCount, OttoCore.robotPose.heading);
-        }
+        double[] position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
+        return position;
     }
 }

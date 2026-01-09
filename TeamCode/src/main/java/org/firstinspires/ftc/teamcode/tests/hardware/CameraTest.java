@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
 
 import java.util.List;
 
@@ -31,10 +33,9 @@ public class CameraTest extends OpMode {
 
             for (LLResultTypes.FiducialResult fiducial : fids) {
                 int id = fiducial.getFiducialId();
-                double x = fiducial.getTargetXDegrees();
-                double y = fiducial.getTargetYDegrees();
-                double strafeDistance = fiducial.getRobotPoseTargetSpace().getPosition().y;
-                telemetry.addData("Fiducial: " + id, "is " + strafeDistance + " meters away");
+                double[] position = AprilTagDetection.getGlobalPosition(fiducial);
+                telemetry.addData("X relative to field center", position[0]);
+                telemetry.addData("Y relative to field center", position[1]);
             }
         }
 
