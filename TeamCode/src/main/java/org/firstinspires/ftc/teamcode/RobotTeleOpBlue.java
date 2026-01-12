@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 
@@ -56,12 +57,17 @@ public class RobotTeleOpBlue extends OpMode {
             // Auto launch artifacts (while stationary)
             gamepad1.setLedColor(255, 255, 0, 3000);
             telemetry.addLine("Tracking Goal");
-            AutoMovement.autoLaunchStationary("blue", gamepad1.right_trigger > 0.5);
+            AutoLaunch.updateAutoLaunchS("blue", OttoCore.robotPose);
+            AutoLaunch.rotate();
+            AutoLaunch.setFlywheel();
 
         } else if (autoLaunch1) {
             // Auto launch artifacts (while moving)
+            gamepad1.setLedColor(255, 255, 0, 3000);
             telemetry.addLine("Tracking Goal");
-            AutoMovement.autoLaunchMoving("blue", gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            AutoLaunch.updateAutoLaunchM("blue", OttoCore.robotPose);
+            AutoLaunch.rotate(gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            AutoLaunch.setFlywheel();
 
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);

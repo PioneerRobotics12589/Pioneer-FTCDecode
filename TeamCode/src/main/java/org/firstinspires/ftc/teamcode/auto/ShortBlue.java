@@ -28,7 +28,7 @@ public class ShortBlue extends LinearOpMode {
 
         Trajectory launch = new Trajectory()
                 .action(() -> Actuation.setFlywheel(1600))
-                .lineTo(new Pose(launchPose.x, launchPose.y, AutoMovement.goalRotation(launchPose, FieldConstants.Goal.blue)))
+                .lineTo(AutoMovement.closestShortLaunch("blue"))
                 .action(() -> {
                     try {
                         AutoMovement.launch();

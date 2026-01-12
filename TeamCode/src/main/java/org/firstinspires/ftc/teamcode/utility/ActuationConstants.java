@@ -20,14 +20,10 @@ public class ActuationConstants {
         public static final double ticksPerRev = 2000;
         public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
         public static double track_width = 8.711961409526124; // inches distance between odo wheels
-        public static double forward_offset = 6.75; // inches distance from center of robot to perp wheel
+        public static double forward_offset = 9.5; // inches distance from center of robot to perp wheel
 
         public static double launcherHeight = 0.25; // meters height from ground to launcher
         public static double flwheelRad = 0.1; // meters flywheel radius
-
-        public static double scale;
-        public static double centerMultiplier;
-        public static double perpendicularMultiplier;
     }
 
     @Config
@@ -48,6 +44,7 @@ public class ActuationConstants {
         public static long turretTicks = 2000;
         public static double turretRatio = 1.0/10.0; // 1:10 gear ratio
         public static double turretMaxAngle = 2 * Math.PI; // 360 degrees for both rotations
+        public static double turretOffset = -5; // Turret Offset from center of the robot
 
         public static int shortLaunch = 1600;
         public static int longLaunch = 1800;
@@ -60,17 +57,6 @@ public class ActuationConstants {
     public static class Intake {
         public static double intakeSpeed = -1.0;
         public static double transferSpeed = -1.0;
-    }
-
-    @Config
-    public static class ModelPID {
-        public static double kp_x = 0.0, ki_x = 0.0, kd_x = 0.0;
-        public static double kp_y = 0.0, ki_y = 0.0, kd_y = 0.0;
-        public static double kp_h = 0.0, ki_h = 0.0, kd_h = 0.0;
-
-        public static PIDController vX_PID = new PIDController(new PIDCoeffs(kp_x, ki_x, kd_x));
-        public static PIDController vY_PID = new PIDController(new PIDCoeffs(kp_y, ki_y, kd_y));
-        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_h, ki_h, kd_h));
     }
 
     @Config

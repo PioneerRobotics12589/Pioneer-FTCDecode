@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
@@ -23,7 +24,7 @@ public class RobotTeleOpRed extends OpMode {
 
     public void loop() {
         telemetry.addLine("X=" + OttoCore.robotPose.x + " Y=" + OttoCore.robotPose.y + "θ=" + Math.toDegrees(OttoCore.robotPose.heading));
-        telemetry.addData("Is in launch zone", AutoMovement.inLaunchZone());
+        telemetry.addData("Is in launch zone", AutoLaunch.inLaunchZone());
 
         boolean autoLaunch = gamepad1.cross;
         boolean autoLaunch1 = gamepad1.circle;
@@ -58,12 +59,16 @@ public class RobotTeleOpRed extends OpMode {
             // Auto launch artifacts (while stationary)
             gamepad1.setLedColor(255, 255, 0, 3000);
             telemetry.addLine("Tracking Goal");
-            AutoMovement.autoLaunchStationary("red", gamepad1.right_trigger > 0.5);
+            AutoLaunch.updateAutoLaunchS("red", OttoCore.robotPose);
+            AutoLaunch.rotate();
+            AutoLaunch.setFlywheel();
 
         } else if (autoLaunch1) {
             // Auto launch artifacts (while moving)
             telemetry.addLine("Tracking Goal");
-            AutoMovement.autoLaunchMoving("red", gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            AutoLaunch.updateAutoLaunchM("red", OttoCore.robotPose);
+            AutoLaunch.rotate(gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            AutoLaunch.setFlywheel();
 
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);

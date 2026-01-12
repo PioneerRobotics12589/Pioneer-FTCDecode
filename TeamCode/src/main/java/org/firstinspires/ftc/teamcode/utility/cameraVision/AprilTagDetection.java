@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.List;
 
@@ -55,21 +58,24 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    public static double[] getGlobalPosition(List<LLResultTypes.FiducialResult> fiducials) {
+    public static Pose getGlobalPosition(List<LLResultTypes.FiducialResult> fiducials) {
         // Jayden, you got this...
-        //position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
-        double sumX = 0, sumY = 0;
+//        double[] position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
+        double sumX = 0, sumY = 0, sumH = 0;
         int numberOfFids = 0;
 
-        for(LLResultTypes.FiducialResult fiducial : fiducials){
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if(id != 20 && id != 24) continue;
-            sumX += fiducial.getRobotPoseFieldSpace().getPosition().x;
-            sumY += fiducial.getRobotPoseFieldSpace().getPosition().y;
+            if (id != 20 && id != 24) continue;
+            sumX += fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701;
+            sumY += fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701;
+            sumH += (fiducial.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
             numberOfFids++;
         }
+        if (numberOfFids == 0) {
+            return new Pose(OttoCore.robotPose);
+        }
 
-        double[] position = {(sumX/numberOfFids) * 39.3701, (sumY/numberOfFids) * 39.3701};
-        return position;
+        return new Pose(sumX/numberOfFids, sumY/numberOfFids, sumH/numberOfFids);
     }
 }

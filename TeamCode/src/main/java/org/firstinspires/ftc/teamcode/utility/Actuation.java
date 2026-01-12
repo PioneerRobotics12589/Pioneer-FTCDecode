@@ -37,7 +37,6 @@ public class Actuation {
     public static DcMotorEx flywheel, flywheel1, flywheel2;
 
     public static NormalizedColorSensor colorSensor;
-    private static double flywheelSpeed = 0.0;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -85,7 +84,6 @@ public class Actuation {
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-            throw new RuntimeException("Flywheel Connected");
         }
 
 //        if (map.dcMotor.contains("flywheel1")) {
@@ -165,8 +163,7 @@ public class Actuation {
 //        return flywheel1.getVelocity();
     }
     public static void checkFlywheelSpeed(Gamepad gamepad1, int targetVelocity) {
-        flywheelSpeed = flywheel.getVelocity();
-        if (Math.abs(flywheelSpeed - targetVelocity) <= 20) {
+        if (Math.abs(flywheel.getVelocity() - targetVelocity) <= 20) {
             gamepad1.setLedColor(0, 1, 0, 100);
         } else {
             gamepad1.setLedColor(1, 0, 0, 100);
@@ -187,13 +184,13 @@ public class Actuation {
         if (control) {
             if (!shooting) {
                 if (!senseArtifact()) {
-                    transfer.setPower(ActuationConstants.Intake.transferSpeed);
+                    transfer.setPower(ActuationConstants.Intake.transferSpeed*0.6767);
                 } else {
-                    transfer.setPower(-0.1*ActuationConstants.Intake.transferSpeed);
+                    transfer.setPower(-0.1*ActuationConstants.Intake.transferSpeed*0.6767);
                     setFlywheel(-670);
                 }
             } else {
-                transfer.setPower(ActuationConstants.Intake.transferSpeed);
+                transfer.setPower(ActuationConstants.Intake.transferSpeed*0.6767);
             }
         }
         else {
@@ -216,37 +213,43 @@ public class Actuation {
             transfer.setPower(0.0);
         }
     }
-
     public static double getTurret() {
-        double turretPos = turret.getCurrentPosition();
-        return turretPos / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio;
+        OttoCore.updatePosition();
+        double turretAng = (double) turret.getCurrentPosition() / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio + OttoCore.robotPose.heading;
+        return turretAng % (2 * Math.PI);
     }
+
+    /**
+     * Rotates the turret to a global angle
+     * @param angle global angle
+     */
     public static void turretMoveTowards(double angle) {
+        OttoCore.updatePosition();
+        double ang_local = angle - OttoCore.robotPose.heading;
         double turretAngle = getTurret();
 
-        if (turretAngle > angle) {
-            while (Math.abs(turretAngle - angle) > Math.toRadians(180)) {
-                angle += 2 * Math.PI;
+        if (turretAngle > ang_local) {
+            while (Math.abs(turretAngle - ang_local) > Math.toRadians(180)) {
+                ang_local += 2 * Math.PI;
             }
-        } else if (turretAngle < angle) {
-            while (Math.abs(turretAngle - angle) > Math.toRadians(180)) {
-                angle -= 2 * Math.PI;
+        } else if (turretAngle < ang_local) {
+            while (Math.abs(turretAngle - ang_local) > Math.toRadians(180)) {
+                ang_local -= 2 * Math.PI;
             }
         }
 
         // Spin if the target is further than the maximum angle for either rotation
-        if (angle > ActuationConstants.Launcher.turretMaxAngle) {
-            angle = ActuationConstants.Launcher.turretMaxAngle - Math.toRadians(360);
-        } else if (angle < -ActuationConstants.Launcher.turretMaxAngle) {
-            angle = -ActuationConstants.Launcher.turretMaxAngle + Math.toRadians(360);
+        if (ang_local > ActuationConstants.Launcher.turretMaxAngle) {
+            ang_local -= Math.toRadians(360);
+        } else if (ang_local < -ActuationConstants.Launcher.turretMaxAngle) {
+            ang_local += Math.toRadians(360);
         }
 
-        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(angle, turretAngle);
+        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(ang_local, turretAngle);
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 
         turret.setPower(clampedTurret);
     }
-
     public static void controlTurret(double value) {
         double turretAngle = getTurret();
 
@@ -267,7 +270,6 @@ public class Actuation {
         }
 
     }
-
     public static void reverse(boolean control) {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);

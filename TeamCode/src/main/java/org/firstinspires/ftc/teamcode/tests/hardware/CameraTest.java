@@ -9,6 +9,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.List;
 
@@ -30,9 +31,10 @@ public class CameraTest extends OpMode {
         LLResult result = limelight.getLatestResult();
         if(result != null && result.isValid()){
             List<LLResultTypes.FiducialResult> fids = result.getFiducialResults();
-            double[] position = AprilTagDetection.getGlobalPosition(fids);
-            telemetry.addData("X relative to field center", position[0]);
-            telemetry.addData("Y relative to field center", position[1]);
+            Pose position = AprilTagDetection.getGlobalPosition(fids);
+            telemetry.addData("X relative to field center", position.x);
+            telemetry.addData("Y relative to field center", position.y);
+            telemetry.addData("Heading relative to field center", position.heading);
         }
 
         telemetry.update();

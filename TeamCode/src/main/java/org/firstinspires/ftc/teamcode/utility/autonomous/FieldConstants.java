@@ -16,8 +16,8 @@ public class FieldConstants {
     }
     @Config
     public static class Spike {
-        // 1 - Farthest from goal; 3 - Closest to goal
-        // Spike Distance: 13
+        // 1 - Closest to goal; 3 - Farthest from goal
+        // Spike Distance: 15
         public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
         public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
         public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));

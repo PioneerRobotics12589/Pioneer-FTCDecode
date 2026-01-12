@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 @Autonomous(name="ShortRed", group="Red Auto")
 public class ShortRed extends LinearOpMode {
+
     @Override
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
@@ -29,7 +30,7 @@ public class ShortRed extends LinearOpMode {
 
         Trajectory launch = new Trajectory()
                 .action(() -> Actuation.setFlywheel(1600))
-                .lineTo(new Pose(launchPose.x, launchPose.y, AutoMovement.goalRotation(launchPose, FieldConstants.Goal.red)))
+                .lineTo(AutoMovement.closestShortLaunch("red"))
                 .action(() -> {
                     try {
                         AutoMovement.launch();
