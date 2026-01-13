@@ -47,7 +47,6 @@ public class OttoCore {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         lastTime = System.nanoTime();
-        robotPose = new Pose(0, 0, 0);
         lastPose = new Pose(robotPose);
     }
 
@@ -69,30 +68,32 @@ public class OttoCore {
         double delta_ticks_right = (ticks_right - prev_ticks_right);
         double delta_ticks_back = (ticks_back - prev_ticks_back);
 
+        double inchesPerTick = ActuationConstants.Drivetrain.wheel_circ / ActuationConstants.Drivetrain.ticksPerRev;
+
         // We divide each differential by ticks per revolution and multiply by the wheel circumference in order to account for real-world distance
+        delta_ticks_left *= inchesPerTick;
+        delta_ticks_right *= inchesPerTick;
+        delta_ticks_back *= inchesPerTick;
 
         // Change in angle
         double delta_theta = ((delta_ticks_left - delta_ticks_right) / ActuationConstants.Drivetrain.track_width);
-        delta_theta = delta_theta / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
 
         // Change in the center position of the robot relative to itself (just the average of the parallel wheel diffs)
         // aka Vertical displacement
         double delta_center = ((delta_ticks_left + delta_ticks_right) / 2);
-        delta_center = delta_center / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
 
         // Change in the perpendicular position of the robot relative to itself
         // aka Horizontal displacement
         double delta_perp = delta_ticks_back - (ActuationConstants.Drivetrain.forward_offset * delta_theta); // The other formula is negative of this
-        delta_perp = delta_perp / ActuationConstants.Drivetrain.ticksPerRev * ActuationConstants.Drivetrain.wheel_circ;
 
         double dx = 0;
         double dy = 0;
         if (delta_theta != 0) { // Accounting for division by zero
             dx = (delta_center * (Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                  + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+                    + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
 
             dy = (delta_center * (Math.sin(robotPose.heading) * Math.sin(delta_theta) + Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                  + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+                    + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
         }
         else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
             dx = delta_center * Math.cos(robotPose.heading) - delta_perp * Math.sin(robotPose.heading);
@@ -100,8 +101,8 @@ public class OttoCore {
         }
 
         // Update the robots position
-        robotPose.x += dx;
-        robotPose.y += dy;
+        robotPose.x -= dx;
+        robotPose.y -= dy;
         robotPose.heading += delta_theta;
 
         prev_ticks_back = ticks_back;
@@ -116,19 +117,30 @@ public class OttoCore {
      * @param turnSpeed Robot's turn speed
      */
     public static void moveTowards(Pose targetPose, double movementSpeed, double turnSpeed) {
-        robotPose.heading = wrapAngle(targetPose.heading, robotPose.heading);
 
-        double move = getMove(targetPose, movementSpeed);
-        double strafe = getStrafe(targetPose, movementSpeed*1.2); // attempt to make up for higher speed when moving forward
-        double turn = getTurn(targetPose, turnSpeed);
+        // Update coefficients in case changed in dashboard
+        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
+        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
+        rotational.updateCoeffs(ActuationConstants.Movement.rotationalGains);
+
+        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x);
+        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y);
+        double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading);
+
+        double clampVert = -Math.max(-1.0, Math.min(1, vertSignal));
+        double clampLat = -Math.max(-1.0, Math.min(1, latSignal));
+        double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
+
+        double move = clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
+        double strafe = clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
 
 //        double voltageComp = 12 / voltageSensor.getVoltage();
 
-        Actuation.drive(move, turn, strafe);
+        Actuation.drive(move * movementSpeed, clampRot * turnSpeed, strafe * movementSpeed);
 
-        Actuation.packet.put("Move Signal", move);
-        Actuation.packet.put("Strafe Signal", strafe);
-        Actuation.packet.put("Turn Signal", turn);
+        Actuation.packet.put("xSignal", vertSignal);
+        Actuation.packet.put("ySignal", latSignal);
+        Actuation.packet.put("hSignal", rotSignal);
         Actuation.packet.put("X", OttoCore.robotPose.x);
         Actuation.packet.put("Y", OttoCore.robotPose.y);
         Actuation.packet.put("H", OttoCore.robotPose.heading);
@@ -136,58 +148,6 @@ public class OttoCore {
         Actuation.updateTelemetry();
     }
 
-    /**
-     * Determines the turn signal to reach a certain heading based on a PID system
-     * @param targetPose Robot's target pose
-     * @param turnSpeed Robot's turn speed
-     * @return turn signal
-     */
-    public static double getTurn(Pose targetPose, double turnSpeed) {
-        rotational.updateCoeffs(ActuationConstants.Movement.rotationalGains);
-        double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading) * turnSpeed;
-        return Math.max(-1.0, Math.min(1, rotSignal));
-    }
-    /**
-     * Determines the move signal to reach a certain heading based on a PID system
-     * @param targetPose Robot's target pose
-     * @param movementSpeed Robot's movement speed
-     * @return move signal
-     */
-    public static double getMove(Pose targetPose, double movementSpeed) {
-        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
-        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
-
-        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x) * movementSpeed;
-        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y) * movementSpeed;
-
-        double clampVert = -Math.max(-1.0, Math.min(1, vertSignal));
-        double clampLat = -Math.max(-1.0, Math.min(1, latSignal));
-
-        return clampVert * Math.cos(robotPose.heading) + clampLat * Math.sin(robotPose.heading);
-    }
-    /**
-     * Determines the strafe signal to reach a certain heading based on a PID system
-     * @param targetPose Robot's target pose
-     * @param movementSpeed Robot's movement speed
-     * @return strafe signal
-     */
-    public static double getStrafe(Pose targetPose, double movementSpeed) {
-        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
-        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
-
-        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x) * movementSpeed;
-        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y) * movementSpeed;
-
-        double clampVert = -Math.max(-1.0, Math.min(1, vertSignal));
-        double clampLat = -Math.max(-1.0, Math.min(1, latSignal));
-
-        return clampVert * Math.sin(robotPose.heading) - clampLat * Math.cos(robotPose.heading);
-    }
-
-    /**
-     * Finds the x, y, and rotational velocities of the robot
-     * @return robot velocities
-     */
     public static Pose getVelocity() {
         double dt = (System.nanoTime() - lastTime)/1000000000.00;
 
@@ -196,40 +156,6 @@ public class OttoCore {
         lastPose = new Pose(robotPose);
         lastTime = System.nanoTime();
         return vel;
-    }
-
-    /**
-     * Corrects the current heading to make sure that it takes the shortest angle to turn
-     * @param target target angle
-     * @param current current angle
-     * @return new current angle
-     */
-    public static double wrapAngle(double target, double current) {
-        double newCurrent = current;
-        if (target > current) {
-            while (Math.abs(target - newCurrent) > Math.toRadians(180)) {
-                newCurrent += 2 * Math.PI;
-            }
-        } else if (target < current) {
-            while (Math.abs(target - newCurrent) > Math.toRadians(180)) {
-                newCurrent -= 2 * Math.PI;
-            }
-        }
-        return newCurrent;
-    }
-    /**
-     * Transforms the current position relative to the robot
-     * @param pose pose to be transformed
-     * @param distFor Forward distance
-     * @param distLat Lateral distance
-     * @param distRot Rotational distance (in radians)
-     * @return Transformed robot pose
-     */
-    public static Pose relativeTransform(Pose pose, double distFor, double distLat, double distRot) {
-        double new_x = pose.x + distFor * Math.cos(pose.heading) + distLat * Math.cos(pose.heading + Math.PI/2.0);
-        double new_y = pose.y + distFor * Math.sin(pose.heading) + distLat * Math.sin(pose.heading + Math.PI/2.0);
-        double new_head = (pose.heading + distRot + 2 * Math.PI) % (2 * Math.PI);
-        return new Pose(new_x, new_y, new_head);
     }
 
     /**
