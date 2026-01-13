@@ -85,7 +85,6 @@ public class Actuation {
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-            throw new RuntimeException("Flywheel Connected");
         }
 
 //        if (map.dcMotor.contains("flywheel1")) {
@@ -311,4 +310,3 @@ public class Actuation {
         packet = new TelemetryPacket();
     }
 }
-
