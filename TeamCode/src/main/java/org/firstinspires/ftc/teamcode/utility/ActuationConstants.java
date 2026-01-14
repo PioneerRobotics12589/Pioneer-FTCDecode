@@ -10,7 +10,7 @@ public class ActuationConstants {
     @Config
     public static class Autonomous {
         public static double moveSpeed = 0.6;
-//        public static double moveSpeed = 0.2;
+        //        public static double moveSpeed = 0.2;
         public static double turnSpeed = 0.8;
 //        public static double turnSpeed = 0.26667; // haha, 67
     }
@@ -40,7 +40,7 @@ public class ActuationConstants {
     @Config
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
-        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(380, 40, 20, 0);
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(600, 60, 15, 0);
 
         public static double kp = 0, ki = 0, kd = 0;
         public static PIDController turretPID = new PIDController(kp, ki, kd);
@@ -49,8 +49,8 @@ public class ActuationConstants {
         public static double turretRatio = 1.0/10.0; // 1:10 gear ratio
         public static double turretMaxAngle = 2 * Math.PI; // 360 degrees for both rotations
 
-        public static int shortLaunch = 1600;
-        public static int longLaunch = 1800;
+        public static int shortLaunch = 1467;
+        public static int longLaunch = 1630;
 
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
@@ -58,7 +58,7 @@ public class ActuationConstants {
 
     @Config
     public static class Intake {
-        public static double intakeSpeed = -1.0;
+        public static double intakeSpeed = -0.85;
         public static double transferSpeed = -1.0;
     }
 
