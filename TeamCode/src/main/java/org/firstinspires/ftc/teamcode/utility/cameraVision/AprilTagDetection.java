@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
+import com.qualcomm.hardware.limelightvision.LLFieldMap;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -8,6 +11,7 @@ import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTagDetection {
