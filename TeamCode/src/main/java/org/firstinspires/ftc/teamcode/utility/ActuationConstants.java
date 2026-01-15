@@ -19,9 +19,9 @@ public class ActuationConstants {
     public static class Drivetrain {
         public static final double ticksPerRev = 2000;
         public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
-        public static double track_width = 8.711961409526124; // inches distance between odo wheels
+        public static double track_width = 8.786584086675999; // inches distance between odo wheels
         public static double forward_offset = 9.5; // inches distance from center of robot to perp wheel
-
+// 7, 9
         public static double launcherHeight = 0.25; // meters height from ground to launcher
         public static double flwheelRad = 0.1; // meters flywheel radius
     }
@@ -39,10 +39,10 @@ public class ActuationConstants {
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(600, 60, 15, 0);
 
         public static double kp = 0, ki = 0, kd = 0;
-        public static PIDController turretPID = new PIDController(kp, ki, kd);
-
-        public static long turretTicks = 2000;
-        public static double turretRatio = 1.0/10.0; // 1:10 gear ratio
+        public static PIDController turretPIDAprilTag = new PIDController(kp, ki, kd); // Turret PID for rotating to towards an AprilTag
+        public static PIDController turretPIDRot = new PIDController(kp, ki, kd); // Turret PID for rotating to a specified position
+        public static double turretTicks = 145.1;
+        public static double turretRatio = 80.0/12.0; // 80:12 gear ratio
         public static double turretMaxAngle = 2 * Math.PI; // 360 degrees for both rotations
         public static double turretOffset = -5; // Turret Offset from center of the robot
 

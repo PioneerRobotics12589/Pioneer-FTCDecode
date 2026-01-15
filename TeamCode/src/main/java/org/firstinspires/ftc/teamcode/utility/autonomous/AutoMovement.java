@@ -172,18 +172,37 @@ public class AutoMovement {
 
                 List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
                 int goalID = team.equals("red") ? 20 : 24;
+                Pose fiducialGlobalPos = new Pose(0, 0, 0);
+                int fidNum = 0; // Number of fiducials
+                boolean trackingAprilTag = false;
                 for (LLResultTypes.FiducialResult fid : fids) {
-                    if (fid.getFiducialId() == goalID) {
-                        // Track using AprilTag data if the goal was detected
-                        double fidGlobX = fid.getRobotPoseFieldSpace().getPosition().x;
-                        double fidGlobY = fid.getRobotPoseFieldSpace().getPosition().y;
-                        double fidGlobH = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
+                    // Track AprilTag using center
+//                    if (fid.getFiducialId() == goalID) {
+//                        trackingAprilTag = true;
+//                        // Track using AprilTag data if the goal was detected
+//                        double dist_pixels = fid.getTargetXPixels();
+//
+//                        reference = new Pose(fidGlobX, fidGlobY, fidGlobH);
+//                    }
 
-                        reference = new Pose(fidGlobX, fidGlobY, fidGlobH);
+                    // Track AprilTag using global positioning
+                    if (fid.getFiducialId() == 20 || fid.getFiducialId() == 24) {
+                        trackingAprilTag = true;
+                        fidNum++;
+                        fiducialGlobalPos.x += fid.getRobotPoseFieldSpace().getPosition().x;
+                        fiducialGlobalPos.y += fid.getRobotPoseFieldSpace().getPosition().y;
+                        fiducialGlobalPos.heading += (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
                     }
                 }
 
-                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+                if (!trackingAprilTag) {
+                    reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+                } else {
+                    fiducialGlobalPos.x /= fidNum;
+                    fiducialGlobalPos.y /= fidNum;
+                    fiducialGlobalPos.heading /= fidNum;
+                    reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+                }
 
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
                 AutoLaunch.updateAutoLaunchS(team, reference); // Assuming static launching

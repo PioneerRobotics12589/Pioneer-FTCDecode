@@ -246,7 +246,7 @@ public class Actuation {
             ang_local += Math.toRadians(360);
         }
 
-        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(ang_local, turretAngle);
+        double turretSignal = ActuationConstants.Launcher.turretPIDRot.calculateSignal(ang_local, turretAngle);
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 
         turret.setPower(clampedTurret);

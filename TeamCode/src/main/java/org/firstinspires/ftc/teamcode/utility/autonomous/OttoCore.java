@@ -148,6 +148,38 @@ public class OttoCore {
         Actuation.updateTelemetry();
     }
 
+    public static double getMove(Pose targetPose, double movementSpeed) {
+        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
+        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
+
+        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x);
+        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y);
+
+        double move = vertSignal * Math.sin(robotPose.heading) - latSignal * Math.cos(robotPose.heading);
+
+        return -Math.max(-1.0, Math.min(1, move*movementSpeed));
+    }
+
+    public static double getStrafe(Pose targetPose, double movementSpeed) {
+        lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
+        vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);
+
+        double vertSignal = vertical.calculateSignal(targetPose.x, OttoCore.robotPose.x);
+        double latSignal = lateral.calculateSignal(targetPose.y, OttoCore.robotPose.y);
+
+        double strafe = vertSignal * Math.sin(robotPose.heading) - latSignal * Math.cos(robotPose.heading);
+
+        return -Math.max(-1.0, Math.min(1, strafe*movementSpeed));
+    }
+
+    public static double getTurn(Pose targetPose, double turnSpeed) {
+        rotational.updateCoeffs(ActuationConstants.Movement.rotationalGains);
+
+        double rotSignal = rotational.calculateSignal(targetPose.heading, OttoCore.robotPose.heading);
+
+        return Math.max(-1.0, Math.min(1, rotSignal*turnSpeed));
+    }
+
     public static Pose getVelocity() {
         double dt = (System.nanoTime() - lastTime)/1000000000.00;
 
@@ -156,6 +188,14 @@ public class OttoCore {
         lastPose = new Pose(robotPose);
         lastTime = System.nanoTime();
         return vel;
+    }
+
+    public static Pose relativeTransform(Pose reference, double distFor, double distLat, double distRot) {
+        double x = reference.x + distFor*Math.cos(reference.heading) + distLat*Math.sin(reference.heading);
+        double y = reference.y + distFor*Math.sin(reference.heading) + distLat*Math.cos(reference.heading);
+        double h = reference.heading + distRot;
+
+        return new Pose(x, y, h);
     }
 
     /**
