@@ -37,13 +37,13 @@ public class ShortBlue extends LinearOpMode {
                     }
                 });
 
-        Trajectory spike1 = new Trajectory()
-                .lineTo(spike1A)
-                .lineToIntake(spike1B, 0.6, 0.7);
+//        Trajectory spike1 = new Trajectory()
+//                .lineTo(spike1A)
+//                .lineToIntake(spike1B, 0.6, 0.7);
 
-        Trajectory spike2 = new Trajectory()
-                .lineTo(spike2A)
-                .lineToIntake(spike2B, 0.6, 0.7);
+//        Trajectory spike2 = new Trajectory()
+//                .lineTo(spike2A)
+//                .lineToIntake(spike2B, 0.6, 0.7);
 
         Trajectory gate = new Trajectory()
                 .lineTo(gatePose);
@@ -52,9 +52,9 @@ public class ShortBlue extends LinearOpMode {
 
         preloads.run();
         launch.run();
-        spike1.run();
+//        spike1.run();
         launch.run();
-        spike2.run();
+//        spike2.run();
         launch.run();
         gate.run();
     }

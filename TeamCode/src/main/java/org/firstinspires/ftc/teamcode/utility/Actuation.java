@@ -227,7 +227,7 @@ public class Actuation {
      * @param angle global angle
      */
     public static void turretMoveTowards(double angle) {
-        OttoCore.updatePosition();
+
         double ang_local = angle - OttoCore.robotPose.heading;
         double turretAngle = getTurret();
 

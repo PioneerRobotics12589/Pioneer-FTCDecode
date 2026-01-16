@@ -33,9 +33,9 @@ public class LongRed extends LinearOpMode {
         // Start
         Trajectory preloads = new Trajectory(start);
 
-        Trajectory spike3 = new Trajectory()
-                .lineTo(spike3A)
-                .lineToIntake(spike3B, 0.7, 0.7);
+//        Trajectory spike3 = new Trajectory()
+//                .lineTo(spike3A)
+//                .lineToIntake(spike3B, 0.7, 0.7);
         Trajectory spike3end = new Trajectory()
                 .lineTo(spike3A);
 //                .lineToIntake(spike3B, 0.67, 0.4);
@@ -43,9 +43,9 @@ public class LongRed extends LinearOpMode {
                 .lineTo(endPose);
 //                .lineToIntake(spike3B, 0.67, 0.4);
 
-        Trajectory spike2 = new Trajectory()
-                .lineTo(spike2A)
-                .lineToIntake(spike2B, 0.7, 0.7);
+//        Trajectory spike2 = new Trajectory()
+//                .lineTo(spike2A)
+//                .lineToIntake(spike2B, 0.7, 0.7);
 
 //        Trajectory pickup_dump = new Trajectory()
 //                .lineToMobile(FieldConstants.Dump.red)
