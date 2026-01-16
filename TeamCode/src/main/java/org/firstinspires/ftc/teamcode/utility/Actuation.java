@@ -32,9 +32,9 @@ public class Actuation {
 
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
 
-    public static DcMotor intake, transfer, turret;
+    public static DcMotor intake, transfer;
 
-    public static DcMotorEx flywheel, flywheel1, flywheel2;
+    public static DcMotorEx flywheel, turret, flywheel1, flywheel2;
 
     public static NormalizedColorSensor colorSensor;
 
@@ -82,10 +82,10 @@ public class Actuation {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
             //throw new RuntimeException("Flywheel Connected");
         }
+
 
 //        if (map.dcMotor.contains("flywheel1")) {
 //            flywheel1 = map.get(DcMotorEx.class, "flywheel1");
@@ -103,8 +103,10 @@ public class Actuation {
 //        }
 
         if (map.dcMotor.contains("turret")) {
-            turret = map.get(DcMotor.class, "turret");
+            turret = map.get(DcMotorEx.class, "turret");
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+           // turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //turret.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.turretPIDRot);
         }
 
         try {
