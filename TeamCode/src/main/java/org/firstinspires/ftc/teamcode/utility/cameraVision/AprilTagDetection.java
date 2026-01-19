@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
-import com.qualcomm.hardware.limelightvision.LLFieldMap;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTagDetection {
@@ -62,7 +59,23 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    public static Pose getGlobalPosition(List<LLResultTypes.FiducialResult> fiducials) {
+    public static Point getTagGlobalPos(List<LLResultTypes.FiducialResult> fiducials) {
+        Pose myGlobalPose = getGlobalPos(fiducials);
+        int numberOfFids = 0;
+        double sumX = 0, sumY = 0;
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            int id = fiducial.getFiducialId();
+            if (id != 20 && id != 24) continue;
+            sumX += fiducial.getTargetPoseRobotSpace().getPosition().x * 39.3701;
+            sumY += fiducial.getTargetPoseRobotSpace().getPosition().y * 39.3701;
+            numberOfFids++;
+        }
+        Pose LocalTagPose = new Pose(sumX/numberOfFids, sumY/numberOfFids, 0.0);
+        double myHeading = OttoCore.robotPose.heading;
+        return new Point(LocalTagPose.x * Math.cos(myHeading) + LocalTagPose.y * Math.sin(myHeading) + myGlobalPose.x, LocalTagPose.y * Math.cos(myHeading) - LocalTagPose.x * Math.sin(myHeading) + myGlobalPose.y);
+    }
+
+    public static Pose getGlobalPos(List<LLResultTypes.FiducialResult> fiducials) {
         // Jayden, you got this...
 //        double[] position = {fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701, fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701};
         double sumX = 0, sumY = 0, sumH = 0;
@@ -76,9 +89,7 @@ public class AprilTagDetection {
             sumH += (fiducial.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
             numberOfFids++;
         }
-        if (numberOfFids == 0) {
-            return new Pose(OttoCore.robotPose);
-        }
+        if (numberOfFids == 0) return new Pose(OttoCore.robotPose);
 
         return new Pose(sumX/numberOfFids, sumY/numberOfFids, sumH/numberOfFids);
     }

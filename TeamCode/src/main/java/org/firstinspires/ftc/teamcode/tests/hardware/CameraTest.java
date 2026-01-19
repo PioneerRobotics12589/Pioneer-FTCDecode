@@ -8,6 +8,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
@@ -22,7 +23,7 @@ public class CameraTest extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(0);
-
+        OttoCore.robotPose = new Pose(0.0,0.0,0.0);
         limelight.start();
     }
 
@@ -31,7 +32,7 @@ public class CameraTest extends OpMode {
         LLResult result = limelight.getLatestResult();
         if(result != null && result.isValid()){
             List<LLResultTypes.FiducialResult> fids = result.getFiducialResults();
-            Pose position = AprilTagDetection.getGlobalPosition(fids);
+            Pose position = AprilTagDetection.getGlobalPos(fids);
             telemetry.addData("X relative to field center", position.x);
             telemetry.addData("Y relative to field center", position.y);
             telemetry.addData("Heading relative to field center", position.heading);
