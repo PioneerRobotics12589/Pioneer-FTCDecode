@@ -17,15 +17,24 @@ public class FieldConstants {
     @Config
     public static class Spike {
         // 1 - Closest to goal; 3 - Farthest from goal
-        // Spike Distance: 15
-        public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
-        public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
-        public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));
-        public static Pose blue1 = new Pose(-30.5, 36, Math.toRadians(-88.7));
-        public static Pose blue2 = new Pose(-30.5, 12.0, Math.toRadians(-90.0));
-        public static Pose blue3 = new Pose(-30.5, -12.0, Math.toRadians(-90.0));
 
+        public static class Start {
+            public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
+            public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
+            public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));
+            public static Pose blue1 = new Pose(-30.5, 36, Math.toRadians(-88.7));
+            public static Pose blue2 = new Pose(-30.5, 12.0, Math.toRadians(-90.0));
+            public static Pose blue3 = new Pose(-30.5, -12.0, Math.toRadians(-90.0));
+        }
 
+        public static class End {
+            public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
+            public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
+            public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));
+            public static Pose blue1 = new Pose(-30.5, 36, Math.toRadians(-88.7));
+            public static Pose blue2 = new Pose(-30.5, 12.0, Math.toRadians(-90.0));
+            public static Pose blue3 = new Pose(-30.5, -12.0, Math.toRadians(-90.0));
+        }
     }
 
     @Config

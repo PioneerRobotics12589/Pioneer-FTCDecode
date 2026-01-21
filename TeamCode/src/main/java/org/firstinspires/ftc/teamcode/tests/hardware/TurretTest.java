@@ -32,6 +32,9 @@ public class TurretTest extends OpMode {
         turret = hardwareMap.get(DcMotorEx.class, "turret");
         turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+        turret = hardwareMap.get(DcMotorEx.class, "turret");
+        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 //      Actuation.setup(hardwareMap, telemetry);
@@ -39,10 +42,13 @@ public class TurretTest extends OpMode {
 
     @Override
     public void loop() {
+
         pid = new PIDController(kp, ki, kd);
-        double current = (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-        current %= (2 * Math.PI);
+        double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        current = (current + Math.PI / 2.0) % (2 * Math.PI);
+
         double target = Math.toRadians(targetAngle) % (2 * Math.PI);
+        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
 
         if (current > target) {
             while (Math.abs(current - target) > Math.toRadians(180)) {
@@ -54,12 +60,11 @@ public class TurretTest extends OpMode {
             }
         }
 
-//        // Spin if the target is further than the maximum angle for either rotation
-//        if (target > Math.toRadians(240)) {
-//            target -= Math.toRadians(360);
-//        } else if (target < -Math.toRadians(240)) {
-//            target += Math.toRadians(360);
-//        }
+        if (target > ActuationConstants.Launcher.turretMaxAngle) {
+            target = -ActuationConstants.Launcher.turretMaxAngle;
+        } else if (target < -ActuationConstants.Launcher.turretMaxAngle) {
+            target = ActuationConstants.Launcher.turretMaxAngle;
+        }
 
         double turretSignal = pid.calculateSignal(target, current);
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
@@ -68,9 +73,11 @@ public class TurretTest extends OpMode {
 
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
-        telemetry.addData("Target Angle", targetAngle);
+        telemetry.addData("Target Angle", Math.toDegrees(target));
+        telemetry.addData("Target Ticks", targetTicks);
         telemetry.addData("Turret Signal", clampedTurret);
         packet.put("Turret Angle", Math.toDegrees(current));
+        packet.put("Target Angle", targetAngle);
         dash.sendTelemetryPacket(packet);
         packet = new TelemetryPacket();
     }

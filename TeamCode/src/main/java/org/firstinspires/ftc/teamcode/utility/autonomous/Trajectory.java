@@ -102,10 +102,10 @@ public class Trajectory {
         boolean hasRun = false;
 
         Pose center = new Pose(0, 0, 0);
-//        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.5));
+        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
@@ -121,8 +121,8 @@ public class Trajectory {
             rotVel = robot_vel.heading;
             if (vel != 0 || rotVel != 0) hasRun = true;
 
-//            withinField = OttoCore.robotPose.withinRange(center, 36, 36, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.75));
+            withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
@@ -144,11 +144,11 @@ public class Trajectory {
 
         boolean hasRun = false;
 
-//        Pose center = new Pose(0, 0, 0);
-//        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.5));
+        Pose center = new Pose(0, 0, 0);
+        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange)) {
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
@@ -159,9 +159,9 @@ public class Trajectory {
 
             double angle = Math.atan2(targetPose.y - OttoCore.robotPose.y, targetPose.x - OttoCore.robotPose.x);
 
-            double rotSignal = (targetPose.heading - OttoCore.robotPose.heading) > 0 ? -tSpeed: tSpeed;
-            double moveSignal = mSpeed*Math.cos(targetPose.heading-OttoCore.robotPose.heading);
-            double strafeSignal = mSpeed*Math.sin(targetPose.heading-OttoCore.robotPose.heading);
+            double rotSignal = (angle - OttoCore.robotPose.heading) > 0 ? -tSpeed: tSpeed;
+            double moveSignal = mSpeed*Math.cos(angle - OttoCore.robotPose.heading);
+            double strafeSignal = mSpeed*Math.sin(angle - OttoCore.robotPose.heading);
 
             double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
             double clampMove = Math.max(-1.0, Math.min(1, moveSignal));
@@ -174,9 +174,52 @@ public class Trajectory {
             rotVel = robot_vel.heading;
             if (vel != 0 || rotVel != 0) hasRun = true;
 
-//            withinField = OttoCore.robotPose.withinRange(center, 36, 36, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(0.75));
+            withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
         }
+    }
+
+    private void runToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
+        if (targetPose.heading > OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading += 2 * Math.PI;
+            }
+        } else if (targetPose.heading < OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading -= 2 * Math.PI;
+            }
+        }
+
+        double vel = 1;
+        double rotVel = 1;
+
+        boolean hasRun = false;
+
+        Pose center = new Pose(0, 0, 0);
+        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(0.75));
+
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
+            OttoCore.updatePosition();
+            OttoCore.displayPosition();
+
+            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.packet.put("vel", vel);
+            Actuation.packet.put("rot vel", rotVel);
+            Actuation.updateTelemetry();
+
+            OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
+
+            Pose robot_vel = OttoCore.getVelocity();
+            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
+            rotVel = robot_vel.heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
+
+            withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(0.75));
+        }
+
+        Actuation.drive(0.0, 0.0, 0.0);
     }
 
     private void lineToIntake(Pose a, double b, double c) {

@@ -40,10 +40,12 @@ public class ActuationConstants {
 
         public static double kp = 0, ki = 0, kd = 0;
         public static PIDController turretPIDAprilTag = new PIDController(kp, ki, kd); // Turret PID for rotating to towards an AprilTag
-        public static PIDController turretPIDRot = new PIDController(kp, ki, kd); // Turret PID for rotating to a specified position
-        public static double turretTicks = 61.125; // 1467 / 24
-        public static double turretRatio = 80.0/21.0; // 80:12 gear ratio 21 88
-        public static double turretMaxAngle = 2 * Math.PI; // 360 degrees for both rotations
+        // 1.5, 0, 0 for full speed
+        public static PIDController turretPIDRot = new PIDController(0.25, 0, 0); // Turret PID for rotating to a specified position
+        public static double turretTicks = 550; // 1467 / 24
+        public static double turretRatio = 0.58965273271038066041666666666667; // 80:12 gear ratio 21 88
+        public static double turretMaxAngle = Math.toRadians(180);
+        public static double turretMaxAngleTicks = 1000; // 180 degrees for both rotations
         public static double turretOffset = -5; // Turret Offset from center of the robot
 
         public static int shortLaunch = 1467;
