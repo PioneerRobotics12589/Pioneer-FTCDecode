@@ -179,10 +179,20 @@ public class AutoMovement {
                     // Track AprilTag using center
 //                    if (fid.getFiducialId() == goalID) {
 //                        trackingAprilTag = true;
-//                        // Track using AprilTag data if the goal was detected
-//                        double dist_pixels = fid.getTargetXPixels();
 //
-//                        reference = new Pose(fidGlobX, fidGlobY, fidGlobH);
+//                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
+//                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
+//                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
+//
+//                        // Track using AprilTag data if the goal was detected
+//                        double yawDist = fid.getTargetXDegrees();
+//                        double turretSignal = ActuationConstants.Launcher.turretPIDAprilTag.calculateSignal(0, yawDist);
+//                        if (turretSignal > 0.05) { // Clip to stop vibrations
+//                            Actuation.turret.setPower(turretSignal);
+//                        }
+//                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+//                        AutoLaunch.updateAutoLaunchS(team, reference); // Assuming static launching
+//                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
 //                    }
 
                     // Track AprilTag using global positioning
@@ -192,23 +202,73 @@ public class AutoMovement {
                         fiducialGlobalPos.x += fid.getRobotPoseFieldSpace().getPosition().x;
                         fiducialGlobalPos.y += fid.getRobotPoseFieldSpace().getPosition().y;
                         fiducialGlobalPos.heading += (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
+
+                        reference = new Pose(fiducialGlobalPos.x / fidNum, fiducialGlobalPos.y / fidNum, fiducialGlobalPos.heading / fidNum);
                     }
                 }
 
                 if (!trackingAprilTag) {
-                    reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
-                } else {
-                    fiducialGlobalPos.x /= fidNum;
-                    fiducialGlobalPos.y /= fidNum;
-                    fiducialGlobalPos.heading /= fidNum;
-                    reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+                    reference = new Pose(OttoCore.robotPose);
                 }
 
+                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-                AutoLaunch.updateAutoLaunchS(team, reference); // Assuming static launching
+                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
                 Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-                Actuation.setFlywheel(AutoLaunch.getTargetVel());
+//                Actuation.setFlywheel(AutoLaunch.getTargetVel());
             }
         });
+    }
+
+    public static class Paths {
+        public static class Blue {
+            // Start
+            public static Trajectory startLong = new Trajectory(FieldConstants.Start.blueLong);
+
+            public static Trajectory startShort = new Trajectory(FieldConstants.Start.blueShort);
+            // Spike 3
+            public static Trajectory spike3 = new Trajectory()
+                    .lineThrough(FieldConstants.Spike.Start.blue3, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(true))
+                    .action(() -> Actuation.runTransfer(true, false))
+                    .lineTo(FieldConstants.Spike.End.blue3, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(false))
+                    .action(() -> Actuation.runTransfer(false, false));
+
+            // Spike 2
+            Trajectory spike2 = new Trajectory()
+                    .lineThrough(FieldConstants.Spike.Start.blue2, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(true))
+                    .action(() -> Actuation.runTransfer(true, false))
+                    .lineTo(FieldConstants.Spike.End.blue2, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(false))
+                    .action(() -> Actuation.runTransfer(false, false));
+
+
+            // Spike 1
+            Trajectory spike1 = new Trajectory()
+                    .lineThrough(FieldConstants.Spike.Start.blue1, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(true))
+                    .action(() -> Actuation.runTransfer(true, false))
+                    .lineTo(FieldConstants.Spike.End.blue1, 0.5, 0.7)
+                    .action(() -> Actuation.runIntake(false))
+                    .action(() -> Actuation.runTransfer(false, false));
+
+            // Long Launch
+            Trajectory launchLong = new Trajectory()
+                    .lineTo(FieldConstants.Launch.blueLong);
+
+            // Short Launch
+            Trajectory launchShort = new Trajectory()
+                    .lineTo(FieldConstants.Launch.blueShort);
+            // Gate
+            Trajectory gate = new Trajectory()
+                    .lineTo(FieldConstants.Gate.blue);
+        }
+
+        public static class Red {
+
+        }
     }
 }

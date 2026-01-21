@@ -19,6 +19,7 @@ public class RobotTeleOpRed extends OpMode {
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+        AutoLaunch.setTeam("red");
 //        OttoCore.robotPose = new Pose(-7.4, -45, Math.toRadians(-92.0)); // Red Gate
     }
 
@@ -59,14 +60,14 @@ public class RobotTeleOpRed extends OpMode {
             // Auto launch artifacts (while stationary)
             gamepad1.setLedColor(255, 255, 0, 3000);
             telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchS("red", OttoCore.robotPose);
+            AutoLaunch.updateAutoLaunchS(OttoCore.robotPose);
             AutoLaunch.rotate();
             AutoLaunch.setFlywheel();
 
         } else if (autoLaunch1) {
             // Auto launch artifacts (while moving)
             telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchM("red", OttoCore.robotPose);
+            AutoLaunch.updateAutoLaunchM(OttoCore.robotPose);
             AutoLaunch.rotate(gamepad1.left_stick_y, -gamepad1.left_stick_x);
             AutoLaunch.setFlywheel();
 

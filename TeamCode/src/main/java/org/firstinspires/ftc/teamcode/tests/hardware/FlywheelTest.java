@@ -26,11 +26,11 @@ public class FlywheelTest extends OpMode {
         flywheel1 = hardwareMap.get(DcMotorEx.class, "flywheel1");
         flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp1, ki1, kd1, 0));
 
         flywheel2 = hardwareMap.get(DcMotorEx.class, "flywheel2");
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp2, ki2, kd2, 0));
 

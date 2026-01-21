@@ -10,6 +10,11 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 public class AutoLaunch {
     private static int targetVel;
     private static double targetRot;
+    private static String team;
+
+    public static void setTeam(String teamColor) {
+        team = teamColor;
+    }
 
     public static int getTargetVel() {
         return targetVel;
@@ -21,9 +26,8 @@ public class AutoLaunch {
 
     /**
      * Updates the target values for auto-launching while moving
-     * @param team team color
      */
-    public static void updateAutoLaunchM(String team, Pose reference) {
+    public static void updateAutoLaunchM(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
         double d_x = (goal.x - reference.x) / 39.37; // X distance
@@ -72,9 +76,8 @@ public class AutoLaunch {
     /**
      * Updates the target values for auto-launching while stationary
      * Desmos Graph: <a href="https://www.desmos.com/calculator/strglw28yh">...</a>
-     * @param team team color
      */
-    public static void updateAutoLaunchS(String team, Pose reference) {
+    public static void updateAutoLaunchS(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
         // Distance in inches

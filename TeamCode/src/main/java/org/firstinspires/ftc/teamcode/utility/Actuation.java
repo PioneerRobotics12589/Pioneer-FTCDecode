@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
@@ -33,7 +34,7 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
 
     public static DcMotor intake, transfer;
-
+    public static Servo blocker;
     public static DcMotorEx flywheel, turret, flywheel1, flywheel2;
 
     public static NormalizedColorSensor colorSensor;
@@ -78,12 +79,15 @@ public class Actuation {
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
+        if (map.servo.contains("blocker")) {
+            blocker = map.get(Servo.class, "blocker");
+        }
+
         if (map.dcMotor.contains("flywheel")) {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-            //throw new RuntimeException("Flywheel Connected");
         }
 
 
@@ -178,8 +182,10 @@ public class Actuation {
     public static void runIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            blocker.setPosition(0.5);
         }
         else {
+            blocker.setPosition(0.0);
             intake.setPower(0.0);
         }
     }
@@ -228,8 +234,10 @@ public class Actuation {
      */
     public static void turretMoveTowards(double angle) {
 
-        double ang_local = angle - OttoCore.robotPose.heading;
+        double ang_local = (angle - OttoCore.robotPose.heading + 2 * Math.PI) % (2 * Math.PI);
+
         double turretAngle = getTurret();
+        double targetTicks = angle * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
 
         if (turretAngle > ang_local) {
             while (Math.abs(turretAngle - ang_local) > Math.toRadians(180)) {
@@ -242,10 +250,10 @@ public class Actuation {
         }
 
         // Spin if the target is further than the maximum angle for either rotation
-        if (ang_local > ActuationConstants.Launcher.turretMaxAngle) {
-            ang_local -= Math.toRadians(360);
-        } else if (ang_local < -ActuationConstants.Launcher.turretMaxAngle) {
-            ang_local += Math.toRadians(360);
+        if (targetTicks > ActuationConstants.Launcher.turretMaxAngleTicks) {
+            ang_local = -ActuationConstants.Launcher.turretMaxAngle;
+        } else if (ang_local < -ActuationConstants.Launcher.turretMaxAngleTicks) {
+            ang_local = ActuationConstants.Launcher.turretMaxAngle;
         }
 
         double turretSignal = ActuationConstants.Launcher.turretPIDRot.calculateSignal(ang_local, turretAngle);
@@ -256,20 +264,12 @@ public class Actuation {
     public static void controlTurret(double value) {
         double turretAngle = getTurret();
 
-        // Spin if the target is further than the maximum angle for either rotation
-//        while (turretAngle > ActuationConstants.Launcher.turretMaxAngle-Math.toRadians(10)) {
-//            turretMoveTowards(ActuationConstants.Launcher.turretMaxAngle-Math.toRadians(360));
-//        }
-//        while (turretAngle < -ActuationConstants.Launcher.turretMaxAngle+Math.toRadians(10)) {
-//            turretMoveTowards(ActuationConstants.Launcher.turretMaxAngle+Math.toRadians(360));
-//        }
-
-        if (turretAngle > ActuationConstants.Launcher.turretMaxAngle-Math.toRadians(10)) {
+        if (turretAngle > ActuationConstants.Launcher.turretMaxAngle) {
             turret.setPower(0);
-        } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle+Math.toRadians(10)) {
+        } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle) {
             turret.setPower(0);
         } else {
-            turret.setPower(value);
+            turret.setPower(value*0.25);
         }
 
     }
