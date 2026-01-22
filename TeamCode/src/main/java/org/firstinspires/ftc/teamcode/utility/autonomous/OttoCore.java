@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.List;

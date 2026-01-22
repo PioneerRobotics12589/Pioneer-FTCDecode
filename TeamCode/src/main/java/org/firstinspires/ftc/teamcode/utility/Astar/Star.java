@@ -1,6 +1,10 @@
-package org.firstinspires.ftc.teamcode.utility.dataTypes;
+package org.firstinspires.ftc.teamcode.utility.Astar;
 
 import androidx.annotation.NonNull;
+
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+
 public class Star {
     // This class creates nodes for the A* algorithm
     public int x,y;

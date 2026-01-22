@@ -91,9 +91,8 @@ public class RobotTeleOpRed extends OpMode {
         }
 
         Actuation.runIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_trigger > 0.5, gamepad1.right_bumper || gamepad1.left_bumper || autoLaunch || autoLaunch1);
+        Actuation.runTransfer(gamepad1.right_trigger > 0.5);
         Actuation.reverse(gamepad1.left_trigger > 0.5);
-        Actuation.senseArtifact();
         OttoCore.updatePosition();
         telemetry.update();
     }

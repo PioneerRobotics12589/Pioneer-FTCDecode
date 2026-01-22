@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.utility.autonomous;
-
-import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.rotational;
+package org.firstinspires.ftc.teamcode.utility.dataTypes;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 
 import java.util.ArrayList;
 
@@ -45,6 +43,14 @@ public class Trajectory {
         movements.add(() -> runLineTo(targetPose));
         return this;
     }
+    public Trajectory lineThrough(Pose targetPose) {
+        movements.add(() -> runLineThrough(targetPose));
+        return this;
+    }
+    public Trajectory lineToPrecise(Pose targetPose) {
+        movements.add(() -> runLineToPrecise(targetPose));
+        return this;
+    }
 
     /**
      * Move the robot to another pose with a specific speed
@@ -59,6 +65,10 @@ public class Trajectory {
     }
     public Trajectory lineThrough(Pose targetPose, double moveSpeed, double turnSpeed) {
         movements.add(() -> runLineThrough(targetPose, moveSpeed, turnSpeed));
+        return this;
+    }
+    public Trajectory lineToPrecise(Pose targetPose, double moveSpeed, double turnSpeed) {
+        movements.add(() -> runLineToPrecise(targetPose, moveSpeed, turnSpeed));
         return this;
     }
 
@@ -83,6 +93,12 @@ public class Trajectory {
 
     private void runLineTo(Pose targetPose) {
         runLineTo(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
+    }
+    private void runLineThrough(Pose targetPose) {
+        runLineThrough(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
+    }
+    private void runLineToPrecise(Pose targetPose) {
+        runLineToPrecise(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
     }
 
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
@@ -179,7 +195,7 @@ public class Trajectory {
         }
     }
 
-    private void runToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
+    private void runLineToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
         if (targetPose.heading > OttoCore.robotPose.heading) {
             while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
                 OttoCore.robotPose.heading += 2 * Math.PI;
@@ -220,9 +236,5 @@ public class Trajectory {
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
-    }
-
-    private void lineToIntake(Pose a, double b, double c) {
-
     }
 }

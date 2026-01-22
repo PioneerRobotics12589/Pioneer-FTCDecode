@@ -11,17 +11,48 @@ public class AutoLaunch {
     private static int targetVel;
     private static double targetRot;
     private static String team;
+    private static final Thread launchThread = new Thread(() -> {
+        while (!Thread.currentThread().isInterrupted()) {
+            if (inLaunchZone()) {
+                Actuation.runIntake(true);
+                Actuation.runTransfer(true);
+            } else {
+                Actuation.runIntake(false);
+                Actuation.runTransfer(false);
+            }
+        }
+    });
 
+    /**
+     * Sets the team color to know the goal's position
+     * @param teamColor team color ("red" or "blue"
+     */
     public static void setTeam(String teamColor) {
         team = teamColor;
     }
 
+    /**
+     * Gets the target flywheel angular velocity
+     * @return flywheel angular velocity
+     */
     public static int getTargetVel() {
         return targetVel;
     }
 
+    /**
+     * Gets the target global heading for the launcher
+     * @return angle in radians
+     */
     public static double getTargetRot() {
         return targetRot;
+    }
+
+    public static void launchThreadStart() {
+        launchThread.start();
+    }
+
+    public static void launchThreadStop() {
+        launchThread.interrupt();
     }
 
     /**
@@ -155,10 +186,20 @@ public class AutoLaunch {
      */
     public static boolean inLaunchZone() {
         Pose pos = OttoCore.robotPose;
-        // X-Bounds for long-launch: -24 to 24
-        // X-Bounds for short-launch: None
-        // Y-Bounds for long-launch: [-|x|-48, -72]
-        // Y-Bounds for short-launch: [|x|-1.25, 72]
-        return (pos.x >= -24 && pos.x <= 24 && pos.y <= -Math.abs(pos.x) - 48) || (pos.y >= Math.abs(pos.x) - 1.25);
+        if (pos.x >= 0 && pos.x <= 72 && pos.y >= -pos.x && pos.y <= pos.x) {
+            // In short launch zone
+            return true;
+        }
+        if (pos.x >= -72 && pos.x <= -49 && pos.y >= pos.x + 49 && pos.y <= -pos.x -49) {
+            // In long launch zone
+            return true;
+        }
+
+        // X-Bounds for long-launch: -72 to -49
+        // X-Bounds for short-launch: 0 to 72
+        // Y-Bounds for long-launch: between y = x + 49 and y = -x - 49
+        // Y-Bounds for short-launch: between y = x and y = -x
+
+        return false;
     }
 }

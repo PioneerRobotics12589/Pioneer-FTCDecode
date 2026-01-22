@@ -4,11 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
-import org.firstinspires.ftc.teamcode.utility.autonomous.Astar;
-import org.firstinspires.ftc.teamcode.utility.autonomous.Trajectory;
+import org.firstinspires.ftc.teamcode.utility.Astar.Astar;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
-
-import java.util.ArrayList;
 
 @Autonomous(name="Pathfinding Test", group="tests")
 public class PathFindingTest extends LinearOpMode {

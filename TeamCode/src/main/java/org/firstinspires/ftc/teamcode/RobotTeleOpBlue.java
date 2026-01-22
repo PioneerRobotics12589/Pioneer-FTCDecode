@@ -90,14 +90,13 @@ public class RobotTeleOpBlue extends OpMode {
         }
 
         Actuation.runIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_trigger > 0.5, gamepad1.right_bumper || gamepad1.left_bumper || autoLaunch || autoLaunch1);
+        Actuation.runTransfer(gamepad1.right_trigger > 0.5);
         Actuation.reverse(gamepad1.left_trigger > 0.5);
-        if (gamepad1.dpad_left) {
-            Actuation.controlTurret(1.0);
-        } else if (gamepad1.dpad_right) {
-            Actuation.controlTurret(-1.0);
-        }
-        Actuation.senseArtifact();
+//        if (gamepad1.dpad_left) {
+//            Actuation.controlTurret(1.0);
+//        } else if (gamepad1.dpad_right) {
+//            Actuation.controlTurret(-1.0);
+//        }
         OttoCore.updatePosition();
         telemetry.update();
     }
