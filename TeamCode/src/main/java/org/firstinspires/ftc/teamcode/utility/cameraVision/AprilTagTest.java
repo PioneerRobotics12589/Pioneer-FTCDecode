@@ -38,6 +38,7 @@ public class AprilTagTest extends OpMode {
     }
     @Override
    public void loop() {
+        Pose3D botpose = result.getBotpose();
             YawPitchRollAngles orientation = botpose();
             limelight.updateRobotOrientation(orientation.getYaw());
             LLResult llResult = limelight.getLatestResult();
