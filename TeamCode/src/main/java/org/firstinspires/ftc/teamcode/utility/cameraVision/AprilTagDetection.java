@@ -83,14 +83,20 @@ public class AprilTagDetection {
 
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if (id != 20 && id != 24) continue;
+            if (id != 20 && id != 24 && validDistance(fiducial, 100)) continue;
             sumX += fiducial.getRobotPoseFieldSpace().getPosition().x * 39.3701;
             sumY += fiducial.getRobotPoseFieldSpace().getPosition().y * 39.3701;
             sumH += (fiducial.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
             numberOfFids++;
         }
-        if (numberOfFids == 0) return new Pose(OttoCore.robotPose);
+        if (numberOfFids == 0) return null;
 
         return new Pose(sumX/numberOfFids, sumY/numberOfFids, sumH/numberOfFids);
+    }
+
+    private static boolean validDistance(LLResultTypes.FiducialResult fid, double maxDist) {
+        double relX = fid.getRobotPoseTargetSpace().getPosition().x * 39.3701;
+        double relY = fid.getRobotPoseTargetSpace().getPosition().y * 39.3701;
+        return Math.hypot(relX, relY) < maxDist;
     }
 }

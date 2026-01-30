@@ -43,9 +43,9 @@ public class ActuationConstants {
         // 1.5, 0, 0 for full speed
         public static PIDController turretPIDRot = new PIDController(0.25, 0, 0); // Turret PID for rotating to a specified position
         public static double turretTicks = 537.689839572; // Ticks per revolution on the turret input motor
-        public static double turretRatio = 0.525; // 80:21 gear ratio
+        public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
         public static double turretMaxAngle = Math.toRadians(180);
-        public static double turretOffset = -5; // Turret Offset from center of the robot
+        public static double turretOffset = -5; // Turret offset from center of the robot (5 inches backwards from the center)
 
         public static int shortLaunch = 1467;
         public static int longLaunch = 1630;
@@ -58,6 +58,9 @@ public class ActuationConstants {
     public static class Intake {
         public static double intakeSpeed = -0.85;
         public static double transferSpeed = -1.0;
+
+        public static double blockerDown = 0.2;
+        public static double blockerUp = 0.9;
     }
 
     @Config

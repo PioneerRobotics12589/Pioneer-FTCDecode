@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
@@ -32,9 +33,8 @@ public class Actuation {
     private static boolean slowModeToggle = false;
 
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
-
     public static DcMotor intake, transfer, turret;
-    public static Servo blocker;
+    public static Servo blocker, launchIndicator;
     public static DcMotorEx flywheel, flywheel1, flywheel2;
     public static int turretInitTicks; // Needed to "zero" the turret
 
@@ -50,23 +50,19 @@ public class Actuation {
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
-            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (map.dcMotor.contains("frontRight")) {
             frontRight = map.get(DcMotor.class, "frontRight");
-            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         if (map.dcMotor.contains("backLeft")) {
             backLeft = map.get(DcMotor.class, "backLeft");
-            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (map.dcMotor.contains("backRight")) {
             backRight = map.get(DcMotor.class, "backRight");
-            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -80,6 +76,10 @@ public class Actuation {
 
         if (map.servo.contains("blocker")) {
             blocker = map.get(Servo.class, "blocker");
+        }
+
+        if (map.servo.contains("launchIndicator")) {
+            launchIndicator = map.get(Servo.class, "launchIndicator");
         }
 
         if (map.dcMotor.contains("flywheel")) {
@@ -179,10 +179,10 @@ public class Actuation {
     public static void runIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
-            blocker.setPosition(0.5);
+            blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }
         else {
-            blocker.setPosition(0.0);
+            blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
         }
     }
@@ -225,14 +225,30 @@ public class Actuation {
             flywheel.setVelocity(-670);
         }
     }
+
+    /**
+     * Sets the RGB indicator depending on if the robot is in the launch zone
+     */
+    public static void setLaunchIndicator() {
+        if (AutoLaunch.inLaunchZone()) {
+            launchIndicator.setPosition(1.0);
+        } else {
+            launchIndicator.setPosition(0.0);
+        }
+    }
+
     /**
      * Finds the global angle of the turret
      * @return turret's global angle
      */
-    public static double getTurret() {
-        OttoCore.updatePosition();
+    public static double getTurretGlobal() {
         double turretAng = (double) (turret.getCurrentPosition() - turretInitTicks) / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio + OttoCore.robotPose.heading;
-        return turretAng % (2 * Math.PI);
+        return (turretAng + 2 * Math.PI) % (2 * Math.PI);
+    }
+
+    public static double getTurretLocal() {
+        double turretAng = (double) (turret.getCurrentPosition() - turretInitTicks) / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio;
+        return (turretAng + 2 * Math.PI) % (2 * Math.PI);
     }
 
     /**
@@ -241,28 +257,27 @@ public class Actuation {
      */
     public static void turretMoveTowards(double angle) {
 
-        double ang_local = (angle - OttoCore.robotPose.heading + 2 * Math.PI) % (2 * Math.PI);
+        double turretAngleLocal = getTurretLocal();
+        double angleLocal = (angle - OttoCore.robotPose.heading + 2 * Math.PI) % (2 * Math.PI);
 
-        double turretAngle = getTurret();
-
-        if (turretAngle > ang_local) {
-            while (Math.abs(turretAngle - ang_local) > Math.toRadians(180)) {
-                ang_local += 2 * Math.PI;
+        if (turretAngleLocal > angleLocal) {
+            while (Math.abs(turretAngleLocal - angleLocal) > Math.toRadians(180)) {
+                angleLocal += 2 * Math.PI;
             }
-        } else if (turretAngle < ang_local) {
-            while (Math.abs(turretAngle - ang_local) > Math.toRadians(180)) {
-                ang_local -= 2 * Math.PI;
+        } else if (turretAngleLocal < angleLocal) {
+            while (Math.abs(turretAngleLocal - angleLocal) > Math.toRadians(180)) {
+                angleLocal -= 2 * Math.PI;
             }
         }
 
         // Spin if the target is further than the maximum angle for either rotation
-        if (ang_local > ActuationConstants.Launcher.turretMaxAngle) {
-            ang_local = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (ang_local < -ActuationConstants.Launcher.turretMaxAngle) {
-            ang_local = ActuationConstants.Launcher.turretMaxAngle;
+        if (angleLocal > ActuationConstants.Launcher.turretMaxAngle) {
+            angleLocal = -ActuationConstants.Launcher.turretMaxAngle;
+        } else if (angleLocal < -ActuationConstants.Launcher.turretMaxAngle) {
+            angleLocal = ActuationConstants.Launcher.turretMaxAngle;
         }
 
-        double turretSignal = ActuationConstants.Launcher.turretPIDRot.calculateSignal(ang_local, turretAngle);
+        double turretSignal = ActuationConstants.Launcher.turretPIDRot.calculateSignal(angleLocal, turretAngleLocal);
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 
         turret.setPower(clampedTurret);
@@ -273,11 +288,11 @@ public class Actuation {
      * @param value motor power
      */
     public static void controlTurret(double value) {
-        double turretAngle = getTurret();
+        double turretAngle = getTurretLocal();
 
-        if (turretAngle > ActuationConstants.Launcher.turretMaxAngle) {
+        if (turretAngle > ActuationConstants.Launcher.turretMaxAngle && value > 0) {
             turret.setPower(0);
-        } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle) {
+        } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle && value < 0) {
             turret.setPower(0);
         } else {
             turret.setPower(value*0.05);

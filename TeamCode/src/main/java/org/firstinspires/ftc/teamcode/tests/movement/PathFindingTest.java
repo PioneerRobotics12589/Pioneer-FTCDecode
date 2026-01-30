@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.movement;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.utility.Astar.Astar;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
+@Disabled
 @Autonomous(name="Pathfinding Test", group="tests")
 public class PathFindingTest extends LinearOpMode {
     @Override

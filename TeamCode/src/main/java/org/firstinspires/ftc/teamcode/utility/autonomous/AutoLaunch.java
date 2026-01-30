@@ -7,10 +7,15 @@ import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
+import java.util.ArrayList;
+import java.util.Queue;
+
 public class AutoLaunch {
     private static int targetVel;
     private static double targetRot;
     private static String team;
+
+    private static ArrayList<Double> turnAngles;
     private static final Thread launchThread = new Thread(() -> {
         while (!Thread.currentThread().isInterrupted()) {
             if (inLaunchZone()) {
@@ -79,7 +84,7 @@ public class AutoLaunch {
         double v_f = 0.0; // Flywheel Speed (linear velocity)
 
         // Iterate to diverge robot angle
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             // As seen in the Desmos graph, if the robot is to close, there is no possible way that it can be launched such that it will hit the target
             // to make sure that the program doesn't crash due to this issue in match, we need to make sure that everything under the square root is positive.
             double sqrt = -Math.pow(d_tot, 2) * (2 * d_tot * g * Math.sin(theta_f) * Math.cos(theta_f) - 2 * g * height * Math.pow(Math.cos(theta_f), 2) - Math.pow(v_p, 2) * Math.pow(Math.sin(theta_f), 2));
@@ -96,6 +101,19 @@ public class AutoLaunch {
             // Update robot heading
             targetRot = Math.atan2(d_y - velocities.y * t_proj, d_x - velocities.x * t_proj);
         }
+
+        turnAngles.add(targetRot);
+        if (turnAngles.size() > 10) {
+            turnAngles.remove(turnAngles.size()-1);
+        }
+
+        double median = 0;
+        if (turnAngles.size() % 2 == 0) {
+            median = turnAngles.get(turnAngles.size() / 2) + turnAngles.get(turnAngles.size() / 2 + 1);
+        } else {
+            median = turnAngles.get(turnAngles.size() / 2);
+        }
+        targetRot = median;
 
         // Convert linear flywheel velocity to angular
         targetVel = getFlyVel(v_f);
@@ -127,7 +145,7 @@ public class AutoLaunch {
         double angleFlywheel = Math.toRadians(55); // Angle of the flywheel
 
         // As seen in the Desmos graph, if the robot is to close, there is no possible way that it can be launched such that it will hit the target
-        // to make sure that the program doesn't crash due to this issue in match, we need to make sure that everything under the square root is positive.
+        // to make sure that the program doesn't crash due to this issue in match, we need to make sure that everything under the square root is nonzero and positive.
         double sqrt = g * Math.pow(dist, 2.0) / ((height - dist * Math.tan(angleFlywheel)) * (2.0 * Math.pow(Math.cos(angleFlywheel), 2.0)));
 
         double linVel = 0.0; // Linear velocity of the flywheel
@@ -190,16 +208,30 @@ public class AutoLaunch {
             // In short launch zone
             return true;
         }
-        if (pos.x >= -72 && pos.x <= -49 && pos.y >= pos.x + 49 && pos.y <= -pos.x -49) {
-            // In long launch zone
-            return true;
-        }
+        // In long launch zone
+        return pos.x >= -72 && pos.x <= -49 && pos.y >= pos.x + 49 && pos.y <= -pos.x - 49;
 
         // X-Bounds for long-launch: -72 to -49
         // X-Bounds for short-launch: 0 to 72
         // Y-Bounds for long-launch: between y = x + 49 and y = -x - 49
         // Y-Bounds for short-launch: between y = x and y = -x
+    }
 
-        return false;
+    /**
+     * Determines whether the robot is close to the launch zone
+     * @return true: robot is
+     */
+    public static boolean closeToLaunchZone(double maxDist) {
+        if (inLaunchZone()) {
+            return true;
+        }
+
+        Pose pos = OttoCore.robotPose;
+        if (pos.x >= -maxDist && pos.x <= 72 && pos.y >= -pos.x-maxDist && pos.y <= pos.x+maxDist) {
+            // In short launch zone
+            return true;
+        }
+        // In long launch zone
+        return pos.x >= -72 && pos.x <= -49 + maxDist && pos.y >= pos.x + 49 - maxDist && pos.y <= -pos.x - 49 + maxDist;
     }
 }

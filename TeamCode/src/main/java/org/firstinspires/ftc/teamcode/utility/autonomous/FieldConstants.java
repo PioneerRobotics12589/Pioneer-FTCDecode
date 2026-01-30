@@ -53,6 +53,19 @@ public class FieldConstants {
     @Config
     public static class Gate {
         // Gate Distance: 2.5
+        public static class Start {
+            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
+        }
+
+        public static class End {
+            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
+        }
+    }
+
+    // Park Positions
+    public static class Park {
         public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
         public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
     }

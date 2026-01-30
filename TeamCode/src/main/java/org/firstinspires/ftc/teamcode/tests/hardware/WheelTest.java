@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 
+@Disabled
 @TeleOp(name="Wheel Test", group="tests")
 @Config
 public class WheelTest extends OpMode {

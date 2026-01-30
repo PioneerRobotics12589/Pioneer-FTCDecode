@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import static java.lang.Thread.sleep;
+
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 
@@ -47,11 +49,21 @@ public class Paths {
 
         // Gate
         public static Trajectory gate = new Trajectory()
-                .lineToPrecise(FieldConstants.Gate.blue);
+                .lineTo(FieldConstants.Gate.Start.blue)
+                .lineToPrecise(FieldConstants.Gate.End.blue)
+                .action(() -> {
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
+        // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()
                 .lineTo(FieldConstants.End.blueLong);
 
+        // End Short (Move away from goal)
         public static Trajectory endShort = new Trajectory()
                 .lineTo(FieldConstants.End.blueShort);
     }
@@ -99,11 +111,25 @@ public class Paths {
 
         // Gate
         public static Trajectory gate = new Trajectory()
-                .lineToPrecise(FieldConstants.Gate.red);
+                .lineTo(FieldConstants.Gate.Start.red)
+                .lineToPrecise(FieldConstants.Gate.End.red)
+                .action(() -> {
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
+        // Park
+        public static Trajectory park = new Trajectory()
+                .lineToPrecise(FieldConstants.Park.blue);
+
+        // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()
                 .lineTo(FieldConstants.End.redLong);
 
+        // End Short (Move away from goal)
         public static Trajectory endShort = new Trajectory()
                 .lineTo(FieldConstants.End.redShort);
     }

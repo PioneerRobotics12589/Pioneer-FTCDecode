@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
@@ -15,44 +16,36 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 public class TurretTest extends OpMode {
 
     public static double targetAngle;
-    public static int flywheelSpeed;
-    public static double kp, ki, kd;
-    private PIDController pid = new PIDController(kp, ki, kd);
-    private DcMotorEx turret;
+    private DcMotor turret;
 
     private static FtcDashboard dash;
     private static TelemetryPacket packet;
 
     @Override
     public void init() {
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        turret = hardwareMap.get(DcMotor.class, "turret");
+        turret.setTargetPosition(0);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(0.0);
 
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
-//      Actuation.setup(hardwareMap, telemetry);
     }
 
     @Override
     public void loop() {
-
-        pid = new PIDController(kp, ki, kd);
         double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-        current = (current + Math.PI / 2.0) % (2 * Math.PI);
+        current = (current + Math.PI * 2.0) % (2 * Math.PI);
 
-        double target = Math.toRadians(targetAngle) % (2 * Math.PI);
-        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        double target = (Math.toRadians(targetAngle) + Math.PI * 2.0) % (2 * Math.PI);
 
         if (current > target) {
             while (Math.abs(current - target) > Math.toRadians(180)) {
-                target += 2 * Math.PI;
+                target += 2*Math.PI;
             }
         } else if (current < target) {
             while (Math.abs(current - target) > Math.toRadians(180)) {
-                target -= 2 * Math.PI;
+                target -= 2*Math.PI;
             }
         }
 
@@ -62,18 +55,16 @@ public class TurretTest extends OpMode {
             target = ActuationConstants.Launcher.turretMaxAngle;
         }
 
-        double turretSignal = pid.calculateSignal(target, current);
-        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
+        int targetTicks = (int) (target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
 
-        turret.setPower(clampedTurret);
+        turret.setTargetPosition(targetTicks);
 
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
-        telemetry.addData("Target Angle", Math.toDegrees(target));
         telemetry.addData("Target Ticks", targetTicks);
-        telemetry.addData("Turret Signal", clampedTurret);
+        telemetry.addData("Target Angle", Math.toDegrees(target));
         packet.put("Turret Angle", Math.toDegrees(current));
-        packet.put("Target Angle", targetAngle);
+        packet.put("Target Angle", Math.toDegrees(target));
         dash.sendTelemetryPacket(packet);
         packet = new TelemetryPacket();
     }

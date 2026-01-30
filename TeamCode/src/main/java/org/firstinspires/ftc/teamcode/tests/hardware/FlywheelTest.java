@@ -16,9 +16,14 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class FlywheelTest extends OpMode {
     DcMotorEx flywheel;
+    DcMotor intake, transfer;
     public static int rpm;
 
     public static double kp, ki, kd;
+
+    public static double intakePower;
+
+    public static double transferPower;
 
     FtcDashboard dashboard;
 
@@ -29,6 +34,12 @@ public class FlywheelTest extends OpMode {
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
+        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
+        
+
         dashboard = FtcDashboard.getInstance();
     }
 
@@ -37,6 +48,9 @@ public class FlywheelTest extends OpMode {
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
         flywheel.setVelocity(rpm);
+
+        intake.setPower(intakePower);
+        transfer.setPower(transferPower);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("target velocity", rpm);

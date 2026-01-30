@@ -125,7 +125,7 @@ public class AutoMovement {
      * @param team team color
      * @return thread for turret operation
      */
-    public static Thread turretOperation(String team, String mode) {
+    public static Thread turretOperation(String team) {
         return new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 Pose robotPos = new Pose(OttoCore.robotPose);
@@ -136,7 +136,7 @@ public class AutoMovement {
                 Pose fiducialGlobalPos = new Pose(0, 0, 0);
                 int fidNum = 0; // Number of fiducials
                 boolean trackingAprilTag = false;
-                for (LLResultTypes.FiducialResult fid : fids) {
+//                for (LLResultTypes.FiducialResult fid : fids) {
                     // Track AprilTag using center
 //                    if (fid.getFiducialId() == goalID) {
 //                        trackingAprilTag = true;
@@ -155,18 +155,7 @@ public class AutoMovement {
 //                        AutoLaunch.updateAutoLaunchS(team, reference); // Assuming static launching
 //                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
 //                    }
-
-                    // Track AprilTag using global positioning
-                    if (fid.getFiducialId() == 20 || fid.getFiducialId() == 24) {
-                        trackingAprilTag = true;
-                        fidNum++;
-                        fiducialGlobalPos.x += fid.getRobotPoseFieldSpace().getPosition().x;
-                        fiducialGlobalPos.y += fid.getRobotPoseFieldSpace().getPosition().y;
-                        fiducialGlobalPos.heading += (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
-
-                        reference = new Pose(fiducialGlobalPos.x / fidNum, fiducialGlobalPos.y / fidNum, fiducialGlobalPos.heading / fidNum);
-                    }
-                }
+//                }
 
                 if (!trackingAprilTag) {
                     reference = new Pose(OttoCore.robotPose);
@@ -176,7 +165,11 @@ public class AutoMovement {
 
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
                 AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
-                Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+                if (AutoLaunch.closeToLaunchZone(20)) {
+                    Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+                } else {
+                    Actuation.turretMoveTowards(0);
+                }
 //                Actuation.setFlywheel(AutoLaunch.getTargetVel());
             }
         });

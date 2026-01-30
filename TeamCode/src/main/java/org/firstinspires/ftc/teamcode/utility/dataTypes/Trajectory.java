@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.utility.dataTypes;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
 public class Trajectory {
     double moveSpeed, turnSpeed;
@@ -52,6 +55,11 @@ public class Trajectory {
         return this;
     }
 
+    public Trajectory lineToTeleOp(Pose targetPose, BooleanSupplier gamepadButton) {
+        movements.add(() -> runLineToTeleOp(targetPose, gamepadButton));
+        return this;
+    }
+
     /**
      * Move the robot to another pose with a specific speed
      * @param targetPose The robot's targeted pose
@@ -69,6 +77,10 @@ public class Trajectory {
     }
     public Trajectory lineToPrecise(Pose targetPose, double moveSpeed, double turnSpeed) {
         movements.add(() -> runLineToPrecise(targetPose, moveSpeed, turnSpeed));
+        return this;
+    }
+    public Trajectory lineToTeleOp(Pose targetPose, double moveSpeed, double turnSpeed, BooleanSupplier gamepadButton) {
+        movements.add(() -> runLineToTeleOp(targetPose, moveSpeed, turnSpeed, gamepadButton));
         return this;
     }
 
@@ -99,6 +111,9 @@ public class Trajectory {
     }
     private void runLineToPrecise(Pose targetPose) {
         runLineToPrecise(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
+    }
+    private void runLineToTeleOp(Pose targetPose, BooleanSupplier gamepadButton) {
+        runLineToTeleOp(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed, gamepadButton);
     }
 
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
@@ -233,6 +248,58 @@ public class Trajectory {
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
             withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(0.75));
+        }
+
+        Actuation.drive(0.0, 0.0, 0.0);
+    }
+
+    /**
+     * runLineTo, but the TeleOp driver can stop the path
+     * @param targetPose target pose
+     * @param mSpeed move speed
+     * @param tSpeed turn speed
+     * @param gamepadButton wasPressed() function for the gamepad button to stop the path
+     */
+    private void runLineToTeleOp(Pose targetPose, double mSpeed, double tSpeed, BooleanSupplier gamepadButton) {
+        if (targetPose.heading > OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading += 2 * Math.PI;
+            }
+        } else if (targetPose.heading < OttoCore.robotPose.heading) {
+            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
+                OttoCore.robotPose.heading -= 2 * Math.PI;
+            }
+        }
+
+        double vel = 1;
+        double rotVel = 1;
+
+        boolean hasRun = false;
+
+        Pose center = new Pose(0, 0, 0);
+        boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+        boolean stopPath = gamepadButton.getAsBoolean();
+
+        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField && !stopPath)) {
+            OttoCore.updatePosition();
+            OttoCore.displayPosition();
+
+            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+            Actuation.packet.put("vel", vel);
+            Actuation.packet.put("rot vel", rotVel);
+            Actuation.updateTelemetry();
+
+            OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
+
+            Pose robot_vel = OttoCore.getVelocity();
+            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
+            rotVel = robot_vel.heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
+
+            withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+            stopPath = gamepadButton.getAsBoolean();
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
