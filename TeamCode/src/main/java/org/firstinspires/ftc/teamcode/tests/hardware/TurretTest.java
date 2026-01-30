@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 
@@ -35,18 +36,11 @@ public class TurretTest extends OpMode {
     @Override
     public void loop() {
         double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-        current = (current + Math.PI * 2.0) % (2 * Math.PI);
 
+        double currentNorm = AngleUnit.normalizeRadians(current);
         double target = (Math.toRadians(targetAngle) + Math.PI * 2.0) % (2 * Math.PI);
-
-        if (current > target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target += 2*Math.PI;
-            }
-        } else if (current < target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target -= 2*Math.PI;
-            }
+        if (Math.abs(currentNorm - target) > Math.abs(currentNorm + target)) {
+            target = -target;
         }
 
         if (target > ActuationConstants.Launcher.turretMaxAngle) {

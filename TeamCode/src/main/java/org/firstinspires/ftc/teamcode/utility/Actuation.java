@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
@@ -36,7 +37,6 @@ public class Actuation {
     public static DcMotor intake, transfer, turret;
     public static Servo blocker, launchIndicator;
     public static DcMotorEx flywheel, flywheel1, flywheel2;
-    public static int turretInitTicks; // Needed to "zero" the turret
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -91,8 +91,7 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            turretInitTicks = turret.getCurrentPosition();
+            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -174,14 +173,16 @@ public class Actuation {
 
     /**
      * Runs the intake at the pre-specified power
-     * @param control on/off
+     * @param control1 gamepad1 intake control
+     * @param control2 gamepad2 intake control
      */
-    public static void runIntake(boolean control) {
-        if (control) {
+    public static void runIntake(boolean control1, boolean control2) {
+        if (control1) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             blocker.setPosition(ActuationConstants.Intake.blockerDown);
-        }
-        else {
+        } else if (control2) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+        } else {
             blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
         }
@@ -242,45 +243,37 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretGlobal() {
-        double turretAng = (double) (turret.getCurrentPosition() - turretInitTicks) / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio + OttoCore.robotPose.heading;
-        return (turretAng + 2 * Math.PI) % (2 * Math.PI);
+        return (double) turret.getCurrentPosition() / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio + OttoCore.robotPose.heading;
     }
 
     public static double getTurretLocal() {
-        double turretAng = (double) (turret.getCurrentPosition() - turretInitTicks) / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio;
-        return (turretAng + 2 * Math.PI) % (2 * Math.PI);
+        return (double) turret.getCurrentPosition() / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio;
     }
 
     /**
      * Rotates the turret towards a global angle
-     * @param angle global angle
+     * @param target global angle
      */
-    public static void turretMoveTowards(double angle) {
+    public static void turretMoveTowards(double target) {
 
-        double turretAngleLocal = getTurretLocal();
-        double angleLocal = (angle - OttoCore.robotPose.heading + 2 * Math.PI) % (2 * Math.PI);
+        double angleLocal = getTurretLocal();
+        double angleLocalNorm = AngleUnit.normalizeRadians(angleLocal);
+        double targetLocal = AngleUnit.normalizeRadians(target - OttoCore.robotPose.heading);
 
-        if (turretAngleLocal > angleLocal) {
-            while (Math.abs(turretAngleLocal - angleLocal) > Math.toRadians(180)) {
-                angleLocal += 2 * Math.PI;
-            }
-        } else if (turretAngleLocal < angleLocal) {
-            while (Math.abs(turretAngleLocal - angleLocal) > Math.toRadians(180)) {
-                angleLocal -= 2 * Math.PI;
-            }
+        if (Math.abs(targetLocal - angleLocalNorm) < Math.abs(-targetLocal - angleLocalNorm)) {
+            targetLocal = -targetLocal;
         }
 
         // Spin if the target is further than the maximum angle for either rotation
-        if (angleLocal > ActuationConstants.Launcher.turretMaxAngle) {
-            angleLocal = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (angleLocal < -ActuationConstants.Launcher.turretMaxAngle) {
-            angleLocal = ActuationConstants.Launcher.turretMaxAngle;
+        if (targetLocal > ActuationConstants.Launcher.turretMaxAngle) {
+            targetLocal = -ActuationConstants.Launcher.turretMaxAngle;
+        } else if (targetLocal < -ActuationConstants.Launcher.turretMaxAngle) {
+            targetLocal = ActuationConstants.Launcher.turretMaxAngle;
         }
 
-        double turretSignal = ActuationConstants.Launcher.turretPIDRot.calculateSignal(angleLocal, turretAngleLocal);
-        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 
-        turret.setPower(clampedTurret);
+        int targetTicks = (int) (target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
+        turret.setTargetPosition(targetTicks);
     }
 
     /**
@@ -288,7 +281,7 @@ public class Actuation {
      * @param value motor power
      */
     public static void controlTurret(double value) {
-        double turretAngle = getTurretLocal();
+        double turretAngle = AngleUnit.normalizeRadians(getTurretLocal());
 
         if (turretAngle > ActuationConstants.Launcher.turretMaxAngle && value > 0) {
             turret.setPower(0);
