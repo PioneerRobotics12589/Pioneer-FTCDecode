@@ -71,7 +71,6 @@ public class Actuation {
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
-            intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.servo.contains("blocker")) {
@@ -91,6 +90,7 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
+            turret.setPower(0.0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
@@ -173,15 +173,24 @@ public class Actuation {
 
     /**
      * Runs the intake at the pre-specified power
-     * @param control1 gamepad1 intake control
-     * @param control2 gamepad2 intake control
+     * @param control gamepad1 intake control
      */
-    public static void runIntake(boolean control1, boolean control2) {
-        if (control1) {
+    public static void shoot(boolean control) {
+        if (control) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            transfer.setPower(ActuationConstants.Intake.transferSpeed * 0.5);
+            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        } else {
+            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
+            intake.setPower(0.0);
+            transfer.setPower(0.0);
+        }
+    }
+
+    public static void runIntake(boolean control) {
+        if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             blocker.setPosition(ActuationConstants.Intake.blockerDown);
-        } else if (control2) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
             blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
@@ -223,7 +232,8 @@ public class Actuation {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            flywheel.setVelocity(-670);
+            //flywheel.setVelocity(-670);
+            blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }
     }
 

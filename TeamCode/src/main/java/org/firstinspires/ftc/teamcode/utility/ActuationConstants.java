@@ -36,7 +36,7 @@ public class ActuationConstants {
     @Config
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
-        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(600, 60, 15, 0);
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(400, 40, 10, 0);
 
         public static double kp = 0, ki = 0, kd = 0;
         public static PIDController turretPIDAprilTag = new PIDController(kp, ki, kd); // Turret PID for rotating to towards an AprilTag
@@ -47,8 +47,8 @@ public class ActuationConstants {
         public static double turretMaxAngle = Math.toRadians(180);
         public static double turretOffset = -5; // Turret offset from center of the robot (5 inches backwards from the center)
 
-        public static int shortLaunch = 1467;
-        public static int longLaunch = 1630;
+        public static int shortLaunch = 1450;
+        public static int longLaunch = 1530;
 
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
@@ -56,10 +56,10 @@ public class ActuationConstants {
 
     @Config
     public static class Intake {
-        public static double intakeSpeed = -0.85;
+        public static double intakeSpeed = -1.0;
         public static double transferSpeed = -1.0;
 
-        public static double blockerDown = 0.2;
+        public static double blockerDown = 0.1;
         public static double blockerUp = 0.9;
     }
 
