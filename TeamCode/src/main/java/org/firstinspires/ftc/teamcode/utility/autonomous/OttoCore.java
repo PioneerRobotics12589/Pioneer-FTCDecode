@@ -122,15 +122,15 @@ public class OttoCore {
         // Update the robots position
         robotPose.x -= dx;
         robotPose.y -= dy;
-//        robotPose.heading += delta_theta;
+        robotPose.heading += delta_theta;
 
 //        Pose tagPosition = AprilTagDetection.getGlobalPos(Actuation.getLLResult().getFiducialResults());
 //        if (tagPosition != null) {
 //            robotPose = new Pose(tagPosition);
 //        }
-        if (IMUControl.isInitialized()) {
-            robotPose.heading = IMUControl.getHeading();
-        }
+//        if (IMUControl.isInitialized()) {
+//            robotPose.heading = IMUControl.getHeading();
+//        }
 
         prev_ticks_back = ticks_back;
         prev_ticks_left = ticks_left;

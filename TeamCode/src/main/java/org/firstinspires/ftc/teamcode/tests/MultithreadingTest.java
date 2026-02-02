@@ -38,7 +38,7 @@ public class MultithreadingTest extends OpMode {
         telemetry.addData("Is in launch zone", AutoLaunch.inLaunchZone());
 
         Actuation.drive(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x);
-        Actuation.runIntake(gamepad1.right_trigger > 0.5);
+//        Actuation.runIntake(gamepad1.right_trigger > 0.5);
 
         OttoCore.updatePosition();
 
