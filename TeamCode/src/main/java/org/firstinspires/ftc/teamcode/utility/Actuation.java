@@ -44,9 +44,8 @@ public class Actuation {
     public static TelemetryPacket packet;
 
     public static void setup(HardwareMap map, Telemetry tel) {
-        OttoCore.setup(map);
-
         telemetry = tel;
+        OttoCore.setup(map);
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
@@ -94,6 +93,7 @@ public class Actuation {
             turret = map.get(DcMotor.class, "turret");
             turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turret.setPower(1);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -271,7 +271,7 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
-        double targetLocal = AngleUnit.normalizeRadians(target - OttoCore.robotPose.heading);
+        double targetLocal = AngleUnit.normalizeRadians(target - (AngleUnit.normalizeRadians(OttoCore.robotPose.heading) + 2 * Math.PI) % (2 * Math.PI));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
         int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));

@@ -19,8 +19,8 @@ public class LongBlue extends LinearOpMode {
         waitForStart();
 
         AutoLaunch.launchThreadStart();
-        Thread turretOp = AutoMovement.turretOperation("blue");
-        turretOp.start();
+//        Thread turretOp = AutoMovement.turretOperation("blue");
+//        turretOp.start();
 
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
         Paths.Blue.startLong.run();
@@ -31,7 +31,7 @@ public class LongBlue extends LinearOpMode {
         Paths.Blue.launchLong.run();
         Paths.Blue.gate.run();
 
-        turretOp.interrupt();
+//        turretOp.interrupt();
         AutoLaunch.launchThreadStop();
     }
 }

@@ -15,7 +15,7 @@ public class AutoLaunch {
     private static double targetRot;
     private static String team;
 
-    private static ArrayList<Double> turnAngles;
+    private static ArrayList<Double> turnAngles = new ArrayList<>();
     private static final Thread launchThread = new Thread(() -> {
         while (!Thread.currentThread().isInterrupted()) {
             if (inLaunchZone()) {
@@ -109,7 +109,7 @@ public class AutoLaunch {
 
         double median = 0;
         if (turnAngles.size() % 2 == 0) {
-            median = turnAngles.get(turnAngles.size() / 2) + turnAngles.get(turnAngles.size() / 2 + 1);
+            median = (turnAngles.get(turnAngles.size() / 2 - 1) + turnAngles.get(turnAngles.size() / 2))/2.0;
         } else {
             median = turnAngles.get(turnAngles.size() / 2);
         }

@@ -42,14 +42,11 @@ public class OttoCore {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-        if (Actuation.frontLeft != null && Actuation.frontRight != null && Actuation.backLeft != null && Actuation.backRight != null) {
-            Actuation.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Actuation.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Actuation.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Actuation.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        } else {
-            robotPose = new Pose(0, 0, 0);
-        }
+//        Actuation.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotPose = new Pose(0, 0, 0);
 
         IMUControl.setup(hardwareMap,
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
