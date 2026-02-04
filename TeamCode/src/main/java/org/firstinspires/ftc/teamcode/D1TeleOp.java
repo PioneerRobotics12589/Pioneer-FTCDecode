@@ -96,11 +96,11 @@ public class D1TeleOp extends OpMode {
         }
         Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
-        Actuation.shoot(gamepad1.right_trigger > 0.5);
-        Actuation.runIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.dpad_up);
-        Actuation.runIntake(gamepad1.dpad_up);
-        Actuation.reverse(gamepad1.left_trigger > 0.5);
+        Actuation.shoot(gamepad1.left_trigger > 0.5);
+        //Actuation.runIntake(gamepad1.right_trigger > 0.5);
+        Actuation.runTransfer(gamepad1.right_bumper);
+        Actuation.runIntake(gamepad1.right_bumper);
+        Actuation.reverse(gamepad1.right_trigger > 0.5);
        // Actuation.setLaunchIndicator();
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);
