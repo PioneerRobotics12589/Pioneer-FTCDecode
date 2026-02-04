@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.hardware;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.flywheel1;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -13,42 +15,46 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @TeleOp(name = "Flywheel Test", group = "tests")
 @Config
 public class FlywheelTest extends OpMode {
-    DcMotorEx flywheel1, flywheel2;
+    DcMotorEx flywheel;
+    DcMotor intake, transfer;
     public static int rpm;
 
-    public static double kp1, ki1, kd1;
-    public static double kp2, ki2, kd2;
+    public static double kp, ki, kd;
+
+    public static double intakePower;
+
+    public static double transferPower;
 
     FtcDashboard dashboard;
 
     @Override
     public void init() {
-        flywheel1 = hardwareMap.get(DcMotorEx.class, "flywheel1");
-        flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp1, ki1, kd1, 0));
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
-        flywheel2 = hardwareMap.get(DcMotorEx.class, "flywheel2");
-        flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
-        flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp2, ki2, kd2, 0));
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
+        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
+        
 
         dashboard = FtcDashboard.getInstance();
     }
 
     @Override
     public void loop() {
-        flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp1, ki1, kd1, 0));
-        flywheel2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp2, ki2, kd2, 0));
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
-        flywheel1.setVelocity(rpm);
-        flywheel2.setVelocity(rpm);
+        flywheel.setVelocity(rpm);
+
+        intake.setPower(intakePower);
+        transfer.setPower(transferPower);
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("target rpm", rpm);
-        packet.put("actual 1 rpm", flywheel1.getVelocity());
-        packet.put("actual 2 rpm", flywheel2.getVelocity());
+        packet.put("target velocity", rpm);
+        packet.put("actual velocity", flywheel.getVelocity());
         dashboard.sendTelemetryPacket(packet);
     }
 }

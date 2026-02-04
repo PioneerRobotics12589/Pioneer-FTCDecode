@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 import java.util.List;
 public class OttoCore {
@@ -32,12 +36,21 @@ public class OttoCore {
      * @param hardwareMap Current hardware map
      */
     public static void setup(HardwareMap hardwareMap) {
-        robotPose = new Pose(0, 0, 0);
 
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
+//        Actuation.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        Actuation.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robotPose = new Pose(0, 0, 0);
+
+        IMUControl.setup(hardwareMap,
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD);
 
         // Initialize PID controllers with proper gains
         vertical = new PIDController(ActuationConstants.Movement.verticalGains);
@@ -59,6 +72,9 @@ public class OttoCore {
         for (LynxModule module : allHubs) {
             module.clearBulkCache();
         }
+
+        lastPose = new Pose(OttoCore.robotPose);
+        lastTime = System.nanoTime();
 
         ticks_left = -Actuation.frontLeft.getCurrentPosition();
         ticks_right = Actuation.frontRight.getCurrentPosition();
@@ -104,6 +120,14 @@ public class OttoCore {
         robotPose.x -= dx;
         robotPose.y -= dy;
         robotPose.heading += delta_theta;
+
+//        Pose tagPosition = AprilTagDetection.getGlobalPos(Actuation.getLLResult().getFiducialResults());
+//        if (tagPosition != null) {
+//            robotPose = new Pose(tagPosition);
+//        }
+//        if (IMUControl.isInitialized()) {
+//            robotPose.heading = IMUControl.getHeading();
+//        }
 
         prev_ticks_back = ticks_back;
         prev_ticks_left = ticks_left;
@@ -183,11 +207,7 @@ public class OttoCore {
     public static Pose getVelocity() {
         double dt = (System.nanoTime() - lastTime)/1000000000.00;
 
-        Pose vel = new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
-
-        lastPose = new Pose(robotPose);
-        lastTime = System.nanoTime();
-        return vel;
+        return new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
     }
 
     public static Pose relativeTransform(Pose reference, double distFor, double distLat, double distRot) {

@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
-import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.ArtifactDetection;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
+@Disabled
 @TeleOp(name="Artifact Tracking Test")
 @Config
 public class ArtifactTrackingTest extends OpMode {

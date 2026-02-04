@@ -1,8 +1,4 @@
-package org.firstinspires.ftc.teamcode.utility.autonomous;
-
-import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
-
-import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
+package org.firstinspires.ftc.teamcode.utility.dataTypes;
 
 import java.util.concurrent.TimeUnit;
 

@@ -14,7 +14,7 @@ import java.security.InvalidParameterException;
 public class ArtifactDetection {
 
     /**
-     * Finds the x-coordinate of the center of the closest artifact in front of the robot
+     * Finds the tx value for the largest artifact of the desired color
      * @param color color of desired artifact
      * @return x-coordinate of artifact center
      */
@@ -30,9 +30,7 @@ public class ArtifactDetection {
 
         LLResult pysnapResult = Actuation.getLLResult(); // Limelight result
 
-        double[] contour = pysnapResult.getPythonOutput(); // Center coordinates of largest contour
-
-        return contour[1] - ActuationConstants.LimelightConsts.RESOLUTION_X / 2.0; // Displacement from artifact coordinates to image center
+        return Math.toRadians(pysnapResult.getTx()); // Largest contour tx value
     }
 
     /**
@@ -41,14 +39,14 @@ public class ArtifactDetection {
      * @return turn value to track artifact
      */
     public static double trackArtifact(String color) {
-        double pixelX = locateArtifact(color); // Displacement from artifact contour X-coordinate to the center of image
+        double turnAngle = locateArtifact(color); // Displacement from artifact contour X-coordinate to the center of image
 
         OttoCore.updatePosition();
 
         double head_signal = 0;
         int avg_count = 10;
         for (int i = 0; i < avg_count; i++) {
-            head_signal += ActuationConstants.LimelightConsts.head_PID.calculateSignal(0, pixelX); // PID Signal
+            head_signal += ActuationConstants.LimelightConsts.head_PID.calculateSignal(0, turnAngle); // PID Signal
         }
         head_signal /= avg_count;
 

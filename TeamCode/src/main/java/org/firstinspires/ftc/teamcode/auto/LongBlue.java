@@ -5,14 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
-import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
-import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
-import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.autonomous.Trajectory;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
-
-import java.lang.reflect.Field;
+import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 
 @Autonomous(name="LongBlue", group = "Blue Auto")
 @Config
@@ -23,19 +18,20 @@ public class LongBlue extends LinearOpMode {
 
         waitForStart();
 
-        // FULL AUTO (18 artifacts? 6 teammate, 12 us)
-//        preloads.run();
-//        launch.run();
-//        spike3.run();
-//        launch2.run();
-//        spike2.run();
-//        launch3.run();
-//        spike3end.run();
-//        gate.run();
-//        launch.run();
-//        pickup_dump.run();
-//        launch.run();
-//        pickup_dump.run();
-//        launch.run();
+        AutoLaunch.launchThreadStart();
+//        Thread turretOp = AutoMovement.turretOperation("blue");
+//        turretOp.start();
+
+        // FULL AUTO (15 artifacts? 6 teammate, 9 us)
+        Paths.Blue.startLong.run();
+        Paths.Blue.launchLong.run();
+        Paths.Blue.spike3.run();
+        Paths.Blue.launchLong.run();
+        Paths.Blue.spike2.run();
+        Paths.Blue.launchLong.run();
+        Paths.Blue.gate.run();
+
+//        turretOp.interrupt();
+        AutoLaunch.launchThreadStop();
     }
 }

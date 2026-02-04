@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 public class FieldConstants {
 
+    // Start Positions
     @Config
     public static class Start {
         public static Pose redLong = new Pose(-64.77, -10.62, Math.toRadians(-4.4));
@@ -14,6 +15,8 @@ public class FieldConstants {
         public static Pose blueLong = new Pose(-23.8, 63, Math.toRadians(0.0));
         public static Pose blueShort = new Pose(-44.0, -59.5, Math.toRadians(-54.0));
     }
+
+    // Spike Positions
     @Config
     public static class Spike {
         // 1 - Closest to goal; 3 - Farthest from goal
@@ -37,6 +40,7 @@ public class FieldConstants {
         }
     }
 
+    // Launch Positions
     @Config
     public static class Launch {
         public static Pose redLong = new Pose(-57, -9.5, Math.toRadians(-20));
@@ -45,13 +49,28 @@ public class FieldConstants {
         public static Pose blueShort = new Pose(-11.0, -14.0, Math.toRadians(-38));
     }
 
+    // Gate Positions
     @Config
     public static class Gate {
         // Gate Distance: 2.5
+        public static class Start {
+            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
+        }
+
+        public static class End {
+            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
+        }
+    }
+
+    // Park Positions
+    public static class Park {
         public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
         public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
     }
 
+    // Goal Points
     @Config
     public static class Goal {
         // Aim for FTC logos
@@ -59,6 +78,17 @@ public class FieldConstants {
         public static Point blue = new Point(72, 68);
     }
 
+    // End Positions
+    @Config
+    public static class End {
+
+        public static Pose redShort = new Pose(30, -30, Math.toRadians(-55.6));
+        public static Pose blueShort = new Pose(-30, -30, Math.toRadians(55.6));
+        public static Pose redLong = new Pose(-60, -50, Math.toRadians(0));
+        public static Pose blueLong = new Pose(-60, 50, Math.toRadians(0));
+    }
+
+    // Dump Scan Positions
     @Config
     public static class Dump {
         public static Pose red = new Pose(40, 60, Math.toRadians(90));

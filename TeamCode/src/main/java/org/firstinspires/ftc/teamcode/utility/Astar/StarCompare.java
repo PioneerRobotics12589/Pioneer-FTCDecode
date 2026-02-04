@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.utility.autonomous;
-
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Star;
+package org.firstinspires.ftc.teamcode.utility.Astar;
 
 import java.util.Comparator;
 

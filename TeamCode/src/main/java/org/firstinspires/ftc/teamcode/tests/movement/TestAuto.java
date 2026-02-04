@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.tests.movement;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
-import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.autonomous.Trajectory;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
+@Disabled
 @Autonomous(name="Autonomous")
 public class TestAuto extends LinearOpMode {
     @Override

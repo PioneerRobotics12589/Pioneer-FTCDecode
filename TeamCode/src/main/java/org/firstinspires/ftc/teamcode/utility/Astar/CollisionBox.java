@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utility.dataTypes;
+package org.firstinspires.ftc.teamcode.utility.Astar;
 
 public class CollisionBox {
     public int x,y;

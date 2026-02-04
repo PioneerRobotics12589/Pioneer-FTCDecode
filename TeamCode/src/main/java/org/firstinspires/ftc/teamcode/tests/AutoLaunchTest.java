@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 
+@Disabled
 @TeleOp(name="Auto Launch Test")
 public class AutoLaunchTest extends OpMode {
 

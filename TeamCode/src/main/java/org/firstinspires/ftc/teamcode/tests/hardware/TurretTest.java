@@ -7,77 +7,54 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
-import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.autonomous.PIDController;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 
 @TeleOp(name="Turret Test")
 @Config
 public class TurretTest extends OpMode {
 
     public static double targetAngle;
-    public static int flywheelSpeed;
-    public static double kp, ki, kd;
-    private PIDController pid = new PIDController(kp, ki, kd);
-    private DcMotorEx turret;
+    private DcMotor turret;
+
+    public static double turretPower;
 
     private static FtcDashboard dash;
     private static TelemetryPacket packet;
 
     @Override
     public void init() {
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        turret = hardwareMap.get(DcMotor.class, "turret");
+        turret.setTargetPosition(0);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(turretPower);
 
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
-//      Actuation.setup(hardwareMap, telemetry);
     }
 
     @Override
     public void loop() {
-
-        pid = new PIDController(kp, ki, kd);
+        turret.setPower(turretPower);
         double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-        current = (current + Math.PI / 2.0) % (2 * Math.PI);
 
-        double target = Math.toRadians(targetAngle) % (2 * Math.PI);
-        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        double currentNorm = AngleUnit.normalizeRadians(current);
+        double targetNorm = AngleUnit.normalizeRadians(Math.toRadians(targetAngle));
 
-        if (current > target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target += 2 * Math.PI;
-            }
-        } else if (current < target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target -= 2 * Math.PI;
-            }
-        }
+        targetNorm = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(targetNorm, ActuationConstants.Launcher.turretMaxAngle));
 
-        if (target > ActuationConstants.Launcher.turretMaxAngle) {
-            target = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (target < -ActuationConstants.Launcher.turretMaxAngle) {
-            target = ActuationConstants.Launcher.turretMaxAngle;
-        }
+        int targetTicks = (int) (targetNorm * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
 
-        double turretSignal = pid.calculateSignal(target, current);
-        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
-
-        turret.setPower(clampedTurret);
+        turret.setTargetPosition(targetTicks);
 
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
-        telemetry.addData("Target Angle", Math.toDegrees(target));
         telemetry.addData("Target Ticks", targetTicks);
-        telemetry.addData("Turret Signal", clampedTurret);
+        telemetry.addData("Target Angle", Math.toDegrees(targetNorm));
         packet.put("Turret Angle", Math.toDegrees(current));
-        packet.put("Target Angle", targetAngle);
+        packet.put("Target Angle", Math.toDegrees(targetNorm));
         dash.sendTelemetryPacket(packet);
         packet = new TelemetryPacket();
     }
