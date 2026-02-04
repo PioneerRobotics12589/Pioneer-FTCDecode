@@ -44,9 +44,8 @@ public class Actuation {
     public static TelemetryPacket packet;
 
     public static void setup(HardwareMap map, Telemetry tel) {
-        OttoCore.setup(map);
-
         telemetry = tel;
+        OttoCore.setup(map);
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
@@ -68,9 +67,11 @@ public class Actuation {
         }
         if (map.dcMotor.contains("transfer")) {
             transfer = map.get(DcMotor.class, "transfer");
+            transfer.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
+            intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.servo.contains("blocker")) {
@@ -90,8 +91,9 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-            turret.setPower(0.0);
+            turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turret.setPower(1);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -175,22 +177,27 @@ public class Actuation {
      * Runs the intake at the pre-specified power
      * @param control gamepad1 intake control
      */
-    public static void shoot(boolean control) {
-        if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
-            transfer.setPower(ActuationConstants.Intake.transferSpeed * 0.5);
-            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
-        } else {
-            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
-            intake.setPower(0.0);
-            transfer.setPower(0.0);
-        }
-    }
-
     public static void runIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        }else {
+            blocker.setPosition(ActuationConstants.Intake.blockerUp);
+            intake.setPower(0.0);
+        }
+    }
+
+    /**
+     * Runs the intake at the pre-specified power
+     * @param control1 gamepad1 intake control
+     * @param control2 gamepad2 intake control
+     */
+    public static void runIntake(boolean control1, boolean control2) {
+        if (control1) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        } else if (control2) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
             blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
@@ -232,8 +239,7 @@ public class Actuation {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            //flywheel.setVelocity(-670);
-            blocker.setPosition(ActuationConstants.Intake.blockerDown);
+            flywheel.setVelocity(-670);
         }
     }
 
@@ -253,11 +259,11 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretGlobal() {
-        return (double) turret.getCurrentPosition() / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio + OttoCore.robotPose.heading;
+        return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading;
     }
 
     public static double getTurretLocal() {
-        return (double) turret.getCurrentPosition() / ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio;
+        return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
     }
 
     /**
@@ -265,24 +271,10 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
+        double targetLocal = AngleUnit.normalizeRadians(target - (AngleUnit.normalizeRadians(OttoCore.robotPose.heading) + 2 * Math.PI) % (2 * Math.PI));
+        targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
-        double angleLocal = getTurretLocal();
-        double angleLocalNorm = AngleUnit.normalizeRadians(angleLocal);
-        double targetLocal = AngleUnit.normalizeRadians(target - OttoCore.robotPose.heading);
-
-        if (Math.abs(targetLocal - angleLocalNorm) < Math.abs(-targetLocal - angleLocalNorm)) {
-            targetLocal = -targetLocal;
-        }
-
-        // Spin if the target is further than the maximum angle for either rotation
-        if (targetLocal > ActuationConstants.Launcher.turretMaxAngle) {
-            targetLocal = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (targetLocal < -ActuationConstants.Launcher.turretMaxAngle) {
-            targetLocal = ActuationConstants.Launcher.turretMaxAngle;
-        }
-
-
-        int targetTicks = (int) (target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
+        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
         turret.setTargetPosition(targetTicks);
     }
 
@@ -290,16 +282,21 @@ public class Actuation {
      * Sets the turret motor value directly
      * @param value motor power
      */
-    public static void controlTurret(double value) {
+    public static void controlTurret(int value, double power) {
         double turretAngle = AngleUnit.normalizeRadians(getTurretLocal());
 
         if (turretAngle > ActuationConstants.Launcher.turretMaxAngle && value > 0) {
             turret.setPower(0);
+            turret.setTargetPosition(turret.getCurrentPosition());
         } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle && value < 0) {
             turret.setPower(0);
+            turret.setTargetPosition(turret.getCurrentPosition());
         } else {
-            turret.setPower(value*0.05);
+            turret.setPower(power);
+            turret.setTargetPosition(turret.getCurrentPosition()+value);
         }
+        telemetry.addData("Turret Angle", Math.toDegrees(turretAngle));
+        telemetry.addData("Max Angle", ActuationConstants.Launcher.turretMaxAngle);
     }
 
     /**

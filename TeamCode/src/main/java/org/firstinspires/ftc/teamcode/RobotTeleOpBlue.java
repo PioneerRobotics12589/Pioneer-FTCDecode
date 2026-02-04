@@ -29,8 +29,8 @@ public class RobotTeleOpBlue extends OpMode {
     public void loop() {
         telemetry.addLine("X=" + OttoCore.robotPose.x + " Y=" + OttoCore.robotPose.y + "θ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
-        boolean autoLaunch = gamepad1.cross;
-        boolean autoLaunch1 = gamepad1.circle;
+        boolean autoLaunch = gamepad2.cross;
+        boolean autoLaunch1 = gamepad2.circle;
 
         // Toggles
         if (gamepad1.squareWasPressed()) {
@@ -71,43 +71,45 @@ public class RobotTeleOpBlue extends OpMode {
             gamepad1.setLedColor(255, 255, 0, 3000);
             telemetry.addLine("Tracking Goal");
             AutoLaunch.updateAutoLaunchM(OttoCore.robotPose);
-            AutoLaunch.rotate(gamepad1.left_stick_y, -gamepad1.left_stick_x);
+            AutoLaunch.rotate(gamepad2.left_stick_y, -gamepad2.left_stick_x);
             AutoLaunch.setFlywheel();
 
-        } else if (gamepad1.dpadDownWasPressed()){
+        } else if (gamepad2.dpadDownWasPressed()){
             // Go to park zone
             Trajectory park = new Trajectory()
-                    .lineToTeleOp(FieldConstants.Park.blue, () -> gamepad1.dpadDownWasPressed());
+                    .lineToTeleOp(FieldConstants.Park.blue, () -> gamepad2.dpadDownWasPressed());
             park.run();
 
         } else {
-            Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
+            Actuation.drive(gamepad2.left_stick_y, -gamepad2.right_stick_x, -gamepad2.left_stick_x*0.75);
         }
 
-        if (gamepad1.right_bumper) {
+        if (gamepad2.right_bumper) {
             // Speed up flywheel to shoot from the long launch zone
             Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
-            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
+            Actuation.checkFlywheelSpeed(gamepad2, ActuationConstants.Launcher.longLaunch);
 
-        } else if (gamepad1.left_bumper) {
+        } else if (gamepad2.left_bumper) {
             // Speed up flywheel to shoot from the short launch zone
             Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
-            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.shortLaunch);
+            Actuation.checkFlywheelSpeed(gamepad2, ActuationConstants.Launcher.shortLaunch);
 
         } else if (!autoLaunch1 && !autoLaunch){
             Actuation.setFlywheel(0);
-            Actuation.checkFlywheelSpeed(gamepad1, 0);
+            Actuation.checkFlywheelSpeed(gamepad2, 0);
         }
 
        // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_trigger > 0.5);
-        Actuation.reverse(gamepad1.left_trigger > 0.5);
-        Actuation.setLaunchIndicator();
-//        if (gamepad1.dpad_left) {
-//            Actuation.controlTurret(1.0);
-//        } else if (gamepad1.dpad_right) {
-//            Actuation.controlTurret(-1.0);
-//        }
+        Actuation.runIntake(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
+        Actuation.runTransfer(gamepad2.right_trigger > 0.5);
+        Actuation.reverse(gamepad2.left_trigger > 0.5);
+        if (gamepad2.dpad_left) {
+            Actuation.controlTurret(40, 1);
+        } else if (gamepad2.dpad_right) {
+            Actuation.controlTurret(-40, 1);
+        }
+        AutoMovement.turretOperation("blue");
+//        Actuation.setLaunchIndicator();
         OttoCore.updatePosition();
         telemetry.update();
     }

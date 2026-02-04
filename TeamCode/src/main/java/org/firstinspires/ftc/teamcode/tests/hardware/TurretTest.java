@@ -19,6 +19,8 @@ public class TurretTest extends OpMode {
     public static double targetAngle;
     private DcMotor turret;
 
+    public static double turretPower;
+
     private static FtcDashboard dash;
     private static TelemetryPacket packet;
 
@@ -27,7 +29,7 @@ public class TurretTest extends OpMode {
         turret = hardwareMap.get(DcMotor.class, "turret");
         turret.setTargetPosition(0);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setPower(0.0);
+        turret.setPower(turretPower);
 
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
@@ -35,30 +37,24 @@ public class TurretTest extends OpMode {
 
     @Override
     public void loop() {
+        turret.setPower(turretPower);
         double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
 
         double currentNorm = AngleUnit.normalizeRadians(current);
-        double target = (Math.toRadians(targetAngle) + Math.PI * 2.0) % (2 * Math.PI);
-        if (Math.abs(currentNorm - target) > Math.abs(currentNorm + target)) {
-            target = -target;
-        }
+        double targetNorm = AngleUnit.normalizeRadians(Math.toRadians(targetAngle));
 
-        if (target > ActuationConstants.Launcher.turretMaxAngle) {
-            target = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (target < -ActuationConstants.Launcher.turretMaxAngle) {
-            target = ActuationConstants.Launcher.turretMaxAngle;
-        }
+        targetNorm = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(targetNorm, ActuationConstants.Launcher.turretMaxAngle));
 
-        int targetTicks = (int) (target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
+        int targetTicks = (int) (targetNorm * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
 
         turret.setTargetPosition(targetTicks);
 
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
         telemetry.addData("Target Ticks", targetTicks);
-        telemetry.addData("Target Angle", Math.toDegrees(target));
+        telemetry.addData("Target Angle", Math.toDegrees(targetNorm));
         packet.put("Turret Angle", Math.toDegrees(current));
-        packet.put("Target Angle", Math.toDegrees(target));
+        packet.put("Target Angle", Math.toDegrees(targetNorm));
         dash.sendTelemetryPacket(packet);
         packet = new TelemetryPacket();
     }

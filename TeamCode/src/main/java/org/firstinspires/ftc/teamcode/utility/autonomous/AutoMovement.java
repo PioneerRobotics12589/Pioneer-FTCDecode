@@ -125,19 +125,17 @@ public class AutoMovement {
      * @param team team color
      * @return thread for turret operation
      */
-    public static Thread turretOperation(String team) {
-        return new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                Pose robotPos = new Pose(OttoCore.robotPose);
-                Pose reference = new Pose(robotPos);
+    public static void turretOperation(String team) {
+        Pose robotPos = new Pose(OttoCore.robotPose);
+        Pose reference = new Pose(robotPos);
 
-                List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
-                int goalID = team.equals("red") ? 20 : 24;
-                Pose fiducialGlobalPos = new Pose(0, 0, 0);
-                int fidNum = 0; // Number of fiducials
-                boolean trackingAprilTag = false;
+        List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
+        int goalID = team.equals("red") ? 20 : 24;
+        Pose fiducialGlobalPos = new Pose(0, 0, 0);
+        int fidNum = 0; // Number of fiducials
+        boolean trackingAprilTag = false;
 //                for (LLResultTypes.FiducialResult fid : fids) {
-                    // Track AprilTag using center
+            // Track AprilTag using center
 //                    if (fid.getFiducialId() == goalID) {
 //                        trackingAprilTag = true;
 //
@@ -157,21 +155,22 @@ public class AutoMovement {
 //                    }
 //                }
 
-                if (!trackingAprilTag) {
-                    reference = new Pose(OttoCore.robotPose);
-                }
+        if (!trackingAprilTag) {
+            reference = new Pose(OttoCore.robotPose);
+        }
 
-                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+        reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
 
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
-                if (AutoLaunch.closeToLaunchZone(20)) {
-                    Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-                } else {
-                    Actuation.turretMoveTowards(0);
-                }
+        AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
+        if (AutoLaunch.closeToLaunchZone(20)) {
+            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+            telemetry.addData("TurretTarget", AutoLaunch.getTargetRot());
+        } else {
+            Actuation.turretMoveTowards(0);
+            telemetry.addData("TurretTarget", 0.0);
+        }
 //                Actuation.setFlywheel(AutoLaunch.getTargetVel());
-            }
-        });
+//                telemetry.addData("FlywheelTarget", AutoLaunch.getTargetVel());
     }
 }

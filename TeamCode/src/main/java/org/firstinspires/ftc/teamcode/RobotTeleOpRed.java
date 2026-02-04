@@ -100,7 +100,12 @@ public class RobotTeleOpRed extends OpMode {
        // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_trigger > 0.5);
         Actuation.reverse(gamepad1.left_trigger > 0.5);
-        Actuation.setLaunchIndicator();
+        if (gamepad1.dpad_left) {
+            Actuation.controlTurret(40, 1);
+        } else if (gamepad1.dpad_right) {
+            Actuation.controlTurret(-40, 1);
+        }
+//        Actuation.setLaunchIndicator();
         OttoCore.updatePosition();
         telemetry.update();
     }
