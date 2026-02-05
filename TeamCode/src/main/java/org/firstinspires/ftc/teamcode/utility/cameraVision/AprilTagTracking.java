@@ -39,6 +39,9 @@ public class AprilTagTracking extends OpMode {
             double tx = fid.getTargetXDegrees();
             double ty = fid.getTargetYDegrees();
 
+            telemetry.addData("Tx", tx);
+            telemetry.addData("Ty", ty);
+
             double headingError = -tx;
             double distanceError = -ty;
             double steeringAdjust = 0.0f;

@@ -45,7 +45,6 @@ public class Actuation {
 
     public static void setup(HardwareMap map, Telemetry tel) {
         telemetry = tel;
-        OttoCore.setup(map);
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
@@ -103,6 +102,7 @@ public class Actuation {
 
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
+        OttoCore.setup(map);
     }
 
     /**
@@ -180,9 +180,7 @@ public class Actuation {
     public static void runIntake(boolean control) {
         if (control) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
-            blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }else {
-            blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
         }
     }
@@ -195,12 +193,20 @@ public class Actuation {
     public static void runIntake(boolean control1, boolean control2) {
         if (control1) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
-            blocker.setPosition(ActuationConstants.Intake.blockerDown);
+//            setBlocker(true);
         } else if (control2) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
-            blocker.setPosition(ActuationConstants.Intake.blockerUp);
+//            setBlocker(false);
             intake.setPower(0.0);
+        }
+    }
+
+    public static void setBlocker(boolean control) {
+        if (control) {
+            blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        } else {
+            blocker.setPosition(ActuationConstants.Intake.blockerUp);
         }
     }
 
@@ -262,6 +268,10 @@ public class Actuation {
         return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading;
     }
 
+    /**
+     * Finds the local angle of the turret
+     * @return turret's global angle
+     */
     public static double getTurretLocal() {
         return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
     }

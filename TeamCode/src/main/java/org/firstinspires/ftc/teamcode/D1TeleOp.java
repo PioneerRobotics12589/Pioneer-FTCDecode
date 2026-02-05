@@ -18,9 +18,7 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Ryan Saito Testing")
 @Config
 public class D1TeleOp extends OpMode {
-    private boolean trackPurple = false;
-    private boolean trackGreen = false;
-
+    private boolean trackArtifact = false;
     private int shootingSpeed;
 
     public void init() {
@@ -36,29 +34,17 @@ public class D1TeleOp extends OpMode {
 
         // Toggles
         if (gamepad1.squareWasPressed()) {
-            trackPurple = !trackPurple;
-            if (trackPurple) {
+            trackArtifact = !trackArtifact;
+            if (trackArtifact) {
                 gamepad1.setLedColor(255, 0, 255, 3000);
-                trackGreen = false;
-            }
-        } else if (gamepad1.triangleWasPressed()) {
-            trackGreen = !trackGreen;
-            if (trackGreen) {
-                gamepad1.setLedColor(0, 255, 0, 3000);
-                trackPurple = false;
             }
         }
 
 
-        if (trackPurple) {
+        if (trackArtifact) {
             // Track purple artifacts (while moving)
-            AutoMovement.alignToArtifact("purple", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
+            AutoMovement.autoIntakeArtifact();
             telemetry.addLine("Tracking Purple");
-
-        } else if (trackGreen) {
-            // Track green artifacts (while moving)
-            AutoMovement.alignToArtifact("green", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
-            telemetry.addLine("Tracking Green");
 
         } else if (autoLaunch) {
             // Auto launch artifacts (while stationary)
