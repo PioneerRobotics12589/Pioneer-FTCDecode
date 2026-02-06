@@ -180,7 +180,7 @@ public class Actuation {
      */
     public static void runIntake(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
         }else {
             intake.setPower(0.0);
         }
@@ -245,7 +245,7 @@ public class Actuation {
 
     public static void shoot(boolean control) {
         if (control) {
-            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         } else {
@@ -258,7 +258,7 @@ public class Actuation {
     public static void reverse(boolean control) {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }
