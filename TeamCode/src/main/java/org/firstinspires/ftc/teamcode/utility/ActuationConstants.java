@@ -67,6 +67,7 @@ public class ActuationConstants {
     public static class LimelightConsts {
         // PID for pixel to heading
         private static final double kp_xh = 0.002, ki_xh = 0.0, kd_xh = 0.0;
+        public static final double limelightHeight = 11.75;
         public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
         public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 2;
         public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
