@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.hardware;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.flywheel1;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -10,15 +12,13 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
-
 @TeleOp(name = "Flywheel Test", group = "tests")
 @Config
 public class FlywheelTest extends OpMode {
     DcMotorEx flywheel;
-    public static int rpm = 0;
+    public static int rpm;
 
-    public static double kp1, ki1, kd1;
+    public static double kp, ki, kd;
 
     FtcDashboard dashboard;
 
@@ -27,23 +27,20 @@ public class FlywheelTest extends OpMode {
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp1, ki1, kd1, 0));
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
         dashboard = FtcDashboard.getInstance();
     }
 
     @Override
     public void loop() {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp1, ki1, kd1, 0));
-
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
 
         flywheel.setVelocity(rpm);
-        //flywheel2.setVelocity(rpm);
 
         TelemetryPacket packet = new TelemetryPacket();
-        packet.put("target rpm", rpm);
-        packet.put("actual 1 rpm", flywheel.getVelocity());
+        packet.put("target velocity", rpm);
+        packet.put("actual velocity", flywheel.getVelocity());
         dashboard.sendTelemetryPacket(packet);
     }
 }
