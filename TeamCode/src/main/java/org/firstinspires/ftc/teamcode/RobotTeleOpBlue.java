@@ -18,61 +18,34 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Awe(sigma) Sauce Blue")
 @Config
 public class RobotTeleOpBlue extends OpMode {
-    private boolean trackPurple = false;
-    private boolean trackGreen = false;
+    private boolean trackArtifact = false;
+    private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad2);
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
         AutoLaunch.setTeam("blue");
     }
 
-    public void loop() {
-        telemetry.addLine("X=" + OttoCore.robotPose.x + " Y=" + OttoCore.robotPose.y + "θ=" + Math.toDegrees(OttoCore.robotPose.heading));
+    public void start() {
+        turretOp.start();
+    }
 
-        boolean autoLaunch = gamepad2.cross;
-        boolean autoLaunch1 = gamepad2.circle;
+    public void loop() {
+        telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
         // Toggles
         if (gamepad1.squareWasPressed()) {
-            trackPurple = !trackPurple;
-            if (trackPurple) {
+            trackArtifact = !trackArtifact;
+            if (trackArtifact) {
                 gamepad1.setLedColor(255, 0, 255, 3000);
-                trackGreen = false;
-            }
-        } else if (gamepad1.triangleWasPressed()) {
-            trackGreen = !trackGreen;
-            if (trackGreen) {
-                gamepad1.setLedColor(0, 255, 0, 3000);
-                trackPurple = false;
             }
         }
 
 
-        if (trackPurple) {
+        if (trackArtifact) {
             // Track purple artifacts (while moving)
-            AutoMovement.alignToArtifact("purple", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
+            AutoMovement.autoIntakeArtifact();
             telemetry.addLine("Tracking Purple");
-
-        } else if (trackGreen) {
-            // Track green artifacts (while moving)
-            AutoMovement.alignToArtifact("green", gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75);
-            telemetry.addLine("Tracking Green");
-
-        } else if (autoLaunch) {
-            // Auto launch artifacts (while stationary)
-            gamepad1.setLedColor(255, 255, 0, 3000);
-            telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchS(OttoCore.robotPose);
-            AutoLaunch.rotate();
-            AutoLaunch.setFlywheel();
-
-        } else if (autoLaunch1) {
-            // Auto launch artifacts (while moving)
-            gamepad1.setLedColor(255, 255, 0, 3000);
-            telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchM(OttoCore.robotPose);
-            AutoLaunch.rotate(gamepad2.left_stick_y, -gamepad2.left_stick_x);
-            AutoLaunch.setFlywheel();
 
         } else if (gamepad2.dpadDownWasPressed()){
             // Go to park zone
@@ -94,23 +67,18 @@ public class RobotTeleOpBlue extends OpMode {
             Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
             Actuation.checkFlywheelSpeed(gamepad2, ActuationConstants.Launcher.shortLaunch);
 
-        } else if (!autoLaunch1 && !autoLaunch){
-            Actuation.setFlywheel(0);
-            Actuation.checkFlywheelSpeed(gamepad2, 0);
         }
 
-       // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
         Actuation.runIntake(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
         Actuation.runTransfer(gamepad2.right_trigger > 0.5);
         Actuation.reverse(gamepad2.left_trigger > 0.5);
-        if (gamepad2.dpad_left) {
-            Actuation.controlTurret(40, 1);
-        } else if (gamepad2.dpad_right) {
-            Actuation.controlTurret(-40, 1);
-        }
-        AutoMovement.turretOperation("blue");
 //        Actuation.setLaunchIndicator();
         OttoCore.updatePosition();
+        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretLocal()));
         telemetry.update();
+    }
+
+    public void stop() {
+        turretOp.interrupt();
     }
 }

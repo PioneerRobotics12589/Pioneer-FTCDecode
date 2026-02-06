@@ -15,7 +15,7 @@ public class AutoLaunch {
     private static double targetRot;
     private static String team;
 
-    private static ArrayList<Double> turnAngles = new ArrayList<>();
+    private static final ArrayList<Double> turnAngles = new ArrayList<>();
     private static final Thread launchThread = new Thread(() -> {
         while (!Thread.currentThread().isInterrupted()) {
             if (inLaunchZone()) {
@@ -66,8 +66,8 @@ public class AutoLaunch {
     public static void updateAutoLaunchM(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
-        double d_x = (goal.x - reference.x) / 39.37; // X distance
-        double d_y = (goal.y - reference.y) / 39.37; // Y distance
+        double d_x = (reference.x - goal.x) / 39.37; // X distance
+        double d_y = (reference.y - goal.y) / 39.37; // Y distance
         double d_tot = (Math.sqrt(Math.pow(d_x, 2) + Math.pow(d_y, 2))); // Total distance
         // Change in height
         double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
@@ -107,13 +107,75 @@ public class AutoLaunch {
             turnAngles.remove(turnAngles.size()-1);
         }
 
-        double median = 0;
-        if (turnAngles.size() % 2 == 0) {
-            median = (turnAngles.get(turnAngles.size() / 2 - 1) + turnAngles.get(turnAngles.size() / 2))/2.0;
-        } else {
-            median = turnAngles.get(turnAngles.size() / 2);
+        targetRot = 0.0;
+
+        for (int i = 0; i < turnAngles.size(); i++) {
+            targetRot += turnAngles.get(i) / turnAngles.size();
         }
-        targetRot = median;
+
+        // Convert linear flywheel velocity to angular
+        targetVel = getFlyVel(v_f);
+
+        telemetry.addData("Target Flywheel Velocity", targetVel);
+        telemetry.addData("Target Robot Angle", targetRot);
+    }
+
+    public static void updateAutoLaunchMAprilTag(Pose reference, double tx) {
+        Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
+
+        double d_x = (reference.x - goal.x) / 39.37; // X distance
+        double d_y = (reference.y - goal.y) / 39.37; // Y distance
+        double d_tot = (Math.sqrt(Math.pow(d_x, 2) + Math.pow(d_y, 2))); // Total distance
+        // Change in height
+        double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
+
+        Pose velocities = OttoCore.getVelocity(); // Get current velocities
+        double v_p = velocities.x * Math.cos(reference.heading) + velocities.y * Math.sin(reference.heading); // Velocity Parallel to heading
+
+        final double g = -9.8; // Gravitational Constant
+
+        double theta_f = Math.toRadians(55); // Flywheel Angle
+
+        targetRot = Math.atan2(d_y, d_x); // Robot angle with first guess
+
+        double v_f = 0.0; // Flywheel Speed (linear velocity)
+
+        // Iterate to diverge robot angle
+        for (int i = 0; i < 3; i++) {
+            // As seen in the Desmos graph, if the robot is to close, there is no possible way that it can be launched such that it will hit the target
+            // to make sure that the program doesn't crash due to this issue in match, we need to make sure that everything under the square root is positive.
+            double sqrt = -Math.pow(d_tot, 2) * (2 * d_tot * g * Math.sin(theta_f) * Math.cos(theta_f) - 2 * g * height * Math.pow(Math.cos(theta_f), 2) - Math.pow(v_p, 2) * Math.pow(Math.sin(theta_f), 2));
+            if (sqrt < 0) {
+                break;
+            }
+
+            // Initial Flywheel Velocity - Formula found in linked Desmos graph (THIS FORMULA IS PAST HUMAN COMPREHENSION AT FACE VALUE)
+            v_f = (1.0 / Math.cos(theta_f) * (Math.sqrt(sqrt) - d_tot * v_p * Math.sin(theta_f) + 2.0 * height * v_p * Math.cos(theta_f))) / (2 * (d_tot * Math.sin(theta_f) - height * Math.cos(theta_f)));
+
+            // Total time that the artifact is a projectile
+            double t_proj = (-v_f * Math.sin(theta_f) - Math.sqrt(Math.pow(v_f * Math.sin(theta_f), 2) - 2 * g * height)) / g;
+
+            // Update robot heading
+            targetRot = Math.atan2(d_y - velocities.y * t_proj, d_x - velocities.x * t_proj);
+        }
+
+        turnAngles.add(targetRot);
+        if (turnAngles.size() > 10) {
+            turnAngles.remove(turnAngles.size()-1);
+        }
+
+        targetRot = 0.0;
+
+        for (int i = 0; i < turnAngles.size(); i++) {
+            targetRot += turnAngles.get(i) / turnAngles.size();
+        }
+
+        double staticAngle = Math.atan2(goal.y - reference.y, goal.x - reference.x);
+        double d_head = targetRot - staticAngle;
+
+        // Hippopotomus is thinking
+//        targetRot = abcdefghijklmnopqrstuvwxyzNow I know my
+        targetRot = OttoCore.robotPose.heading - tx + d_head;
 
         // Convert linear flywheel velocity to angular
         targetVel = getFlyVel(v_f);

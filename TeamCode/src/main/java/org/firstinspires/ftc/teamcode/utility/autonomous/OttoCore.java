@@ -42,10 +42,6 @@ public class OttoCore {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-//        Actuation.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Actuation.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Actuation.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        Actuation.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotPose = new Pose(0, 0, 0);
 
         IMUControl.setup(hardwareMap,

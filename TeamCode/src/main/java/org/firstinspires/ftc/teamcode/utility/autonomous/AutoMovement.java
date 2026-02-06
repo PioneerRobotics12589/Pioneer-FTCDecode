@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getStra
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -28,28 +29,13 @@ public class AutoMovement {
     public static boolean isLaunching = false;
 
     /**
-     * Aligns robot with colored artifact
-     * @param color desired artifact color
+     * Automatically intakes the closest artifact ahead of the robot
      */
-    public static void alignToArtifact(String color, double move, double strafe) {
-        double turnRate = ArtifactDetection.trackArtifact(color);
-        Actuation.drive(move, turnRate, -strafe);
-        telemetry.addData("turnRate", turnRate);
-    }
-
-    /**
-     * Automatically aligns robot with colored artifact
-     * @param color desired artifact color
-     */
-    public static void alignToArtifactAuto(String color) {
-        double forwardDist = 10.0; // Move 10" forward when locked on an artifact
-        double turnRate;
-        do {
-            OttoCore.updatePosition();
-            turnRate = ArtifactDetection.trackArtifact(color);
-            Pose targetPose = OttoCore.relativeTransform(OttoCore.robotPose, forwardDist, 0.0, 0.0);
-            Actuation.drive(getMove(targetPose, 0.8), turnRate, getStrafe(targetPose, 0.8));
-        } while (Math.abs(turnRate) > 0.1);
+    public static void autoIntakeArtifact() {
+        boolean finished = false;
+        while (!finished) {
+            finished = ArtifactDetection.goToArtifact();
+        }
     }
 
     /**
@@ -123,54 +109,109 @@ public class AutoMovement {
     /**
      * Creates a thread for operating the turret (auto-adjusting towards goal & maintaining flywheel velocity)
      * @param team team color
+     * @param gamepad gamepad for the toggle button (square)
      * @return thread for turret operation
      */
-    public static void turretOperation(String team) {
-        Pose robotPos = new Pose(OttoCore.robotPose);
-        Pose reference = new Pose(robotPos);
+    public static Thread turretOperation(String team, Gamepad gamepad) {
+        return new Thread(() -> {
+//            boolean toggle = false;
+            while (!Thread.currentThread().isInterrupted()) {
+//                if (gamepad.squareWasPressed()) {
+//                    toggle = !toggle;
+//                }
 
-        List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
-        int goalID = team.equals("red") ? 20 : 24;
-        Pose fiducialGlobalPos = new Pose(0, 0, 0);
-        int fidNum = 0; // Number of fiducials
-        boolean trackingAprilTag = false;
+                Pose robotPos = new Pose(OttoCore.robotPose);
+                Pose reference = new Pose(robotPos);
+
+//                List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
+//                int goalID = team.equals("red") ? 20 : 24;
+//                Pose fiducialGlobalPos = new Pose(0, 0, 0);
+//                boolean trackingAprilTag = false;
+//                double tx = 0.0;
 //                for (LLResultTypes.FiducialResult fid : fids) {
-            // Track AprilTag using center
+//                    // Track AprilTag using center
 //                    if (fid.getFiducialId() == goalID) {
 //                        trackingAprilTag = true;
 //
 //                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
 //                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
-//                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
+////                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
 //
 //                        // Track using AprilTag data if the goal was detected
-//                        double yawDist = fid.getTargetXDegrees();
-//                        double turretSignal = ActuationConstants.Launcher.turretPIDAprilTag.calculateSignal(0, yawDist);
-//                        if (turretSignal > 0.05) { // Clip to stop vibrations
-//                            Actuation.turret.setPower(turretSignal);
-//                        }
+//                        tx = fid.getTargetXDegrees();
 //                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
-//                        AutoLaunch.updateAutoLaunchS(team, reference); // Assuming static launching
-//                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+////                        AutoLaunch.updateAutoLaunchS(goal, reference); // Assuming static launching
+////                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
 //                    }
 //                }
 
-        if (!trackingAprilTag) {
-            reference = new Pose(OttoCore.robotPose);
-        }
 
-        reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
 
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-        AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
-        if (AutoLaunch.closeToLaunchZone(20)) {
-            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-            telemetry.addData("TurretTarget", AutoLaunch.getTargetRot());
-        } else {
-            Actuation.turretMoveTowards(0);
-            telemetry.addData("TurretTarget", 0.0);
-        }
+                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
+                if (AutoLaunch.closeToLaunchZone(20)) {
+//                    if (trackingAprilTag) {
+//                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
+//                    } else {
+                        Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+//                    }
+                } else {
+                    Actuation.turretMoveTowards(0);
+                }
 //                Actuation.setFlywheel(AutoLaunch.getTargetVel());
 //                telemetry.addData("FlywheelTarget", AutoLaunch.getTargetVel());
+            }
+        });
+    }
+
+    /**
+     * Creates a thread for operating the turret (auto-adjusting towards goal when close & maintaining flywheel velocity)
+     * @param team team color
+     * @return thread for turret operation
+     */
+    public static Thread turretOperation(String team) {
+        return new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                Pose robotPos = new Pose(OttoCore.robotPose);
+                Pose reference = new Pose(robotPos);
+
+//                List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
+//                int goalID = team.equals("red") ? 20 : 24;
+//                boolean trackingAprilTag = false;
+//                double tx = 0.0;
+
+//                Pose fiducialGlobalPos = new Pose(0, 0, 0);
+//                for (LLResultTypes.FiducialResult fid : fids) {
+//                    // Track AprilTag using center
+//                    if (fid.getFiducialId() == goalID) {
+//                        trackingAprilTag = true;
+//                        // Track using AprilTag data if the goal was detected
+//                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
+//                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
+//                        tx = fid.getTargetXDegrees();
+//                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+//                    }
+//                }
+
+
+                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+
+//                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
+                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
+
+                if (AutoLaunch.closeToLaunchZone(20)) {
+//                    if (trackingAprilTag) {
+//                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
+//                    } else {
+                        Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+//                    }
+                } else {
+                    Actuation.turretMoveTowards(0);
+                }
+
+//                Actuation.setFlywheel(AutoLaunch.getTargetVel());
+            }
+        });
     }
 }

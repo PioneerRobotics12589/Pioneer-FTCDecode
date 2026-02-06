@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 
 @Autonomous(name="LongRed", group = "Red Auto")
@@ -17,6 +18,8 @@ public class LongRed extends LinearOpMode {
 
         waitForStart();
 
+        Thread turretOp = AutoMovement.turretOperation("red");
+        turretOp.start();
         AutoLaunch.launchThreadStart();
 
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
@@ -27,7 +30,9 @@ public class LongRed extends LinearOpMode {
         Paths.Red.spike2.run();
         Paths.Red.launchLong.run();
         Paths.Red.gate.run();
+//        Paths.Red.endLong.run();
 
+        turretOp.interrupt();
         AutoLaunch.launchThreadStop();
     }
 }
