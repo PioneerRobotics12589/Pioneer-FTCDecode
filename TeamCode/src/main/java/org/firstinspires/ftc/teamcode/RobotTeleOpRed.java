@@ -16,8 +16,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 @TeleOp(name = "Awe(sigma) Sauce Red")
 @Config
 public class RobotTeleOpRed extends OpMode {
-    private boolean trackPurple = false;
-    private boolean trackGreen = false;
+    private boolean trackArtifact = false;
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -33,29 +32,16 @@ public class RobotTeleOpRed extends OpMode {
 
         // Toggles
         if (gamepad1.squareWasPressed()) {
-            trackPurple = !trackPurple;
-            if (trackPurple) {
+            trackArtifact = !trackArtifact;
+            if (trackArtifact) {
                 gamepad1.setLedColor(255, 0, 255, 3000);
-                trackGreen = false;
-            }
-        } else if (gamepad1.triangleWasPressed()) {
-            trackGreen = !trackGreen;
-            if (trackGreen) {
-                gamepad1.setLedColor(0, 255, 0, 3000);
-                trackPurple = false;
             }
         }
 
-
-        if (trackPurple) {
+        if (trackArtifact) {
             // Track purple artifacts (while moving)
-            AutoMovement.alignToArtifact("purple", gamepad1.left_stick_y, -gamepad1.right_stick_x * 0.75);
+            AutoMovement.autoIntakeArtifact();
             telemetry.addLine("Tracking Purple");
-
-        } else if (trackGreen) {
-            // Track green artifacts (while moving)
-            AutoMovement.alignToArtifact("green", gamepad1.left_stick_y, -gamepad1.right_stick_x * 0.75);
-            telemetry.addLine("Tracking Green");
 
         } else if (autoLaunch) {
             // Auto launch artifacts (while stationary)
@@ -100,11 +86,6 @@ public class RobotTeleOpRed extends OpMode {
        // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_trigger > 0.5);
         Actuation.reverse(gamepad1.left_trigger > 0.5);
-        if (gamepad1.dpad_left) {
-            Actuation.controlTurret(40, 1);
-        } else if (gamepad1.dpad_right) {
-            Actuation.controlTurret(-40, 1);
-        }
 //        Actuation.setLaunchIndicator();
         OttoCore.updatePosition();
         telemetry.update();

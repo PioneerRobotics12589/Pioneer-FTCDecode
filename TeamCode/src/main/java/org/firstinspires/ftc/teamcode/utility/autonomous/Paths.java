@@ -14,18 +14,22 @@ public class Paths {
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.blue3)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue3)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.blue2)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue2)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
@@ -33,9 +37,11 @@ public class Paths {
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.blue1)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue1)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
@@ -76,18 +82,22 @@ public class Paths {
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.red3)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red3)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.red2)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red2)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
@@ -95,9 +105,11 @@ public class Paths {
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .lineThrough(FieldConstants.Spike.Start.red1)
+                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red1)
+                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 

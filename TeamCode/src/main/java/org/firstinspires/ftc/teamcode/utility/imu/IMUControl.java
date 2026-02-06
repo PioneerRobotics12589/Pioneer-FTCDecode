@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class IMUControl {
     private static IMU imu;
-    private static double initYaw;
+    private static double offset;
 
     private static boolean initialized = false;
 
@@ -28,10 +28,10 @@ public class IMUControl {
     }
 
     public static void setYaw(double newYaw) {
-        initYaw = newYaw;
+        offset = newYaw - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
     public static double getHeading() {
-        return AngleUnit.normalizeRadians(initYaw + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        return AngleUnit.normalizeRadians(offset + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 }

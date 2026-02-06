@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
@@ -35,6 +36,7 @@ public class Trajectory {
         turnSpeed = ActuationConstants.Autonomous.turnSpeed;
 
         OttoCore.robotPose = startPose;
+        IMUControl.setYaw(startPose.heading);
     }
 
     /**
