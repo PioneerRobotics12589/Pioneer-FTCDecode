@@ -10,8 +10,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 @TeleOp(name="AprilTagTest")
+
+
 public class AprilTagTest extends OpMode {
     private Limelight3A limelight;
 
@@ -20,7 +23,9 @@ public class AprilTagTest extends OpMode {
     }
 
     private LLResult result;
-    Pose3D botpose = result.getBotpose();
+    Pose3D botPose= result.getBotpose_MT2();
+
+
 
 
     @Override
@@ -38,21 +43,24 @@ public class AprilTagTest extends OpMode {
     }
     @Override
    public void loop() {
-        Pose3D botpose = result.getBotpose();
+
             YawPitchRollAngles orientation = botpose();
             limelight.updateRobotOrientation(orientation.getYaw());
             LLResult llResult = limelight.getLatestResult();
             if (llResult != null && llResult.isValid()) {
-                Pose3D botPose = llResult.getBotpose_MT2();
+                IMUControl.setup(hardwareMap,
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT);
+                botPose = llResult.getBotpose_MT2(); // problem line: llResult on a null object
                 telemetry.addData("Tx", llResult.getTx());  // store data and display on driver station
                 telemetry.addData("Ty", llResult.getTy()); // store data and display on driver station
                 telemetry.addData("Ta", llResult.getTa()); // store data and display on driver station
-
-
             }
 
 
-            telemetry.update();
+            telemetry.update(
+
+            );
         }
 
 
