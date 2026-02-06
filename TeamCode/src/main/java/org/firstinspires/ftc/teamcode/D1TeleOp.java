@@ -21,15 +21,15 @@ public class D1TeleOp extends OpMode {
     private boolean trackArtifact = false;
     private int shootingSpeed;
 
-    private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad1);
+    //private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad1);
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
         AutoLaunch.setTeam("blue");
     }
-    public void start() {
+    /*public void start() {
         turretOp.start();
-    }
+    }*/
 
     public void loop() {
         telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
@@ -85,7 +85,7 @@ public class D1TeleOp extends OpMode {
 
 
     }
-    public void stop() {
+   /* public void stop() {
         turretOp.interrupt();
-    }
+    }*/
 }
