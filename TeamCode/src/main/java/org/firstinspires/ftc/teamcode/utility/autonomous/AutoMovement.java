@@ -123,27 +123,27 @@ public class AutoMovement {
                 Pose robotPos = new Pose(OttoCore.robotPose);
                 Pose reference = new Pose(robotPos);
 
-//                List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
-//                int goalID = team.equals("red") ? 20 : 24;
+                List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
+                int goalID = team.equals("red") ? 20 : 24;
 //                Pose fiducialGlobalPos = new Pose(0, 0, 0);
-//                boolean trackingAprilTag = false;
-//                double tx = 0.0;
-//                for (LLResultTypes.FiducialResult fid : fids) {
-//                    // Track AprilTag using center
-//                    if (fid.getFiducialId() == goalID) {
-//                        trackingAprilTag = true;
-//
+                boolean trackingAprilTag = false;
+                double tx = 0.0;
+                for (LLResultTypes.FiducialResult fid : fids) {
+                    // Track AprilTag using center
+                    if (fid.getFiducialId() == goalID) {
+                        trackingAprilTag = true;
+
 //                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
 //                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
-////                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
-//
-//                        // Track using AprilTag data if the goal was detected
-//                        tx = fid.getTargetXDegrees();
+//                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
+
+                        // Track using AprilTag data if the goal was detected
+                        tx = fid.getTargetXDegrees();
 //                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
-////                        AutoLaunch.updateAutoLaunchS(goal, reference); // Assuming static launching
-////                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
-//                    }
-//                }
+//                        AutoLaunch.updateAutoLaunchS(goal, reference); // Assuming static launching
+//                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+                    }
+                }
 
 
                 reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
@@ -151,11 +151,11 @@ public class AutoMovement {
 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
                 AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
                 if (AutoLaunch.closeToLaunchZone(20)) {
-//                    if (trackingAprilTag) {
-//                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
-//                    } else {
+                    if (trackingAprilTag) {
+                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
+                    } else {
                         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-//                    }
+                    }
                 } else {
                     Actuation.turretMoveTowards(0);
                 }
