@@ -180,7 +180,7 @@ public class Actuation {
      */
     public static void runIntake(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
         }else {
             intake.setPower(0.0);
         }
@@ -245,7 +245,7 @@ public class Actuation {
 
     public static void shoot(boolean control) {
         if (control) {
-            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         } else {
@@ -258,7 +258,7 @@ public class Actuation {
     public static void reverse(boolean control) {
         if (control) {
             transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }
@@ -296,7 +296,7 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
-        double targetLocal = AngleUnit.normalizeRadians(target - (AngleUnit.normalizeRadians(OttoCore.robotPose.heading) + 2 * Math.PI) % (2 * Math.PI));
+        double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
         int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));

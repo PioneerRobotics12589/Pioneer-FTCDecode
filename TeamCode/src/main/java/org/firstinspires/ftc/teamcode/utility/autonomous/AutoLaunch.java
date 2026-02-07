@@ -30,7 +30,7 @@ public class AutoLaunch {
 
     /**
      * Sets the team color to know the goal's position
-     * @param teamColor team color ("red" or "blue"
+     * @param teamColor team color ("red" or "blue")
      */
     public static void setTeam(String teamColor) {
         team = teamColor;
