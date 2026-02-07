@@ -153,8 +153,10 @@ public class AutoMovement {
                 if (AutoLaunch.closeToLaunchZone(20)) {
                     if (trackingAprilTag) {
                         Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
+                        telemetry.addLine("USING APRILTAG DATA TO TRACK");
                     } else {
                         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+                        telemetry.addLine("USING ODOMETRY DATA TO TRACK");
                     }
                 } else {
                     Actuation.turretMoveTowards(0);

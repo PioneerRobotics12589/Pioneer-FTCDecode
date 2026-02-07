@@ -296,7 +296,7 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
-        double targetLocal = AngleUnit.normalizeRadians(target - (AngleUnit.normalizeRadians(OttoCore.robotPose.heading) + 2 * Math.PI) % (2 * Math.PI));
+        double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
         int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
