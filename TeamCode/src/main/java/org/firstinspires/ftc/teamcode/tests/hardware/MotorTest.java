@@ -11,6 +11,7 @@ public class MotorTest extends OpMode {
     DcMotor motor;
     public static double power;
 
+
     @Override
     public void init() {
         motor = hardwareMap.dcMotor.get("motor");

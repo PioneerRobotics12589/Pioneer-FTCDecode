@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.backLeft;
 import static org.firstinspires.ftc.teamcode.utility.Actuation.getLLResult;
 import static org.firstinspires.ftc.teamcode.utility.Actuation.limelight;
+import static org.firstinspires.ftc.teamcode.utility.Actuation.turretMoveTowards;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -26,6 +28,8 @@ public class AprilTagTracking extends OpMode {
     public void init() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
+        limelight.start();
+//        Actuation.setupLimelight(0);
     }
 
     @Override
@@ -36,8 +40,9 @@ public class AprilTagTracking extends OpMode {
             LLResultTypes.FiducialResult fid = res.getFiducialResults().get(0);
 
             // commands[0] = left_command, commands[1] = right_command
-            double tx = fid.getTargetXDegrees();
-            double ty = fid.getTargetYDegrees();
+            double tx = Math.toRadians(fid.getTargetXDegrees());
+            double ty = Math.toRadians(fid.getTargetYDegrees());
+
 
             telemetry.addData("Tx", tx);
             telemetry.addData("Ty", ty);
@@ -46,16 +51,31 @@ public class AprilTagTracking extends OpMode {
             double distanceError = -ty;
             double steeringAdjust = 0.0f;
 
+if (gamepad1.crossWasPressed()){
+    Actuation.turretMoveTowards();
+}
+            if (gamepad1.crossWasReleased()){
+                    Actuation.turretMoveTowards((Actuation.getTurretLocal()-tx));
+            }
+            
+
             if (tx > 1.0f) {
                 steeringAdjust = KpAim * headingError - minAimCommand;
             } else if (tx < -1.0f) {
                 steeringAdjust = KpAim * headingError + minAimCommand;
             }
+            Actuation.turretMoveTowards(Actuation.getTurretLocal()-tx);
+
+
 
             double distanceAdjust = KpDistance * distanceError;
+            telemetry.addData("tx", tx);
+            telemetry.addData("ty", ty);
             telemetry.addData("turnRate", steeringAdjust * distanceAdjust);
+
         } else {
             telemetry.addData("turnRate", 0);
         }
+        telemetry.update();
     }
 }

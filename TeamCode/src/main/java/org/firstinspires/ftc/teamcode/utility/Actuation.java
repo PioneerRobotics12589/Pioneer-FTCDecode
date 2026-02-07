@@ -66,11 +66,11 @@ public class Actuation {
         }
         if (map.dcMotor.contains("transfer")) {
             transfer = map.get(DcMotor.class, "transfer");
-            transfer.setDirection(DcMotorSimple.Direction.REVERSE);
+            //transfer.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
-            intake.setDirection(DcMotorSimple.Direction.REVERSE);
+            //intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.servo.contains("blocker")) {
@@ -86,6 +86,7 @@ public class Actuation {
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+            //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.dcMotor.contains("turret")) {
@@ -179,7 +180,7 @@ public class Actuation {
      */
     public static void runIntake(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
         }else {
             intake.setPower(0.0);
         }
@@ -230,7 +231,7 @@ public class Actuation {
      */
     public static void runTransfer(boolean control) {
         if (control) {
-            transfer.setPower(ActuationConstants.Intake.transferSpeed);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
         }
         else {
             transfer.setPower(0.0);
@@ -241,11 +242,25 @@ public class Actuation {
      * Reverses intake and transfer
      * @param control motor power
      */
+
+    public static void shoot(boolean control) {
+        if (control) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            transfer.setPower(ActuationConstants.Intake.transferSpeed);
+            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        } else {
+            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
+            intake.setPower(0.0);
+            transfer.setPower(0.0);
+        }
+    }
+
     public static void reverse(boolean control) {
         if (control) {
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
-            flywheel.setVelocity(-670);
+            //flywheel.setVelocity(-670);
+            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         }
     }
 
