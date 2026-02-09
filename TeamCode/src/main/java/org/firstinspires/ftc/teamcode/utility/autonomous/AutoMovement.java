@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
 import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+import static org.firstinspires.ftc.teamcode.utility.Actuation.turret;
 import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getMove;
 import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getStrafe;
 
@@ -106,6 +107,7 @@ public class AutoMovement {
         }
     }
 
+
     /**
      * Creates a thread for operating the turret (auto-adjusting towards goal & maintaining flywheel velocity)
      * @param team team color
@@ -114,55 +116,63 @@ public class AutoMovement {
      */
     public static Thread turretOperation(String team, Gamepad gamepad) {
         return new Thread(() -> {
-//            boolean toggle = false;
             while (!Thread.currentThread().isInterrupted()) {
-//                if (gamepad.squareWasPressed()) {
-//                    toggle = !toggle;
-//                }
 
-                Pose robotPos = new Pose(OttoCore.robotPose);
-                Pose reference = new Pose(robotPos);
-
+                // 1. Setup Vision Data
+                Actuation.setPipeline(0);
                 List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
-                int goalID = team.equals("red") ? 20 : 24;
-//                Pose fiducialGlobalPos = new Pose(0, 0, 0);
+
+                int goalID = team.equals("blue") ? 20 : 24; // Check your game manual for correct IDs
                 boolean trackingAprilTag = false;
-                double tx = 0.0;
+                double txDegrees = 0.0;
+
+                // 2. Find the correct AprilTag
                 for (LLResultTypes.FiducialResult fid : fids) {
-                    // Track AprilTag using center
                     if (fid.getFiducialId() == goalID) {
                         trackingAprilTag = true;
-
-//                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
-//                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
-//                        fiducialGlobalPos.heading = (fid.getRobotPoseFieldSpace().getOrientation().getYaw(AngleUnit.RADIANS) + 2 * Math.PI) % (2 * Math.PI);
-
-                        // Track using AprilTag data if the goal was detected
-                        tx = fid.getTargetXDegrees();
-//                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
-//                        AutoLaunch.updateAutoLaunchS(goal, reference); // Assuming static launching
-//                        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+                        txDegrees = fid.getTargetXDegrees();
+                        break; // Stop looking once we find the target
                     }
                 }
 
-
+                // 3. Calculate Reference for "Blind" Movement (No Tag Visible)
+                Pose robotPos = new Pose(OttoCore.robotPose);
+                Pose reference = new Pose(robotPos);
                 reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
+                AutoLaunch.updateAutoLaunchS(reference);
 
-//                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
+                // 4. Movement Logic
                 if (AutoLaunch.closeToLaunchZone(20)) {
                     if (trackingAprilTag) {
-                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
                         telemetry.addLine("USING APRILTAG DATA TO TRACK");
+
+                        // --- FIX 1: Convert Limelight Degrees to Radians ---
+                        double txRadians = Math.toRadians(txDegrees);
+
+                        // --- FIX 2: Use Turret's Current Global Heading ---
+                        // We need the absolute angle the TURRET is facing right now.
+                        // Your Actuation class already has this perfect helper method!
+                        double currentTurretGlobal = Actuation.getTurretGlobal();
+
+                        // --- FIX 3: Calculate Target Global Angle ---
+                        // Standard Limelight: +tx means target is to the RIGHT.
+                        // Standard Odometry: +Angle is LEFT (CCW).
+                        // To face a target on the right, we must Subtract the angle.
+                        double targetGlobalHeading = currentTurretGlobal - txRadians;
+
+                        Actuation.turretMoveTowards(targetGlobalHeading);
+
                     } else {
+                        // If no tag seen, use the calculated AutoLaunch target
                         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-                        telemetry.addLine("USING ODOMETRY DATA TO TRACK");
                     }
                 } else {
+                    // Reset turret to forward if not in launch zone
                     Actuation.turretMoveTowards(0);
                 }
-//                Actuation.setFlywheel(AutoLaunch.getTargetVel());
-//                telemetry.addData("FlywheelTarget", AutoLaunch.getTargetVel());
+
+                // Optional: Short sleep to save CPU resources (50Hz update is plenty for a turret)
+                //try { Thread.sleep(20); } catch (InterruptedException e) { break; }
             }
         });
     }
@@ -206,7 +216,7 @@ public class AutoMovement {
 //                    if (trackingAprilTag) {
 //                        Actuation.turretMoveTowards(OttoCore.robotPose.heading - tx);
 //                    } else {
-                        Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+                    Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
 //                    }
                 } else {
                     Actuation.turretMoveTowards(0);

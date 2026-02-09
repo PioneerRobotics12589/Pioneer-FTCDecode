@@ -60,9 +60,8 @@ public class RobotTeleOpRed extends OpMode {
 
         }  else if (gamepad1.dpadDownWasPressed()) {
             // Go to park zone
-            Trajectory park = new Trajectory()
-                    .lineToTeleOp(FieldConstants.Park.red, () -> gamepad1.dpadDownWasPressed());
-            park.run();
+//            Trajectory park = new Trajectory().lineToTeleOp(FieldConstants.Park.red, () -> gamepad1.dpadDownWasPressed());
+//            park.run();
 
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
@@ -83,7 +82,7 @@ public class RobotTeleOpRed extends OpMode {
             Actuation.checkFlywheelSpeed(gamepad1, 0);
         }
 
-       // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
+        // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_trigger > 0.5);
         Actuation.reverse(gamepad1.left_trigger > 0.5);
 //        Actuation.setLaunchIndicator();

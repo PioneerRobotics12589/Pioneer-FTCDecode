@@ -21,7 +21,7 @@ public class D1TeleOp extends OpMode {
     private boolean trackArtifact = false;
     private int shootingSpeed;
 
-    //private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad1);
+     //private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad1);
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -73,7 +73,7 @@ public class D1TeleOp extends OpMode {
         Actuation.runTransfer(gamepad1.right_bumper);
         Actuation.runIntake(gamepad1.right_bumper);
         Actuation.reverse(gamepad1.right_trigger > 0.5);
-       // Actuation.setLaunchIndicator();
+        // Actuation.setLaunchIndicator();
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);
 //        } else if (gamepad1.dpad_right) {
@@ -85,7 +85,7 @@ public class D1TeleOp extends OpMode {
 
 
     }
-   /* public void stop() {
+    /*public void stop() {
         turretOp.interrupt();
     }*/
 }

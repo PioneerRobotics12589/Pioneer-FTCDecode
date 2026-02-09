@@ -52,7 +52,7 @@ public class AprilTagTracking extends OpMode {
             double steeringAdjust = 0.0f;
 
 if (gamepad1.crossWasPressed()){
-    Actuation.turretMoveTowards();
+   // Actuation.turretMoveTowards();
 }
             if (gamepad1.crossWasReleased()){
                     Actuation.turretMoveTowards((Actuation.getTurretLocal()-tx));
