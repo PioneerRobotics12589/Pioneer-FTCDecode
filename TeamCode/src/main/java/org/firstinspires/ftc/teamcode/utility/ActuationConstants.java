@@ -39,16 +39,13 @@ public class ActuationConstants {
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(400, 40, 10, 0);
 
         public static double kp = 0, ki = 0, kd = 0;
-        public static PIDController turretPIDAprilTag = new PIDController(kp, ki, kd); // Turret PID for rotating to towards an AprilTag
-        // 1.5, 0, 0 for full speed
-        public static PIDController turretPIDRot = new PIDController(0.25, 0, 0); // Turret PID for rotating to a specified position
-        public static double turretTicks = 537.689839572; // Ticks per revolution on the turret input motor
+        public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
-        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(140));
-        public static double turretOffset = -5; // Turret offset from center of the robot (5 inches backwards from the center)
+        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(120));
+        public static double turretOffset = -2; // Turret offset from center of the robot (5 inches backwards from the center)
 
-        public static int shortLaunch = 1460;
-        public static int longLaunch = 1530;
+        public static int shortLaunch = 1480;
+        public static int longLaunch = 1600;
 
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
@@ -58,7 +55,6 @@ public class ActuationConstants {
     public static class Intake {
         public static double intakeSpeed = 1.0;
         public static double transferSpeed = 1.0;
-
         public static double blockerDown = 0.1;
         public static double blockerUp = 0.8;
     }
@@ -66,9 +62,7 @@ public class ActuationConstants {
     @Config
     public static class LimelightConsts {
         // PID for pixel to heading
-        private static final double kp_xh = 0.002, ki_xh = 0.0, kd_xh = 0.0;
-        public static final double limelightHeight = 11.75;
-        public static PIDController head_PID = new PIDController(new PIDCoeffs(kp_xh, ki_xh, kd_xh));
+        public static double limelightHeight = 12;
         public static int PIPELINE_APRILTAG = 0, PIPELINE_GREEN = 1, PIPELINE_PURPLE = 2;
         public static int RESOLUTION_X = 640, RESOLUTION_Y = 480;
 

@@ -18,8 +18,9 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Awe(sigma) Sauce Blue")
 @Config
 public class RobotTeleOpBlue extends OpMode {
+    private int shootingSpeed;
     private boolean trackArtifact = false;
-    private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad2);
+    private final Thread turretOp = AutoMovement.turretOperation("blue");
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -39,10 +40,12 @@ public class RobotTeleOpBlue extends OpMode {
             if (trackArtifact) {
                 gamepad1.setLedColor(255, 0, 255, 3000);
             }
+        } else if (gamepad1.crossWasPressed()) {
+            AutoMovement.toggleTracking();
         }
 
 
-        if (trackArtifact) {
+       /* if (trackArtifact) {
             // Track purple artifacts (while moving)
             AutoMovement.autoIntakeArtifact();
             telemetry.addLine("Tracking Purple");
@@ -67,18 +70,36 @@ public class RobotTeleOpBlue extends OpMode {
             Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
             Actuation.checkFlywheelSpeed(gamepad2, ActuationConstants.Launcher.shortLaunch);
 
-        }
+        }*/
 
-        Actuation.runIntake(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad2.right_trigger > 0.5);
-        Actuation.reverse(gamepad2.left_trigger > 0.5);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
+
+        if (gamepad1.dpad_left) {
+            // Speed up flywheel to shoot from the long launch zone
+            shootingSpeed = ActuationConstants.Launcher.longLaunch;
+
+        } else if (gamepad1.dpad_right) {
+            // Speed up flywheel to shoot from the short launch zone
+            shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+        }
+        Actuation.setFlywheel(shootingSpeed);
+        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+        Actuation.shoot(gamepad1.left_trigger > 0.5);
+        //Actuation.runIntake(gamepad1.right_trigger > 0.5);
+        Actuation.runTransfer(gamepad1.right_bumper);
+        Actuation.runIntake(gamepad1.right_bumper);
+        Actuation.reverse(gamepad1.right_trigger > 0.5);
 //        Actuation.setLaunchIndicator();
         OttoCore.updatePosition();
-        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretLocal()));
         telemetry.update();
     }
 
     public void stop() {
         turretOp.interrupt();
+        try {
+            turretOp.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

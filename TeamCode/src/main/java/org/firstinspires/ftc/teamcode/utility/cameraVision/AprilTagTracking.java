@@ -51,13 +51,9 @@ public class AprilTagTracking extends OpMode {
             double distanceError = -ty;
             double steeringAdjust = 0.0f;
 
-if (gamepad1.crossWasPressed()){
-    Actuation.turretMoveTowards();
-}
-            if (gamepad1.crossWasReleased()){
-                    Actuation.turretMoveTowards((Actuation.getTurretLocal()-tx));
+            if (gamepad1.crossWasPressed()){
+                Actuation.turretMoveTowards(Math.toRadians(Actuation.getTurretLocal()-tx));
             }
-            
 
             if (tx > 1.0f) {
                 steeringAdjust = KpAim * headingError - minAimCommand;

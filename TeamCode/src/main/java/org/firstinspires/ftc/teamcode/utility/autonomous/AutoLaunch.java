@@ -17,7 +17,9 @@ public class AutoLaunch {
 
     private static final ArrayList<Double> turnAngles = new ArrayList<>();
     private static final Thread launchThread = new Thread(() -> {
+        boolean prev = false;
         while (!Thread.currentThread().isInterrupted()) {
+            AutoMovement.isTracking = closeToLaunchZone(20);
             if (inLaunchZone()) {
                 Actuation.runIntake(true);
                 Actuation.runTransfer(true);
@@ -25,6 +27,7 @@ public class AutoLaunch {
                 Actuation.runIntake(false);
                 Actuation.runTransfer(false);
             }
+            prev = AutoMovement.isTracking;
         }
     });
 
@@ -50,6 +53,10 @@ public class AutoLaunch {
      */
     public static double getTargetRot() {
         return targetRot;
+    }
+
+    public static void setTargetRot(double angle) {
+        targetRot = angle;
     }
 
     public static void launchThreadStart() {
@@ -294,6 +301,16 @@ public class AutoLaunch {
             return true;
         }
         // In long launch zone
+        return pos.x >= -72 && pos.x <= -49 + maxDist && pos.y >= pos.x + 49 - maxDist && pos.y <= -pos.x - 49 + maxDist;
+    }
+
+    public static boolean closeToShort(double maxDist) {
+        Pose pos = OttoCore.robotPose;
+        return pos.x >= -maxDist && pos.x <= 72 && pos.y >= -pos.x-maxDist && pos.y <= pos.x+maxDist;
+    }
+
+    public static boolean closeToLong(double maxDist) {
+        Pose pos = OttoCore.robotPose;
         return pos.x >= -72 && pos.x <= -49 + maxDist && pos.y >= pos.x + 49 - maxDist && pos.y <= -pos.x - 49 + maxDist;
     }
 }
