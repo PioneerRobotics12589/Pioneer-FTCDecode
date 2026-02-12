@@ -18,7 +18,8 @@ public class FlywheelTest extends OpMode {
     DcMotorEx flywheel;
     public static int rpm;
 
-    public static double kp, ki, kd;
+    public static double kp, ki, kd, kf;
+    public static double error;
 
     FtcDashboard dashboard;
 
@@ -27,20 +28,23 @@ public class FlywheelTest extends OpMode {
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
 
         dashboard = FtcDashboard.getInstance();
     }
 
     @Override
     public void loop() {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, 0));
+        //flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
 
         flywheel.setVelocity(rpm);
 
         TelemetryPacket packet = new TelemetryPacket();
+
+        error = rpm - flywheel.getVelocity();
         packet.put("target velocity", rpm);
         packet.put("actual velocity", flywheel.getVelocity());
+        packet.put("error", error);
         dashboard.sendTelemetryPacket(packet);
     }
 }

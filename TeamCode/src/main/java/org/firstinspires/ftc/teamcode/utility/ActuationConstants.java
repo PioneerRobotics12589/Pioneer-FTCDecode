@@ -10,10 +10,10 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 public class ActuationConstants {
     @Config
     public static class Autonomous {
-        public static double moveSpeed = 0.2;
+        public static double moveSpeed = 0.6;
         //        public static double moveSpeed = 0.2;
-        public static double turnSpeed = 0.4;
-//        public static double turnSpeed = 0.26667; // haha, 67
+        public static double turnSpeed = 0.5;
+//        public static double turnSpeed = 0.26667; // haha, 67 i love ryan fagan
     }
 
     @Config

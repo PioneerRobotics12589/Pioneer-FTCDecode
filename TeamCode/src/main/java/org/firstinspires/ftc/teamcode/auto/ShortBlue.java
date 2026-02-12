@@ -16,17 +16,21 @@ public class ShortBlue extends LinearOpMode {
 
         waitForStart();
 
-        Thread turretOp = AutoMovement.turretOperation("blue");
-        turretOp.start();
-        AutoLaunch.launchThreadStart();
+        //Thread turretOp = AutoMovement.turretOperation("blue");
+        //turretOp.start();
+        //AutoLaunch.launchThreadStart();
 
         Paths.Blue.startShort.run();
-        Paths.Blue.launchLong.run();
+        Paths.Blue.launchShort.run();
         Paths.Blue.spike1.run();
         Paths.Blue.launchShort.run();
-        Paths.Blue.endShort.run();
+        Paths.Blue.spike2.run();
+        Paths.Blue.launchShort.run();
+        Paths.Blue.spike3.run();
+        Paths.Blue.launchShort.run();
+        //Paths.Blue.gate.run();
 
-        turretOp.interrupt();
-        AutoLaunch.launchThreadStop();
+        //turretOp.interrupt();
+        //AutoLaunch.launchThreadStop();
     }
 }

@@ -257,10 +257,14 @@ public class Actuation {
 
     public static void reverse(boolean control) {
         if (control) {
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.067);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
+        } else {
+            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
+            intake.setPower(0.0);
+            transfer.setPower(0.0);
         }
     }
 
