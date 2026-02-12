@@ -35,7 +35,7 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void loop() {
-        //flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
 
         flywheel.setVelocity(rpm);
 

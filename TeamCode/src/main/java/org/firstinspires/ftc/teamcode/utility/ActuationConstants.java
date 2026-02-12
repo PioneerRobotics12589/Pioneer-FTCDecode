@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 public class ActuationConstants {
     @Config
     public static class Autonomous {
-        public static double moveSpeed = 0.6;
+        public static double moveSpeed = 0.4;
         //        public static double moveSpeed = 0.2;
-        public static double turnSpeed = 0.5;
+        public static double turnSpeed = 0.3;
 //        public static double turnSpeed = 0.26667; // haha, 67 i love ryan fagan
     }
 
@@ -36,7 +36,8 @@ public class ActuationConstants {
     @Config
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
-        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(400, 40, 10, 0);
+        // Before using F: P = 400, I = 40, D = 10
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 0, 0, 16);
 
         public static double kp = 0, ki = 0, kd = 0;
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor

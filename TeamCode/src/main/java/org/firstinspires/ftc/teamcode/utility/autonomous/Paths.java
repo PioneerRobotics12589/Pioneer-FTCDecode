@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utility.autonomous;
 import static java.lang.Thread.sleep;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 
 public class Paths {
@@ -50,6 +51,7 @@ public class Paths {
         public static Trajectory launchLong = new Trajectory()
                 .lineTo(FieldConstants.Launch.blueLong);
 
+
         // Short Launch
         public static Trajectory launchShort = new Trajectory() //using static to indicate that an object is NOT required to use this method
                 .lineTo(FieldConstants.Launch.blueShort);
@@ -83,30 +85,36 @@ public class Paths {
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red3)
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
+//                .action(() -> Actuation.runIntake(true))
+//                .action(() -> Actuation.runTransfer(true))
+                .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red3)
-                .action(() -> Actuation.runIntake(false))
-                .action(() -> Actuation.runTransfer(false));
+//                .action(() -> Actuation.runIntake(false))
+//                .action(() -> Actuation.runTransfer(false))
+                .action(() -> Actuation.reverse(false));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red2)
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
+//                .action(() -> Actuation.runIntake(true))
+//                .action(() -> Actuation.runTransfer(true))
+                .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red2)
-                .action(() -> Actuation.runIntake(false))
-                .action(() -> Actuation.runTransfer(false));
+//                .action(() -> Actuation.runIntake(false))
+//                .action(() -> Actuation.runTransfer(false))
+                .action(() -> Actuation.reverse(false));
 
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red1)
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
+//                .action(() -> Actuation.runIntake(true))
+//                .action(() -> Actuation.runTransfer(true))
+                .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red1)
-                .action(() -> Actuation.runIntake(false))
-                .action(() -> Actuation.runTransfer(false));
+//                .action(() -> Actuation.runIntake(false))
+//                .action(() -> Actuation.runTransfer(false))
+                .action(() -> Actuation.reverse(false));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
