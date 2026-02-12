@@ -65,6 +65,11 @@ public class AutoLaunch {
 
     public static void launchThreadStop() {
         launchThread.interrupt();
+        try {
+            launchThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -260,8 +265,8 @@ public class AutoLaunch {
 
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
-        double kMult = 0.868718; // Flywheel tunable multiplier
-        double kBias = 294.87254; // Flywheel tunable bias
+        double kMult = 0.626769; // Flywheel tunable multiplier
+        double kBias = 513.3273; // Flywheel tunable bias
 
         flyVel = (int) (flyVel * kMult + kBias);
         return flyVel;

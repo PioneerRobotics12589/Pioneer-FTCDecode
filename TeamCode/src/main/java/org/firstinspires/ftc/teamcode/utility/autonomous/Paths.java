@@ -13,50 +13,44 @@ public class Paths {
         public static Trajectory startShort = new Trajectory(FieldConstants.Start.blueShort);
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.blue3)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.blue3)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue3)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.blue2)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.blue2)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue2)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.blue1)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.blue1)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.blue1)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
-                .lineToPrecise(FieldConstants.Launch.blueLong);
+                .lineTo(FieldConstants.Launch.blueLong);
 
         // Short Launch
         public static Trajectory launchShort = new Trajectory() //using static to indicate that an object is NOT required to use this method
-                .lineToPrecise(FieldConstants.Launch.blueShort);
+                .lineTo(FieldConstants.Launch.blueShort);
 
         // Gate
         public static Trajectory gate = new Trajectory()
                 .lineTo(FieldConstants.Gate.Start.blue)
-                .lineToPrecise(FieldConstants.Gate.End.blue)
+                .lineTo(FieldConstants.Gate.End.blue)
                 .action(() -> {
                     try {
                         sleep(2000);
@@ -81,50 +75,44 @@ public class Paths {
         public static Trajectory startShort = new Trajectory(FieldConstants.Start.redShort);
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.red3)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.red3)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red3)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.red2)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.red2)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red2)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
-                .lineThrough(FieldConstants.Spike.Start.red1)
-                .action(() -> Actuation.setBlocker(true))
+                .lineTo(FieldConstants.Spike.Start.red1)
                 .action(() -> Actuation.runIntake(true))
                 .action(() -> Actuation.runTransfer(true))
                 .lineTo(FieldConstants.Spike.End.red1)
-                .action(() -> Actuation.setBlocker(false))
                 .action(() -> Actuation.runIntake(false))
                 .action(() -> Actuation.runTransfer(false));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
-                .lineToPrecise(FieldConstants.Launch.redLong);
+                .lineTo(AutoMovement.closestLongLaunch("red"));
 
         // Short Launch
         public static Trajectory launchShort = new Trajectory()
-                .lineToPrecise(FieldConstants.Launch.redShort);
+                .lineTo(FieldConstants.Launch.redShort);
 
         // Gate
         public static Trajectory gate = new Trajectory()
                 .lineTo(FieldConstants.Gate.Start.red)
-                .lineToPrecise(FieldConstants.Gate.End.red)
+                .lineTo(FieldConstants.Gate.End.red)
                 .action(() -> {
                     try {
                         sleep(2000);
@@ -135,7 +123,7 @@ public class Paths {
 
         // Park
         public static Trajectory park = new Trajectory()
-                .lineToPrecise(FieldConstants.Park.blue);
+                .lineTo(FieldConstants.Park.blue);
 
         // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()

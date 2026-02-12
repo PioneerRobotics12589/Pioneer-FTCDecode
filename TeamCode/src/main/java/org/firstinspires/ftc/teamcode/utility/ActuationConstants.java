@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 public class ActuationConstants {
     @Config
     public static class Autonomous {
-        public static double moveSpeed = 0.6;
+        public static double moveSpeed = 0.2;
         //        public static double moveSpeed = 0.2;
-        public static double turnSpeed = 0.8;
+        public static double turnSpeed = 0.4;
 //        public static double turnSpeed = 0.26667; // haha, 67
     }
 
@@ -44,7 +44,7 @@ public class ActuationConstants {
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(120));
         public static double turretOffset = -2; // Turret offset from center of the robot (5 inches backwards from the center)
 
-        public static int shortLaunch = 1480;
+        public static int shortLaunch = 1450;
         public static int longLaunch = 1600;
 
         public static double targetHeight = 0.984;

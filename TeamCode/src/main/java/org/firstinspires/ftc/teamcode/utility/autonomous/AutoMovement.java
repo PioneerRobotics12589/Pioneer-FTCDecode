@@ -147,17 +147,13 @@ public class AutoMovement {
                     if (trackingAprilTag) {
                         Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
                     } else {
-                        if (AutoLaunch.closeToShort(20)) {
-                            Actuation.turretMoveTowards(Math.toRadians(60));
-                        } else if (AutoLaunch.closeToLong(20)) {
-                            Actuation.turretMoveTowards(Math.toRadians(30));
-                        }
+                        Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
                     }
                     telemetry.addData("Target Heading", Math.toDegrees(Actuation.getTurretGlobal() - tx));
                 } else {
                     Actuation.turretMoveTowards(OttoCore.robotPose.heading);
                 }
-//                Actuation.setFlywheel(AutoLaunch.getTargetVel());
+                Actuation.setFlywheel(AutoLaunch.getTargetVel());
                 telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
             }
         });

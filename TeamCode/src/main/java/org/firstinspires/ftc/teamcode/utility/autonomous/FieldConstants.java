@@ -22,18 +22,18 @@ public class FieldConstants {
         // 1 - Closest to goal; 3 - Farthest from goal
 
         public static class Start {
-            public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
-            public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
-            public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));
+            public static Pose red1 = new Pose(13.2, -30.5, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-14.1, -30.3, Math.toRadians(-90.0));
+            public static Pose red3 = new Pose(-37.5, -30.3, Math.toRadians(-90));
             public static Pose blue1 = new Pose(-30.5, 36, Math.toRadians(-88.7));
             public static Pose blue2 = new Pose(-30.5, 12.0, Math.toRadians(-90.0));
             public static Pose blue3 = new Pose(-30.5, -12.0, Math.toRadians(-90.0));
         }
 
         public static class End {
-            public static Pose red1 = new Pose(9.3, -28, Math.toRadians(-92.0));
-            public static Pose red2 = new Pose(-15.5, -28, Math.toRadians(-94.0));
-            public static Pose red3 = new Pose(-35.75, -28, Math.toRadians(-88.7));
+            public static Pose red1 = new Pose(13.2, -49.3, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-14.1, -49.3, Math.toRadians(-90.0));
+            public static Pose red3 = new Pose(-37.5, 49.3, Math.toRadians(-90));
             public static Pose blue1 = new Pose(-30.5, 36, Math.toRadians(-88.7));
             public static Pose blue2 = new Pose(-30.5, 12.0, Math.toRadians(-90.0));
             public static Pose blue3 = new Pose(-30.5, -12.0, Math.toRadians(-90.0));
@@ -44,7 +44,7 @@ public class FieldConstants {
     @Config
     public static class Launch {
         public static Pose redLong = new Pose(-57, -9.5, Math.toRadians(-20));
-        public static Pose redShort = new Pose(16.0, -17.6, Math.toRadians(-50.3));
+        public static Pose redShort = new Pose(14.5, -15.9, Math.toRadians(-46.6));
         public static Pose blueLong = new Pose(-16.0, 56.0, Math.toRadians(-15.0));
         public static Pose blueShort = new Pose(-11.0, -14.0, Math.toRadians(-38));
     }
@@ -54,12 +54,12 @@ public class FieldConstants {
     public static class Gate {
         // Gate Distance: 2.5
         public static class Start {
-            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose red = new Pose(-12, -48, Math.toRadians(-90));
             public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
         }
 
         public static class End {
-            public static Pose red = new Pose(-7.4, -49, Math.toRadians(-92));
+            public static Pose red = new Pose(-16.1, -55.5, Math.toRadians(-67));
             public static Pose blue = new Pose(-52.5, 8, Math.toRadians(-90));
         }
     }

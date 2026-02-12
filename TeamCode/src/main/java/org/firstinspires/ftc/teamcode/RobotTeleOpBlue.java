@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 
 import java.util.function.BooleanSupplier;
@@ -42,6 +43,8 @@ public class RobotTeleOpBlue extends OpMode {
             }
         } else if (gamepad1.crossWasPressed()) {
             AutoMovement.toggleTracking();
+        } else if (gamepad1.square) {
+            OttoCore.robotPose = new Pose(0, 0, 0);
         }
 
 
@@ -82,8 +85,8 @@ public class RobotTeleOpBlue extends OpMode {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
-        Actuation.setFlywheel(shootingSpeed);
-        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+//        Actuation.setFlywheel(shootingSpeed);
+//        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
         Actuation.shoot(gamepad1.left_trigger > 0.5);
         //Actuation.runIntake(gamepad1.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_bumper);
