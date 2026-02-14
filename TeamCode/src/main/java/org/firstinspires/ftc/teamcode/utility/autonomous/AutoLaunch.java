@@ -13,23 +13,11 @@ import java.util.Queue;
 public class AutoLaunch {
     private static int targetVel;
     private static double targetRot;
+    private static boolean isIntaking;
     private static String team;
 
     private static final ArrayList<Double> turnAngles = new ArrayList<>();
-    private static final Thread launchThread = new Thread(() -> {
-        boolean prev = false;
-        while (!Thread.currentThread().isInterrupted()) {
-            AutoMovement.isTracking = closeToLaunchZone(20);
-            if (inLaunchZone()) {
-                Actuation.runIntake(true);
-                Actuation.runTransfer(true);
-            } else {
-                Actuation.runIntake(false);
-                Actuation.runTransfer(false);
-            }
-            prev = AutoMovement.isTracking;
-        }
-    });
+    private static Thread launchThread;
 
     /**
      * Sets the team color to know the goal's position
@@ -59,7 +47,28 @@ public class AutoLaunch {
         targetRot = angle;
     }
 
+    public static void setIsIntaking(boolean intaking) {
+        isIntaking = intaking;
+    }
+
     public static void launchThreadStart() {
+        launchThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                AutoMovement.isTracking = closeToLaunchZone(20);
+                if (inLaunchZone() && !isIntaking) {
+                    Actuation.runIntake(true);
+                    Actuation.runTransfer(true);
+                } else if (!isIntaking) {
+                    Actuation.runIntake(false);
+                    Actuation.runTransfer(false);
+                }
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         launchThread.start();
     }
 

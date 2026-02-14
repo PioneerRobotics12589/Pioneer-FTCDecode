@@ -5,8 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 
@@ -28,9 +31,6 @@ public class TurretTest extends OpMode {
         turret = hardwareMap.get(DcMotorEx.class, "turret");
         turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 //      Actuation.setup(hardwareMap, telemetry);
@@ -38,29 +38,13 @@ public class TurretTest extends OpMode {
 
     @Override
     public void loop() {
-
         pid = new PIDController(kp, ki, kd);
         double current = turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-        current = (current + Math.PI / 2.0) % (2 * Math.PI);
+        current = AngleUnit.normalizeRadians(current);
 
-        double target = Math.toRadians(targetAngle) % (2 * Math.PI);
-        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
-
-        if (current > target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target += 2 * Math.PI;
-            }
-        } else if (current < target) {
-            while (Math.abs(current - target) > Math.toRadians(180)) {
-                target -= 2 * Math.PI;
-            }
-        }
-
-        if (target > ActuationConstants.Launcher.turretMaxAngle) {
-            target = -ActuationConstants.Launcher.turretMaxAngle;
-        } else if (target < -ActuationConstants.Launcher.turretMaxAngle) {
-            target = ActuationConstants.Launcher.turretMaxAngle;
-        }
+        double target = AngleUnit.normalizeRadians(Math.toRadians(targetAngle));
+        target = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, target));
+//        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
 
         double turretSignal = pid.calculateSignal(target, current);
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
@@ -70,7 +54,7 @@ public class TurretTest extends OpMode {
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
         telemetry.addData("Target Angle", Math.toDegrees(target));
-        telemetry.addData("Target Ticks", targetTicks);
+//        telemetry.addData("Target Ticks", targetTicks);
         telemetry.addData("Turret Signal", clampedTurret);
         packet.put("Turret Angle", Math.toDegrees(current));
         packet.put("Target Angle", targetAngle);

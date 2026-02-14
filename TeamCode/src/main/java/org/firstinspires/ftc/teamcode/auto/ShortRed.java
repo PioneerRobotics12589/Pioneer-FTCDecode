@@ -17,22 +17,22 @@ public class ShortRed extends LinearOpMode {
 
         waitForStart();
 
-//        Thread turretOp = AutoMovement.turretOperation("red");
-//        turretOp.start();
-//        AutoLaunch.launchThreadStart();
+        Thread turretOp = AutoMovement.turretOperation("red");
+        turretOp.start();
+        AutoLaunch.launchThreadStart();
 
         Paths.Red.startShort.run();
-        Paths.Red.launchShort.run();
-        Paths.Red.spike1.run();
-        Paths.Red.launchShort.run();
-        Paths.Red.endShort.run();
+//        Paths.Red.launchShort.run();
+//        Paths.Red.spike1.run();
+//        Paths.Red.launchShort.run();
+//        Paths.Red.endShort.run();
 
-//        AutoLaunch.launchThreadStop();
-//        turretOp.interrupt();
-//        try {
-//            turretOp.join();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        AutoLaunch.launchThreadStop();
+        turretOp.interrupt();
+        try {
+            turretOp.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
-@Disabled
+//@Disabled
 @Autonomous(name="Autonomous")
 public class TestAuto extends LinearOpMode {
     @Override

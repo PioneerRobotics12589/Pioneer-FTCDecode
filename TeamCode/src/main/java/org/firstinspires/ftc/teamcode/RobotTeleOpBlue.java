@@ -21,7 +21,7 @@ import java.util.function.BooleanSupplier;
 public class RobotTeleOpBlue extends OpMode {
     private int shootingSpeed;
     private boolean trackArtifact = false;
-    private final Thread turretOp = AutoMovement.turretOperation("blue");
+    private Thread turretOp;
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -29,6 +29,7 @@ public class RobotTeleOpBlue extends OpMode {
     }
 
     public void start() {
+        turretOp = AutoMovement.turretOperation("blue");
         turretOp.start();
     }
 
@@ -43,7 +44,7 @@ public class RobotTeleOpBlue extends OpMode {
             }
         } else if (gamepad1.crossWasPressed()) {
             AutoMovement.toggleTracking();
-        } else if (gamepad1.square) {
+        } else if (gamepad1.dpad_down) {
             OttoCore.robotPose = new Pose(0, 0, 0);
         }
 
@@ -100,7 +101,7 @@ public class RobotTeleOpBlue extends OpMode {
     public void stop() {
         turretOp.interrupt();
         try {
-            turretOp.join();
+            turretOp.join(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

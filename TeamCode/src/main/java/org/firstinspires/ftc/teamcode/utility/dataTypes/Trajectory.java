@@ -136,9 +136,9 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 3, 3, Math.toRadians(5));
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
+        while(!(vel == 0 && Math.abs(rotVel) > 0.5 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
@@ -155,7 +155,7 @@ public class Trajectory {
             if (vel != 0 || rotVel != 0) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 3, 3, Math.toRadians(5));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);

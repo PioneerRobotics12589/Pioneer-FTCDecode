@@ -91,9 +91,7 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-            turret.setTargetPosition(0);
-            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            turret.setPower(1);
+            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -326,6 +324,12 @@ public class Actuation {
         }
         telemetry.addData("Turret Angle", Math.toDegrees(turretAngle));
         telemetry.addData("Max Angle", ActuationConstants.Launcher.turretMaxAngle);
+    }
+
+    public static void setTurret(double angle) {
+        while (Math.abs(getTurretGlobal() - angle) >= Math.toDegrees(0.1)) {
+            turretMoveTowards(angle);
+        }
     }
 
     /**

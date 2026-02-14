@@ -25,7 +25,7 @@ public class FieldConstants {
             public static Pose red1 = new Pose(13.2, -30.5, Math.toRadians(-90.0));
             public static Pose red2 = new Pose(-14.1, -30.3, Math.toRadians(-90.0));
             public static Pose red3 = new Pose(-37.5, -30.3, Math.toRadians(-90));
-            public static Pose blue1 = new Pose(10.5, 30, Math.toRadians(90));
+            public static Pose blue1 = new Pose(8, 30, Math.toRadians(90));
             public static Pose blue2 = new Pose(-18.6, 30, Math.toRadians(90));
             public static Pose blue3 = new Pose(-39.5, 30, Math.toRadians(90.0));
         }
@@ -34,9 +34,9 @@ public class FieldConstants {
             public static Pose red1 = new Pose(13.2, -49.3, Math.toRadians(-90.0));
             public static Pose red2 = new Pose(-14.1, -49.3, Math.toRadians(-90.0));
             public static Pose red3 = new Pose(-37.5, 49.3, Math.toRadians(-90));
-            public static Pose blue1 = new Pose(10.5, 51, Math.toRadians(90));
-            public static Pose blue2 = new Pose(-18.6, 51, Math.toRadians(90)); //HelloWorld('print'):
-            public static Pose blue3 = new Pose(-39.5, 51, Math.toRadians(90));
+            public static Pose blue1 = new Pose(10.5, 40, Math.toRadians(90));
+            public static Pose blue2 = new Pose(-18.6, 40, Math.toRadians(90)); //HelloWorld('print'):
+            public static Pose blue3 = new Pose(-39.5, 40, Math.toRadians(90));
         }
     }
 

@@ -27,6 +27,9 @@ public class AutoMovement {
 
     public static final double closestLaunchDist = 30; // way to many kewords man, consider changing to: double closestLaunchDIst
     public static boolean isTracking = false;
+    public static boolean ready = false;
+
+    public static boolean lockTracking = false;
 
     /**
      * Automatically intakes the closest artifact ahead of the robot
@@ -117,30 +120,36 @@ public class AutoMovement {
                 Pose robotPos = new Pose(OttoCore.robotPose);
                 Pose reference = new Pose(robotPos);
 
-                Actuation.setPipeline(0);
-
                 List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
                 int goalID = team.equals("blue") ? 20 : 24;
                 boolean trackingAprilTag = false;
                 double tx = 0.0;
 
-//                Pose fiducialGlobalPos = new Pose(0, 0, 0);
+                //                Pose fiducialGlobalPos = new Pose(0, 0, 0);
                 for (LLResultTypes.FiducialResult fid : fids) {
                     // Track AprilTag using center
                     if (fid.getFiducialId() == goalID) {
                         trackingAprilTag = true;
                         // Track using AprilTag data if the goal was detected
-//                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
-//                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
-                        tx = Math.toRadians(fid.getTargetXDegrees())/2.0;
-//                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+                        //                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
+                        //                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
+                        tx = Math.toRadians(fid.getTargetXDegrees()) / 2.0;
+
+                        //                        Point tag = goalID == 20 ? new Point(58, 54) : new Point(58, -54);
+                        // Auto-adjusts robot position based on april tag angle;
+                        //                        double global_angle = Actuation.getTurretGlobal()-tx;
+                        //                        double m = Math.tan(global_angle), b = tag.y - tag.x*m;
+                        //                        double new_x = (OttoCore.robotPose.x - m*b + m*OttoCore.robotPose.y) / (Math.pow(m, 2) + 1);
+                        //                        OttoCore.robotPose = OttoCore.relativeTransform(new Pose(new_x, m*new_x+b, OttoCore.robotPose.heading), -ActuationConstants.Launcher.turretOffset, 0, 0);
+                        //                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+                        ready = Math.abs(tx) < Math.toRadians(1);
                     }
                 }
 
 
                 reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
 
-//                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
+                //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
                 AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
 
                 if (AutoLaunch.closeToLaunchZone(20)) {
@@ -149,17 +158,25 @@ public class AutoMovement {
                     } else {
                         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
                     }
+                    //                    Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
                     telemetry.addData("Target Heading", Math.toDegrees(Actuation.getTurretGlobal() - tx));
                 } else {
                     Actuation.turretMoveTowards(OttoCore.robotPose.heading);
                 }
+
                 Actuation.setFlywheel(AutoLaunch.getTargetVel());
                 telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
             }
         });
     }
 
+    public static boolean isReady() {
+        return ready;
+    }
     public static void toggleTracking() {
         isTracking = !isTracking;
+    }
+    public static void setLockTracking(boolean lock) {
+        lockTracking = lock;
     }
 }
