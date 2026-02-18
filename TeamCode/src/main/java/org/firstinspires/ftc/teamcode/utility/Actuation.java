@@ -36,7 +36,7 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
     public static Servo blocker, launchIndicator;
-    public static DcMotorEx flywheel, flywheel1, flywheel2;
+    public static DcMotorEx flywheel, flywheel1;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -45,6 +45,7 @@ public class Actuation {
 
     public static void setup(HardwareMap map, Telemetry tel) {
         telemetry = tel;
+        OttoCore.setup(map);
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
@@ -91,7 +92,10 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            turret.setTargetPosition(0);
+            turret.setPower(1); // Comment if using turret PID
+            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -101,7 +105,6 @@ public class Actuation {
 
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
-        OttoCore.setup(map);
     }
 
     /**
@@ -255,8 +258,10 @@ public class Actuation {
 
     public static void reverse(boolean control) {
         if (control) {
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.04);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+        } else {
+            intake.setPower(0);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         } /*else {
@@ -301,8 +306,10 @@ public class Actuation {
         double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
+//        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, AngleUnit.normalizeRadians(getTurretLocal()));
         int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
         turret.setTargetPosition(targetTicks);
+//        turret.setPower(turretSignal);
     }
 
     /**
@@ -327,9 +334,10 @@ public class Actuation {
     }
 
     public static void setTurret(double angle) {
-        while (Math.abs(getTurretGlobal() - angle) >= Math.toDegrees(0.1)) {
+        while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal()) - AngleUnit.normalizeRadians(angle)) >= Math.toRadians(0.5)) {
             turretMoveTowards(angle);
         }
+        turret.setPower(0);
     }
 
     /**

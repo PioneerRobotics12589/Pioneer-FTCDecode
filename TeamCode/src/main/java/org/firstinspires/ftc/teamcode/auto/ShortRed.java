@@ -17,22 +17,44 @@ public class ShortRed extends LinearOpMode {
 
         waitForStart();
 
-        Thread turretOp = AutoMovement.turretOperation("red");
-        turretOp.start();
-        AutoLaunch.launchThreadStart();
-
         Paths.Red.startShort.run();
-//        Paths.Red.launchShort.run();
-//        Paths.Red.spike1.run();
-//        Paths.Red.launchShort.run();
-//        Paths.Red.endShort.run();
+        Actuation.setFlywheel(1460);
+        sleep(500);
 
-        AutoLaunch.launchThreadStop();
-        turretOp.interrupt();
-        try {
-            turretOp.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Actuation.runIntake(true);
+        Actuation.packet.addLine("On the way to: Launch Zone");
+        Actuation.updateTelemetry();
+
+        Paths.Red.launchShort.run();
+        Actuation.packet.addLine("On the way to: Spike1");
+        Actuation.updateTelemetry();
+
+        Paths.Red.spike1.run();
+        Actuation.packet.addLine("On the way to: Launch Zone");
+        Actuation.updateTelemetry();
+
+        Paths.Red.launchShort.run();
+        Actuation.packet.addLine("On the way to: Spike2");
+        Actuation.updateTelemetry();
+
+        Paths.Red.spike2.run();
+        Actuation.packet.addLine("On the way to: Launch Zone");
+        Actuation.updateTelemetry();
+
+        Paths.Red.launchShort.run();
+        Actuation.packet.addLine("On the way to: Spike3");
+        Actuation.updateTelemetry();
+
+        Paths.Red.spike3.run();
+        Actuation.packet.addLine("On the way to: Launch Zone");
+        Actuation.updateTelemetry();
+
+        Paths.Red.launchShort.run();
+        Actuation.packet.addLine("On the way to: Gate");
+        Actuation.updateTelemetry();
+
+        Paths.Red.gate.run();
+        Actuation.packet.addLine("Auto Ended.");
+        Actuation.updateTelemetry();
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.dataTypes;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -12,6 +14,7 @@ import java.util.function.BooleanSupplier;
 
 public class Trajectory {
     double moveSpeed, turnSpeed;
+    Pose start;
 
     ArrayList<Runnable> movements;
 
@@ -23,6 +26,7 @@ public class Trajectory {
 
         moveSpeed = ActuationConstants.Autonomous.moveSpeed;
         turnSpeed = ActuationConstants.Autonomous.turnSpeed;
+        start = OttoCore.robotPose;
     }
 
     /**
@@ -30,13 +34,13 @@ public class Trajectory {
      * @param startPose Robot's starting position & heading
      */
     public Trajectory(Pose startPose) {
+
         movements = new ArrayList<>();
 
         moveSpeed = ActuationConstants.Autonomous.moveSpeed;
         turnSpeed = ActuationConstants.Autonomous.turnSpeed;
 
-        OttoCore.robotPose = startPose;
-        IMUControl.setYaw(startPose.heading);
+        start = startPose;
     }
 
     /**
@@ -100,6 +104,8 @@ public class Trajectory {
      * Builds and runs the trajectory's previously specified movements
      */
     public void run() {
+        OttoCore.robotPose = start;
+        IMUControl.setYaw(start.heading);
         for (Runnable movement : movements) {
             movement.run();
         }
@@ -136,11 +142,27 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 3, 3, Math.toRadians(5));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
 
-        while(!(vel == 0 && Math.abs(rotVel) > 0.5 && hasRun && withinRange && withinField)) {
+        while(!(vel == 0 && Math.abs(rotVel) < 0.5 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
+
+            if (vel != 0) {
+                Actuation.packet.addLine("Velocity Stuck");
+            }
+            if (Math.abs(rotVel) >= 0.5) {
+                Actuation.packet.addLine("Angular Velocity Stuck");
+            }
+            if (!hasRun) {
+                Actuation.packet.addLine("Hasn't Run");
+            }
+            if (!withinRange) {
+                Actuation.packet.addLine("Not In Range");
+            }
+            if (!withinField) {
+                Actuation.packet.addLine("Not In Field");
+            }
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
             Actuation.packet.put("vel", vel);
@@ -155,7 +177,7 @@ public class Trajectory {
             if (vel != 0 || rotVel != 0) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 3, 3, Math.toRadians(5));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
@@ -172,22 +194,17 @@ public class Trajectory {
             }
         }
 
-        double vel = 1;
-        double rotVel = 1;
-
         boolean hasRun = false;
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
         boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
+        while(!(hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             OttoCore.displayPosition();
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
-            Actuation.packet.put("vel", vel);
-            Actuation.packet.put("rot vel", rotVel);
             Actuation.updateTelemetry();
 
             double angle = Math.atan2(targetPose.y - OttoCore.robotPose.y, targetPose.x - OttoCore.robotPose.x);
@@ -203,9 +220,6 @@ public class Trajectory {
             Actuation.drive(clampMove, clampRot, clampStrafe);
 
             Pose robot_vel = OttoCore.getVelocity();
-            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
-            rotVel = robot_vel.heading;
-            if (vel != 0 || rotVel != 0) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
             withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));

@@ -11,45 +11,75 @@ public class Paths {
         public static Trajectory startLong = new Trajectory(FieldConstants.Start.blueLong);
 
         public static Trajectory startShort = new Trajectory(FieldConstants.Start.blueShort);
+
+        // Spike 4
+        public static Trajectory spike4 = new Trajectory()
+                .lineTo(FieldConstants.Spike.Start.blue4)
+                .action(() -> Actuation.reverse(true))
+                .lineTo(FieldConstants.Spike.End.blue4)
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
+
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.blue3)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue3)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.blue2)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue2)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.blue1)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue1)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
-                .lineTo(FieldConstants.Launch.blueLong);
+                .lineTo(FieldConstants.Launch.blueLong)
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(24)))
+                .action(() -> {
+                    try {
+                        sleep(250);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.intake.setPower(-1.0))
+                .action(() -> Actuation.transfer.setPower(-0.9))
+                .action(() -> {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.runIntake(false))
+                .action(() -> Actuation.runTransfer(false));
 
-        // Short Launch
-        public static Trajectory launchShort = new Trajectory() //using static to indicate that an object is NOT required to use this method
-                .lineTo(FieldConstants.Launch.blueShort);
-
-        public static Trajectory launch = new Trajectory()
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
+        public static Trajectory launchShort = new Trajectory()
+                .lineTo(FieldConstants.Launch.blueShort)
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(45)))
+                .action(() -> {
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.intake.setPower(-1.0))
+                .action(() -> Actuation.transfer.setPower(-0.9))
                 .action(() -> {
                     try {
                         sleep(1500);
@@ -62,15 +92,15 @@ public class Paths {
 
         // Gate
         public static Trajectory gate = new Trajectory()
-                .lineTo(FieldConstants.Gate.Start.blue)
-                .lineTo(FieldConstants.Gate.End.blue)
-                .action(() -> {
-                    try {
-                        sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .lineTo(FieldConstants.Gate.Start.blue);
+//                .lineTo(FieldConstants.Gate.End.blue)
+//                .action(() -> {
+//                    try {
+//                        sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                });
 
         // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()
@@ -85,58 +115,75 @@ public class Paths {
         // Start
         public static Trajectory startLong = new Trajectory(FieldConstants.Start.redLong);
 
-        public static Trajectory startShort = new Trajectory(FieldConstants.Start.redShort);
+        public static Trajectory startShort = new Trajectory(FieldConstants.Start.redShort)
+                        .action(() -> Actuation.turretMoveTowards(Math.toRadians(0)));
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red3)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red3)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red2)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red2)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red1)
-                .action(() -> AutoLaunch.setIsIntaking(true))
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red1)
-                .action(() -> AutoLaunch.setIsIntaking(false))
-                .action(() -> Actuation.reverse(false));
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
-                .lineTo(AutoMovement.closestLongLaunch("red"));
-
-        // Short Launch
-        public static Trajectory launchShort = new Trajectory()
-                .lineTo(FieldConstants.Launch.redShort);
-
-        // Gate
-        public static Trajectory gate = new Trajectory()
-                .lineTo(FieldConstants.Gate.Start.red)
-                .lineTo(FieldConstants.Gate.End.red)
+                .lineTo(FieldConstants.Launch.redLong)
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-30)))
+                .action(() -> Actuation.runIntake(true))
+                .action(() -> Actuation.runTransfer(true))
                 .action(() -> {
                     try {
-                        sleep(2000);
+                        sleep(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                });
+                })
+                .action(() -> Actuation.runIntake(false))
+                .action(() -> Actuation.runTransfer(false));
 
-        // Park
-        public static Trajectory park = new Trajectory()
-                .lineTo(FieldConstants.Park.blue);
+        public static Trajectory launchShort = new Trajectory()
+                .lineTo(FieldConstants.Launch.redShort)
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-45)))
+                .action(() -> Actuation.runIntake(true))
+                .action(() -> Actuation.runTransfer(true))
+                .action(() -> {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.runIntake(false))
+                .action(() -> Actuation.runTransfer(false));
+
+        // Gate
+        public static Trajectory gate = new Trajectory()
+                .lineTo(FieldConstants.Gate.Start.red);
+//                .lineTo(FieldConstants.Gate.End.blue)
+//                .action(() -> {
+//                    try {
+//                        sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                });
 
         // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()

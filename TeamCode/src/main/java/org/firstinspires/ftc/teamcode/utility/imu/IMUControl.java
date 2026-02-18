@@ -19,8 +19,9 @@ public class IMUControl {
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(logo_dir, usb_dir);
 
         imu.initialize(new IMU.Parameters(orientation));
-        imu.resetYaw();
 
+        imu.resetYaw();
+        offset = 0.0;
         initialized = true;
     }
 

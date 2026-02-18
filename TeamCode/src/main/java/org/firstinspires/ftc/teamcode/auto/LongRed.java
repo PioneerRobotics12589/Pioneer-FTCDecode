@@ -18,21 +18,16 @@ public class LongRed extends LinearOpMode {
 
         waitForStart();
 
-        Thread turretOp = AutoMovement.turretOperation("red");
-        turretOp.start();
-        AutoLaunch.launchThreadStart();
-
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
         Paths.Red.startLong.run();
+        Actuation.setFlywheel(1570);
+        sleep(500);
         Paths.Red.launchLong.run();
-        Paths.Red.spike3.run();
-        Paths.Red.launchLong.run();
-        Paths.Red.spike2.run();
-        Paths.Red.launchLong.run();
-        Paths.Red.gate.run();
+//        Paths.Red.spike3.run();
+//        Paths.Red.launchLong.run();
+//        Paths.Red.spike2.run();
+//        Paths.Red.launchLong.run();
+//        Paths.Red.gate.run();
 //        Paths.Red.endLong.run();
-
-        turretOp.interrupt();
-        AutoLaunch.launchThreadStop();
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,13 +38,12 @@ public class OttoCore {
      * @param hardwareMap Current hardware map
      */
     public static void setup(HardwareMap hardwareMap) {
+        robotPose = new Pose(0, 0, 0);
 
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
-
-        robotPose = new Pose(0, 0, 0);
 
         IMUControl.setup(hardwareMap,
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
@@ -53,6 +54,10 @@ public class OttoCore {
         vertical = new PIDController(ActuationConstants.Movement.verticalGains);
         lateral = new PIDController(ActuationConstants.Movement.lateralGains);
         rotational = new PIDController(ActuationConstants.Movement.rotationalGains);
+
+        ticks_right = 0; ticks_left = 0; ticks_back = 0;
+        prev_ticks_right = 0; prev_ticks_left = 0; prev_ticks_back = 0;
+        dx = 0; dy = 0; dtheta = 0; dx_center = 0; dx_perpendicular = 0;
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -138,7 +143,6 @@ public class OttoCore {
      * @param turnSpeed Robot's turn speed
      */
     public static void moveTowards(Pose targetPose, double movementSpeed, double turnSpeed) {
-
         // Update coefficients in case changed in dashboard
         lateral.updateCoeffs(ActuationConstants.Movement.lateralGains);
         vertical.updateCoeffs(ActuationConstants.Movement.verticalGains);

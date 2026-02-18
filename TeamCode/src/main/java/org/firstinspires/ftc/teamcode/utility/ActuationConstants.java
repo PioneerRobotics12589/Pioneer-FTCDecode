@@ -12,7 +12,7 @@ public class ActuationConstants {
     public static class Autonomous {
         public static double moveSpeed = 0.6;
         //        public static double moveSpeed = 0.2;
-        public static double turnSpeed = 0.6;
+        public static double turnSpeed = 0.8;
 //        public static double turnSpeed = 0.26667; // haha, 67 i love ryan fagan
     }
 
@@ -36,19 +36,17 @@ public class ActuationConstants {
     @Config
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
-        // Before using F: P = 400, I = 40, D = 10
-        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 0, 0, 16);
-
-        public static double kp = 0, ki = 0, kd = 0;
-        // 0.3, 1, 0.0015
-        public static PIDController turretPID = new PIDController(0.5, 0, 0.0015);
+        // Before using F: P = 600, I = 50, D = 50, F = 20
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 30, 0, 16);
+        // 1, 0.5, 0.003
+        public static PIDController turretPID = new PIDController(0.3, 0.5, 0.003);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(120));
         public static double turretOffset = -2; // Turret offset from center of the robot (5 inches backwards from the center)
 
         public static int shortLaunch = 1450;
-        public static int longLaunch = 1600;
+        public static int longLaunch = 1560;
 
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;

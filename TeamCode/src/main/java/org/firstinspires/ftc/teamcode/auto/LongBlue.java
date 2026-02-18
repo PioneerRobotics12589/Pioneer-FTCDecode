@@ -7,7 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
+import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
+import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 @Autonomous(name="LongBlue", group = "Blue Auto")
 @Config
@@ -16,14 +19,20 @@ public class LongBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Actuation.setup(hardwareMap, telemetry);
 
+        OttoCore.robotPose = FieldConstants.Start.blueLong;
+        IMUControl.setYaw(OttoCore.robotPose.heading);
+
         waitForStart();
 
-        Thread turretOp = AutoMovement.turretOperation("blue");
-        turretOp.start();
-        AutoLaunch.launchThreadStart();
-
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
+
+        Actuation.setFlywheel(1560);
+        Actuation.turretMoveTowards(Math.toRadians(-17.5));
+        sleep(2000);
         Paths.Blue.startLong.run();
+
+        Paths.Blue.launchLong.run();
+        Paths.Blue.spike4.run();
         Paths.Blue.launchLong.run();
         Paths.Blue.spike3.run();
         Paths.Blue.launchLong.run();
@@ -31,8 +40,5 @@ public class LongBlue extends LinearOpMode {
         Paths.Blue.launchLong.run();
         Paths.Blue.gate.run();
 //        Paths.Blue.endLong.run();
-
-        turretOp.interrupt();
-        AutoLaunch.launchThreadStop();
     }
 }

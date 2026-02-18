@@ -42,7 +42,7 @@ public class RobotTeleOpBlue extends OpMode {
             if (trackArtifact) {
                 gamepad1.setLedColor(255, 0, 255, 3000);
             }
-        } else if (gamepad1.crossWasPressed()) {
+        } else if (gamepad2.crossWasPressed()) {
             AutoMovement.toggleTracking();
         } else if (gamepad1.dpad_down) {
             OttoCore.robotPose = new Pose(0, 0, 0);

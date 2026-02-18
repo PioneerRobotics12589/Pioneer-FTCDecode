@@ -274,8 +274,8 @@ public class AutoLaunch {
 
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
-        double kMult = 0.626769; // Flywheel tunable multiplier
-        double kBias = 513.3273; // Flywheel tunable bias
+        double kMult = 0.574538; // Flywheel tunable multiplier
+        double kBias = 563.88336; // Flywheel tunable bias
 
         flyVel = (int) (flyVel * kMult + kBias);
         return flyVel;

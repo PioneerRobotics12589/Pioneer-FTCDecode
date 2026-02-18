@@ -117,8 +117,6 @@ public class AutoMovement {
     public static Thread turretOperation(String team) {
         return new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                Pose robotPos = new Pose(OttoCore.robotPose);
-                Pose reference = new Pose(robotPos);
 
                 List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
                 int goalID = team.equals("blue") ? 20 : 24;
@@ -133,7 +131,7 @@ public class AutoMovement {
                         // Track using AprilTag data if the goal was detected
                         //                        fiducialGlobalPos.x = fid.getRobotPoseFieldSpace().getPosition().x;
                         //                        fiducialGlobalPos.y = fid.getRobotPoseFieldSpace().getPosition().y;
-                        tx = Math.toRadians(fid.getTargetXDegrees()) / 2.0;
+                        tx = Math.toRadians(fid.getTargetXDegrees());
 
                         //                        Point tag = goalID == 20 ? new Point(58, 54) : new Point(58, -54);
                         // Auto-adjusts robot position based on april tag angle;
@@ -142,24 +140,20 @@ public class AutoMovement {
                         //                        double new_x = (OttoCore.robotPose.x - m*b + m*OttoCore.robotPose.y) / (Math.pow(m, 2) + 1);
                         //                        OttoCore.robotPose = OttoCore.relativeTransform(new Pose(new_x, m*new_x+b, OttoCore.robotPose.heading), -ActuationConstants.Launcher.turretOffset, 0, 0);
                         //                        reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
-                        ready = Math.abs(tx) < Math.toRadians(1);
                     }
                 }
 
-
-                reference = OttoCore.relativeTransform(reference, ActuationConstants.Launcher.turretOffset, 0, 0);
-
                 //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-                AutoLaunch.updateAutoLaunchS(reference); // Assuming static launching
+                AutoLaunch.updateAutoLaunchS(OttoCore.robotPose); // Assuming static launching
 
                 if (AutoLaunch.closeToLaunchZone(20)) {
                     if (trackingAprilTag) {
                         Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
+                        ready = Math.abs(tx) < Math.toRadians(1);
                     } else {
                         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+                        ready = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(1);
                     }
-                    //                    Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-                    telemetry.addData("Target Heading", Math.toDegrees(Actuation.getTurretGlobal() - tx));
                 } else {
                     Actuation.turretMoveTowards(OttoCore.robotPose.heading);
                 }
