@@ -66,12 +66,27 @@ public class D1TeleOp extends OpMode {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
+        if (gamepad1.right_bumper) {
+            Actuation.intake.setPower(-1.0);
+        }
+        else {
+            Actuation.intake.setPower(0.0);
+        }
+        if (gamepad2.dpad_left) {
+            Actuation.turretMoveTowards(Math.toRadians(50));
+        }
+        else if (gamepad2.dpad_up) {
+            Actuation.turretMoveTowards(Math.toRadians(0));
+        }
+        else if (gamepad2.dpad_down) {
+            Actuation.turretMoveTowards(Math.toRadians(115));
+        }
         Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
         Actuation.shoot(gamepad1.left_trigger > 0.5);
         //Actuation.runIntake(gamepad1.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_bumper);
-        Actuation.runIntake(gamepad1.right_bumper);
+        //Actuation.runIntake(gamepad1.right_bumper);
         Actuation.reverse(gamepad1.right_trigger > 0.5);
         // Actuation.setLaunchIndicator();
 //        if (gamepad1.dpad_left) {
