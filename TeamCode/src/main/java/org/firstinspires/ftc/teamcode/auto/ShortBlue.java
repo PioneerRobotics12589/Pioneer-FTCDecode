@@ -17,50 +17,23 @@ public class ShortBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
+        OttoCore.robotPose = FieldConstants.Start.blueShort;
+        IMUControl.setYaw(OttoCore.robotPose.heading);
 
         waitForStart();
 
-//        Paths.Blue.startShort.run();
-        OttoCore.robotPose = FieldConstants.Start.blueShort;
-        IMUControl.setYaw(OttoCore.robotPose.heading);
         Actuation.setFlywheel(1470);
         Actuation.turretMoveTowards(Math.toRadians(10));
         sleep(1000);
 
         Actuation.runIntake(true);
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Blue.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike1");
-        Actuation.updateTelemetry();
-
         Paths.Blue.spike1.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Blue.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike2");
-        Actuation.updateTelemetry();
-
         Paths.Blue.spike2.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Blue.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike3");
-        Actuation.updateTelemetry();
-
         Paths.Blue.spike3.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Blue.launchShort.run();
-        Actuation.packet.addLine("On the way to: Gate");
-        Actuation.updateTelemetry();
-
         Paths.Blue.gate.run();
-        Actuation.packet.addLine("Auto Ended.");
-        Actuation.updateTelemetry();
     }
 }

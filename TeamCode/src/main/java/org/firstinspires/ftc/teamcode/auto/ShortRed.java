@@ -6,7 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
+import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
+import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 @Autonomous(name="ShortRed", group="Red Auto")
 public class ShortRed extends LinearOpMode {
@@ -14,47 +17,24 @@ public class ShortRed extends LinearOpMode {
     @Override
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
+        OttoCore.robotPose = FieldConstants.Start.redShort;
 
         waitForStart();
 
-        Paths.Red.startShort.run();
-        Actuation.setFlywheel(1460);
-        sleep(500);
+//        Paths.Blue.startShort.run();
+        IMUControl.setYaw(OttoCore.robotPose.heading);
+        Actuation.setFlywheel(1470);
+        Actuation.turretMoveTowards(Math.toRadians(-10));
+        sleep(1000);
 
         Actuation.runIntake(true);
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Red.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike1");
-        Actuation.updateTelemetry();
-
         Paths.Red.spike1.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Red.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike2");
-        Actuation.updateTelemetry();
-
         Paths.Red.spike2.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Red.launchShort.run();
-        Actuation.packet.addLine("On the way to: Spike3");
-        Actuation.updateTelemetry();
-
         Paths.Red.spike3.run();
-        Actuation.packet.addLine("On the way to: Launch Zone");
-        Actuation.updateTelemetry();
-
         Paths.Red.launchShort.run();
-        Actuation.packet.addLine("On the way to: Gate");
-        Actuation.updateTelemetry();
-
         Paths.Red.gate.run();
-        Actuation.packet.addLine("Auto Ended.");
-        Actuation.updateTelemetry();
     }
 }

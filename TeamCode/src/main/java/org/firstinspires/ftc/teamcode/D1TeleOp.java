@@ -74,12 +74,14 @@ public class D1TeleOp extends OpMode {
         }
         if (gamepad2.dpad_left) {
             Actuation.turretMoveTowards(Math.toRadians(50));
+            shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
         else if (gamepad2.dpad_up) {
             Actuation.turretMoveTowards(Math.toRadians(0));
         }
         else if (gamepad2.dpad_down) {
-            Actuation.turretMoveTowards(Math.toRadians(115));
+            Actuation.turretMoveTowards(Math.toRadians(30));
+            shootingSpeed = ActuationConstants.Launcher.longLaunch;
         }
         Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);

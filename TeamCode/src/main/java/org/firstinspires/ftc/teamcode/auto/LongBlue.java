@@ -18,7 +18,6 @@ public class LongBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Actuation.setup(hardwareMap, telemetry);
-
         OttoCore.robotPose = FieldConstants.Start.blueLong;
         IMUControl.setYaw(OttoCore.robotPose.heading);
 
@@ -28,8 +27,7 @@ public class LongBlue extends LinearOpMode {
 
         Actuation.setFlywheel(1560);
         Actuation.turretMoveTowards(Math.toRadians(-17.5));
-        sleep(2000);
-        Paths.Blue.startLong.run();
+        sleep(1750);
 
         Paths.Blue.launchLong.run();
         Paths.Blue.spike4.run();

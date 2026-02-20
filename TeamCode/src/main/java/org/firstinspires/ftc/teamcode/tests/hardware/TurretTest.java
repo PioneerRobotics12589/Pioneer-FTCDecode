@@ -29,7 +29,10 @@ public class TurretTest extends OpMode {
     @Override
     public void init() {
         turret = hardwareMap.get(DcMotorEx.class, "turret");
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        turret.setTargetPosition(0);
+        turret.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        turret.setPower(1.0);
+//        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         dash = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
@@ -44,18 +47,19 @@ public class TurretTest extends OpMode {
 
         double target = AngleUnit.normalizeRadians(Math.toRadians(targetAngle));
         target = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, target));
-//        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        double targetTicks = target * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
 
-        double turretSignal = pid.calculateSignal(target, current);
-        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
+        turret.setTargetPosition((int) targetTicks);
+//        double turretSignal = pid.calculateSignal(target, current);
+//        double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 
-        turret.setPower(clampedTurret);
+//        turret.setPower(clampedTurret);
 
         telemetry.addData("Turret Angle", Math.toDegrees(current));
         telemetry.addData("Turret Ticks", turret.getCurrentPosition());
         telemetry.addData("Target Angle", Math.toDegrees(target));
 //        telemetry.addData("Target Ticks", targetTicks);
-        telemetry.addData("Turret Signal", clampedTurret);
+//        telemetry.addData("Turret Signal", clampedTurret);
         packet.put("Turret Angle", Math.toDegrees(current));
         packet.put("Target Angle", targetAngle);
         dash.sendTelemetryPacket(packet);

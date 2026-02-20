@@ -7,10 +7,6 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 
 public class Paths {
     public static class Blue {
-        // Start
-        public static Trajectory startLong = new Trajectory(FieldConstants.Start.blueLong);
-
-        public static Trajectory startShort = new Trajectory(FieldConstants.Start.blueShort);
 
         // Spike 4
         public static Trajectory spike4 = new Trajectory()
@@ -48,7 +44,7 @@ public class Paths {
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
                 .lineTo(FieldConstants.Launch.blueLong)
-                .action(() -> Actuation.turretMoveTowards(Math.toRadians(24)))
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(24.5)))
                 .action(() -> {
                     try {
                         sleep(250);
@@ -57,7 +53,7 @@ public class Paths {
                     }
                 })
                 .action(() -> Actuation.intake.setPower(-1.0))
-                .action(() -> Actuation.transfer.setPower(-0.9))
+                .action(() -> Actuation.transfer.setPower(-0.7))
                 .action(() -> {
                     try {
                         sleep(1000);
@@ -79,7 +75,7 @@ public class Paths {
                     }
                 })
                 .action(() -> Actuation.intake.setPower(-1.0))
-                .action(() -> Actuation.transfer.setPower(-0.9))
+                .action(() -> Actuation.transfer.setPower(-0.8))
                 .action(() -> {
                     try {
                         sleep(1500);
@@ -112,11 +108,14 @@ public class Paths {
     }
 
     public static class Red {
-        // Start
-        public static Trajectory startLong = new Trajectory(FieldConstants.Start.redLong);
+        // Spike 4
+        public static Trajectory spike4 = new Trajectory()
+                .lineTo(FieldConstants.Spike.Start.red4)
+                .action(() -> Actuation.reverse(true))
+                .lineTo(FieldConstants.Spike.End.red4)
+                .action(() -> Actuation.reverse(false))
+                .action(() -> Actuation.runIntake(true));
 
-        public static Trajectory startShort = new Trajectory(FieldConstants.Start.redShort)
-                        .action(() -> Actuation.turretMoveTowards(Math.toRadians(0)));
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .lineTo(FieldConstants.Spike.Start.red3)
@@ -131,7 +130,8 @@ public class Paths {
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.red2)
                 .action(() -> Actuation.reverse(false))
-                .action(() -> Actuation.runIntake(true));
+                .action(() -> Actuation.runIntake(true))
+                .lineTo(FieldConstants.Spike.Start.red2);
 
 
         // Spike 1
@@ -145,9 +145,16 @@ public class Paths {
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
                 .lineTo(FieldConstants.Launch.redLong)
-                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-30)))
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-24.5)))
+                .action(() -> {
+                    try {
+                        sleep(250);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.intake.setPower(-1.0))
+                .action(() -> Actuation.transfer.setPower(-0.7))
                 .action(() -> {
                     try {
                         sleep(1000);
@@ -161,11 +168,18 @@ public class Paths {
         public static Trajectory launchShort = new Trajectory()
                 .lineTo(FieldConstants.Launch.redShort)
                 .action(() -> Actuation.turretMoveTowards(Math.toRadians(-45)))
-                .action(() -> Actuation.runIntake(true))
-                .action(() -> Actuation.runTransfer(true))
                 .action(() -> {
                     try {
-                        sleep(1000);
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .action(() -> Actuation.intake.setPower(-1.0))
+                .action(() -> Actuation.transfer.setPower(-0.8))
+                .action(() -> {
+                    try {
+                        sleep(1500);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

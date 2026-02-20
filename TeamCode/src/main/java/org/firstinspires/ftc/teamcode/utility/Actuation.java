@@ -337,7 +337,7 @@ public class Actuation {
         while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal()) - AngleUnit.normalizeRadians(angle)) >= Math.toRadians(0.5)) {
             turretMoveTowards(angle);
         }
-        turret.setPower(0);
+//        turret.setPower(0);
     }
 
     /**

@@ -16,77 +16,86 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 @TeleOp(name = "Awe(sigma) Sauce Red")
 @Config
 public class RobotTeleOpRed extends OpMode {
-    private boolean trackArtifact = false;
+    private int shootingSpeed;
+
+//    private Thread turretOp;
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
-        AutoLaunch.setTeam("red");
+        AutoLaunch.setTeam("blue");
     }
+    /*public void start() {
+utoMovement.turretOperation("blue", gamepad1)
+        turretOp.start();
+    }*/
 
     public void loop() {
-        telemetry.addLine("X=" + OttoCore.robotPose.x + " Y=" + OttoCore.robotPose.y + "θ=" + Math.toDegrees(OttoCore.robotPose.heading));
-        telemetry.addData("Is in launch zone", AutoLaunch.inLaunchZone());
+        telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
-        boolean autoLaunch = gamepad1.cross;
-        boolean autoLaunch1 = gamepad1.circle;
-
-        // Toggles
-        if (gamepad1.squareWasPressed()) {
+      /*  // Toggles
+        if (gamepad2.squareWasPressed()) {
             trackArtifact = !trackArtifact;
             if (trackArtifact) {
-                gamepad1.setLedColor(255, 0, 255, 3000);
+                gamepad2.setLedColor(255, 0, 255, 3000);
             }
         }
+
 
         if (trackArtifact) {
             // Track purple artifacts (while moving)
             AutoMovement.autoIntakeArtifact();
             telemetry.addLine("Tracking Purple");
 
-        } else if (autoLaunch) {
-            // Auto launch artifacts (while stationary)
-            gamepad1.setLedColor(255, 255, 0, 3000);
-            telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchS(OttoCore.robotPose);
-            AutoLaunch.rotate();
-            AutoLaunch.setFlywheel();
-
-        } else if (autoLaunch1) {
-            // Auto launch artifacts (while moving)
-            telemetry.addLine("Tracking Goal");
-            AutoLaunch.updateAutoLaunchM(OttoCore.robotPose);
-            AutoLaunch.rotate(gamepad1.left_stick_y, -gamepad1.left_stick_x);
-            AutoLaunch.setFlywheel();
-
-        }  else if (gamepad1.dpadDownWasPressed()) {
+        } else if (gamepad2.dpadDownWasPressed()){
             // Go to park zone
-//            Trajectory park = new Trajectory().lineToTeleOp(FieldConstants.Park.red, () -> gamepad1.dpadDownWasPressed());
-//            park.run();
+            //Trajectory park = new Trajectory().lineToTeleOp(FieldConstants.Park.blue, () -> gamepad2.dpadDownWasPressed());
+            //park.run();
 
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
-        }
+        }*/
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
 
-        if (gamepad1.right_bumper) {
+        if (gamepad1.dpad_left) {
             // Speed up flywheel to shoot from the long launch zone
-            Actuation.setFlywheel(ActuationConstants.Launcher.longLaunch);
-            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.longLaunch);
+            shootingSpeed = ActuationConstants.Launcher.longLaunch;
 
-        } else if (gamepad1.left_bumper) {
+        } else if (gamepad1.dpad_right) {
             // Speed up flywheel to shoot from the short launch zone
-            Actuation.setFlywheel(ActuationConstants.Launcher.shortLaunch);
-            Actuation.checkFlywheelSpeed(gamepad1, ActuationConstants.Launcher.shortLaunch);
-
-        } else if (!autoLaunch1 && !autoLaunch){
-            Actuation.setFlywheel(0);
-            Actuation.checkFlywheelSpeed(gamepad1, 0);
+            shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
-
-        // Actuation.shoot(gamepad1.right_trigger > 0.5, gamepad2.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_trigger > 0.5);
-        Actuation.reverse(gamepad1.left_trigger > 0.5);
-//        Actuation.setLaunchIndicator();
+        if (gamepad1.right_bumper) {
+            Actuation.intake.setPower(-1.0);
+        }
+        else {
+            Actuation.intake.setPower(0.0);
+        }
+        if (gamepad2.dpad_left) {
+            Actuation.turretMoveTowards(Math.toRadians(-50));
+            shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+        }
+        else if (gamepad2.dpad_up) {
+            Actuation.turretMoveTowards(Math.toRadians(0));
+        }
+        else if (gamepad2.dpad_down) {
+            Actuation.turretMoveTowards(Math.toRadians(-30));
+            shootingSpeed = ActuationConstants.Launcher.longLaunch;
+        }
+        Actuation.setFlywheel(shootingSpeed);
+        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+        Actuation.shoot(gamepad1.left_trigger > 0.5);
+        //Actuation.runIntake(gamepad1.right_trigger > 0.5);
+        Actuation.runTransfer(gamepad1.right_bumper);
+        //Actuation.runIntake(gamepad1.right_bumper);
+        Actuation.reverse(gamepad1.right_trigger > 0.5);
+        // Actuation.setLaunchIndicator();
+//        if (gamepad1.dpad_left) {
+//            Actuation.controlTurret(1.0);
+//        } else if (gamepad1.dpad_right) {
+//            Actuation.controlTurret(-1.0);
+//        }
         OttoCore.updatePosition();
+        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretLocal()));
         telemetry.update();
     }
 }

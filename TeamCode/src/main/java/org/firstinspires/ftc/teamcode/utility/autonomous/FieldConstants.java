@@ -23,22 +23,22 @@ public class FieldConstants {
 
         public static class Start {
             public static Pose red1 = new Pose(13.5, -23, Math.toRadians(-90.0));
-            public static Pose red2 = new Pose(-12.5, -23, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-15, -23, Math.toRadians(-90.0));
             public static Pose red3 = new Pose(-35.5, -23, Math.toRadians(-90.0));
-            public static Pose red4 = new Pose(-35.5, -25.5, Math.toRadians(-90.0));
+            public static Pose red4 = new Pose(-52, -59.5, Math.toRadians(-130.0));
             public static Pose blue1 = new Pose(13.5, 23, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-12.5, 23, Math.toRadians(90.0));
+            public static Pose blue2 = new Pose(-13.5, 23, Math.toRadians(90.0));
             public static Pose blue3 = new Pose(-35.5, 23, Math.toRadians(90.0));
             public static Pose blue4 = new Pose(-52, 59.5, Math.toRadians(130.0));
         }
 
         public static class End {
-            public static Pose red1 = new Pose(13.5, -52, Math.toRadians(-90.0));
-            public static Pose red2 = new Pose(-12.5, -52, Math.toRadians(-90.0));
-            public static Pose red3 = new Pose(-35.5, -52.5, Math.toRadians(-90.0));
-            public static Pose red4 = new Pose(-35.5, -52.5, Math.toRadians(-90.0));
+            public static Pose red1 = new Pose(13.5, -49.5, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-15, -59, Math.toRadians(-90.0));
+            public static Pose red3 = new Pose(-35.5, -59, Math.toRadians(-90.0));
+            public static Pose red4 = new Pose(-60, -59.5, Math.toRadians(-163.0));
             public static Pose blue1 = new Pose(13.5, 49.5, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-12.5, 59, Math.toRadians(90.0)); //HelloWorld('print'):
+            public static Pose blue2 = new Pose(-13.5, 59, Math.toRadians(90.0)); //HelloWorld('print'):
             public static Pose blue3 = new Pose(-35.5, 59, Math.toRadians(90.0));
             public static Pose blue4 = new Pose(-60, 59.5, Math.toRadians(163.0));
         }
@@ -78,7 +78,7 @@ public class FieldConstants {
     @Config
     public static class Goal {
         // Aim for FTC logos
-        public static Point red = new Point(72, 72);
+        public static Point red = new Point(72, -72);
         public static Point blue = new Point(72, 72);
     }
 
@@ -95,7 +95,7 @@ public class FieldConstants {
     // Dump Scan Positions
     @Config
     public static class Dump {
-        public static Pose red = new Pose(40, 60, Math.toRadians(90));
+        public static Pose red = new Pose(40, -60, Math.toRadians(90));
         public static Pose blue = new Pose(-40, 60, Math.toRadians(-90));
     }
 }
