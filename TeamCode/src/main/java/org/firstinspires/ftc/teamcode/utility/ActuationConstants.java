@@ -38,6 +38,7 @@ public class ActuationConstants {
         // Two Motors: P = 40, I = 3, D = 0
         // Before using F: P = 600, I = 50, D = 50, F = 20
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 30, 0, 16);
+        
         // 1, 0.5, 0.003
         public static PIDController turretPID = new PIDController(0.3, 0.5, 0.003);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor

@@ -36,7 +36,7 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
     public static Servo blocker, launchIndicator;
-    public static DcMotorEx flywheel, flywheel1;
+    public static DcMotorEx flywheel;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -156,7 +156,7 @@ public class Actuation {
 
     /**
      * Determines the current flywheel velocity
-     * @return angular flywheel velocity
+     * @return angular flywheel velocity in ticks per second
      */
     public static double getFlywheel() {
         return flywheel.getVelocity();
