@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.PinpointControl;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
@@ -17,12 +17,14 @@ public class Trajectory {
     Pose start;
 
     ArrayList<Runnable> movements;
+    ArrayList<Runnable> periodicTasks;
 
     /**
      * Initializes a new trajectory
      */
     public Trajectory() {
         movements = new ArrayList<>();
+        periodicTasks = new ArrayList<>();
 
         moveSpeed = ActuationConstants.Autonomous.moveSpeed;
         turnSpeed = ActuationConstants.Autonomous.turnSpeed;
@@ -34,8 +36,8 @@ public class Trajectory {
      * @param startPose Robot's starting position & heading
      */
     public Trajectory(Pose startPose) {
-
         movements = new ArrayList<>();
+        periodicTasks = new ArrayList<>();
 
         moveSpeed = ActuationConstants.Autonomous.moveSpeed;
         turnSpeed = ActuationConstants.Autonomous.turnSpeed;
@@ -60,10 +62,22 @@ public class Trajectory {
         movements.add(() -> runLineToPrecise(targetPose));
         return this;
     }
-
     public Trajectory lineToTeleOp(Pose targetPose, BooleanSupplier gamepadButton) {
         movements.add(() -> runLineToTeleOp(targetPose, gamepadButton));
         return this;
+    }
+    public Trajectory addPeriodic(Runnable task) {
+        periodicTasks.add(task);
+        return this;
+    }
+    public Trajectory stopPeriodic(Runnable task) {
+        periodicTasks.remove(task);
+        return this;
+    }
+    private void runPeriodics() {
+        for (Runnable task : periodicTasks) {
+            task.run();
+        }
     }
 
     /**
@@ -104,8 +118,7 @@ public class Trajectory {
      * Builds and runs the trajectory's previously specified movements
      */
     public void run() {
-        OttoCore.robotPose = start;
-        IMUControl.setYaw(start.heading);
+        PinpointControl.setPose(start);
         for (Runnable movement : movements) {
             movement.run();
         }
@@ -123,17 +136,9 @@ public class Trajectory {
     private void runLineToTeleOp(Pose targetPose, BooleanSupplier gamepadButton) {
         runLineToTeleOp(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed, gamepadButton);
     }
-
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
-        if (targetPose.heading > OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading += 2 * Math.PI;
-            }
-        } else if (targetPose.heading < OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading -= 2 * Math.PI;
-            }
-        }
+        while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
+        while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
         double vel = 1;
         double rotVel = 1;
@@ -146,23 +151,8 @@ public class Trajectory {
 
         while(!(vel == 0 && Math.abs(rotVel) < 0.5 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
+            runPeriodics();
             OttoCore.displayPosition();
-
-            if (vel != 0) {
-                Actuation.packet.addLine("Velocity Stuck");
-            }
-            if (Math.abs(rotVel) >= 0.5) {
-                Actuation.packet.addLine("Angular Velocity Stuck");
-            }
-            if (!hasRun) {
-                Actuation.packet.addLine("Hasn't Run");
-            }
-            if (!withinRange) {
-                Actuation.packet.addLine("Not In Range");
-            }
-            if (!withinField) {
-                Actuation.packet.addLine("Not In Field");
-            }
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
             Actuation.packet.put("vel", vel);
@@ -182,17 +172,12 @@ public class Trajectory {
 
         Actuation.drive(0.0, 0.0, 0.0);
     }
-
     private void runLineThrough(Pose targetPose, double mSpeed, double tSpeed) {
-        if (targetPose.heading > OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading += 2 * Math.PI;
-            }
-        } else if (targetPose.heading < OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading -= 2 * Math.PI;
-            }
-        }
+        while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
+        while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
+
+        double vel;
+        double rotVel;
 
         boolean hasRun = false;
 
@@ -202,16 +187,23 @@ public class Trajectory {
 
         while(!(hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
+            runPeriodics();
             OttoCore.displayPosition();
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
             Actuation.updateTelemetry();
 
-            double angle = Math.atan2(targetPose.y - OttoCore.robotPose.y, targetPose.x - OttoCore.robotPose.x);
+            Pose robot_vel = OttoCore.getVelocity();
+            vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
+            rotVel = robot_vel.heading;
+            if (vel != 0 || rotVel != 0) hasRun = true;
 
-            double rotSignal = (angle - OttoCore.robotPose.heading) > 0 ? -tSpeed: tSpeed;
-            double moveSignal = mSpeed*Math.cos(angle - OttoCore.robotPose.heading);
-            double strafeSignal = mSpeed*Math.sin(angle - OttoCore.robotPose.heading);
+            double angle = Math.atan2(targetPose.y - OttoCore.robotPose.y, targetPose.x - OttoCore.robotPose.x);
+            double rotSignal = OttoCore.getTurn(targetPose, tSpeed);
+
+            // Normalize based on the larger distance (strafe multiplied by 1.2 to match move speed)
+            double moveSignal = mSpeed * Math.cos(angle - OttoCore.robotPose.heading);
+            double strafeSignal = mSpeed * Math.sin(angle - OttoCore.robotPose.heading) * 1.2;
 
             double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
             double clampMove = Math.max(-1.0, Math.min(1, moveSignal));
@@ -219,23 +211,13 @@ public class Trajectory {
 
             Actuation.drive(clampMove, clampRot, clampStrafe);
 
-            Pose robot_vel = OttoCore.getVelocity();
-
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
             withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
         }
     }
-
     private void runLineToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
-        if (targetPose.heading > OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading += 2 * Math.PI;
-            }
-        } else if (targetPose.heading < OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading -= 2 * Math.PI;
-            }
-        }
+        while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
+        while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
         double vel = 1;
         double rotVel = 1;
@@ -244,10 +226,11 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(0.75));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(1));
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField)) {
+        while(!(vel == 0 && Math.abs(rotVel) < 0.5 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
+            runPeriodics();
             OttoCore.displayPosition();
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
@@ -263,7 +246,7 @@ public class Trajectory {
             if (vel != 0 || rotVel != 0) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(0.75));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(1));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
@@ -277,15 +260,8 @@ public class Trajectory {
      * @param gamepadButton wasPressed() function for the gamepad button to stop the path
      */
     private void runLineToTeleOp(Pose targetPose, double mSpeed, double tSpeed, BooleanSupplier gamepadButton) {
-        if (targetPose.heading > OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading += 2 * Math.PI;
-            }
-        } else if (targetPose.heading < OttoCore.robotPose.heading) {
-            while (Math.abs(targetPose.heading - OttoCore.robotPose.heading) > Math.toRadians(180)) {
-                OttoCore.robotPose.heading -= 2 * Math.PI;
-            }
-        }
+        while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
+        while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
         double vel = 1;
         double rotVel = 1;
@@ -299,6 +275,7 @@ public class Trajectory {
 
         while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField && !stopPath)) {
             OttoCore.updatePosition();
+            runPeriodics();
             OttoCore.displayPosition();
 
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);

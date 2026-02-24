@@ -59,6 +59,22 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
+    public static double getTx(List<LLResultTypes.FiducialResult> fiducials, int targetId) {
+        double tx = Double.NaN;
+        for (LLResultTypes.FiducialResult fid : fiducials) {
+            if (fid.getFiducialId() == targetId) {
+                tx = Math.toRadians(fid.getTargetXDegrees());
+                // Auto-adjusts robot position based on AprilTag angle;
+//                double global_angle = Actuation.getTurretGlobal()-tx;
+//                double m = Math.tan(global_angle), b = tag.y - tag.x*m;
+//                double new_x = (OttoCore.robotPose.x - m*b + m*OttoCore.robotPose.y) / (Math.pow(m, 2) + 1);
+//                OttoCore.robotPose = OttoCore.relativeTransform(new Pose(new_x, m*new_x+b, OttoCore.robotPose.heading), -ActuationConstants.Launcher.turretOffset, 0, 0);
+//                reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+            }
+        }
+        return tx;
+    }
+
     public static Point getTagGlobalPos(List<LLResultTypes.FiducialResult> fiducials) {
         Pose myGlobalPose = getGlobalPos(fiducials);
         int numberOfFids = 0;

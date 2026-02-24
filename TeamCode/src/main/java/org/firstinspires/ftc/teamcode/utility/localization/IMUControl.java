@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utility.imu;
+package org.firstinspires.ftc.teamcode.utility.localization;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -28,7 +28,6 @@ public class IMUControl {
     public static boolean isInitialized() {
         return initialized;
     }
-
     public static void setYaw(double newYaw) {
         offset = newYaw - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
