@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
 @TeleOp(name="AprilTagTest")
 

@@ -123,13 +123,13 @@ public class AutoMovement {
         AutoLaunch.updateAutoLaunchS(OttoCore.robotPose); // Assuming static launching
 
         if (AutoLaunch.closeToLaunchZone(20)) {
-            if (trackingAprilTag) {
-                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
-                turretReady = Math.abs(tx) < Math.toRadians(0.5);
-            } else {
-                Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-                turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
-            }
+//            if (trackingAprilTag) {
+//                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
+//                turretReady = Math.abs(tx) < Math.toRadians(0.5);
+//            } else {
+            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+            turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
+//            }
         } else {
             Actuation.turretMoveTowards(OttoCore.robotPose.heading);
         }

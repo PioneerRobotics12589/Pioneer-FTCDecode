@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests.hardware;
 
-import static org.firstinspires.ftc.teamcode.utility.Actuation.flywheel1;
+import static org.firstinspires.ftc.teamcode.utility.Actuation.voltageCompensation;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,14 +12,22 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
+
 @TeleOp(name = "Flywheel Test", group = "tests")
 @Config
 public class FlywheelTest extends OpMode {
     DcMotorEx flywheel;
     DcMotor intake, transfer;
     public static int rpm;
-
-    public static double kp, ki, kd, kf;
+    // 0.006
+    public static double ks, kv, ka;
+    public static double kp, ki, kd;
+    public static PIDController flywheelPID = new PIDController(kp, ki, kd);
+    public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(ks, kv, ka);
     public double error;
 
     public static double intakePower, transferPower;
@@ -28,10 +36,10 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void init() {
+        Actuation.setup(hardwareMap, telemetry);
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(DcMotor.class, "transfer");
@@ -41,9 +49,15 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void loop() {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kp, ki, kd, kf));
+        flywheelPID = new PIDController(kp, ki, kd);
+        flywheelFF = new SimpleMotorFeedforward(ks, kv, ka);
 
-        flywheel.setVelocity(rpm);
+        double feedforward = 0.0;
+//        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(rpm);
+//        double pid = 0.0;
+        double pid = flywheelPID.calculateSignal(rpm, flywheel.getVelocity());
+        double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
+        flywheel.setPower(signal);
 
         intake.setPower(intakePower);
         transfer.setPower(transferPower);
@@ -53,6 +67,7 @@ public class FlywheelTest extends OpMode {
         error = rpm - flywheel.getVelocity();
         packet.put("target velocity", rpm);
         packet.put("actual velocity", flywheel.getVelocity());
+        packet.put("flywheel signal", signal);
         packet.put("error", error);
         dashboard.sendTelemetryPacket(packet);
     }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
 @Autonomous(name="LongBlue", group = "Blue Auto")
 @Config
@@ -25,7 +25,7 @@ public class LongBlue extends LinearOpMode {
 
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
 
-        Actuation.setFlywheel(1560);
+        Actuation.setFlywheel(1550);
         Actuation.turretMoveTowards(Math.toRadians(-17.5));
         sleep(1750);
 
@@ -33,8 +33,8 @@ public class LongBlue extends LinearOpMode {
         Paths.Blue.spike4.run();
         Paths.Blue.launchLong.run();
         Paths.Blue.spike3.run();
-        Paths.Blue.launchLong.run();
-        Paths.Blue.spike2.run();
+//        Paths.Blue.launchLong.run();
+//        Paths.Blue.spike2.run();
         Paths.Blue.launchLong.run();
         Paths.Blue.gate.run();
 //        Paths.Blue.endLong.run();

@@ -86,16 +86,16 @@ public class Actuation {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+//            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
             //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-            turret.setTargetPosition(0);
-            turret.setPower(1); // Comment if using turret PID
-            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            turret.setTargetPosition(0);
+//            turret.setPower(1); // Comment if using turret PID
+//            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -150,8 +150,12 @@ public class Actuation {
      * @param velocity target flywheel angular velocity
      */
     public static void setFlywheel(int velocity) {
-        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-        flywheel.setVelocity(velocity);
+//        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
+        double pid = 0.0;
+//        double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
+        double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
+        flywheel.setPower(signal);
     }
 
     /**
@@ -306,10 +310,10 @@ public class Actuation {
         double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
 
-//        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, AngleUnit.normalizeRadians(getTurretLocal()));
-        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
-        turret.setTargetPosition(targetTicks);
-//        turret.setPower(turretSignal);
+        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, AngleUnit.normalizeRadians(getTurretLocal()));
+//        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
+//        turret.setTargetPosition(targetTicks);
+        turret.setPower(turretSignal);
     }
 
     /**
@@ -321,13 +325,13 @@ public class Actuation {
 
         if (turretAngle > ActuationConstants.Launcher.turretMaxAngle && value > 0) {
             turret.setPower(0);
-            turret.setTargetPosition(turret.getCurrentPosition());
+//            turret.setTargetPosition(turret.getCurrentPosition());
         } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle && value < 0) {
             turret.setPower(0);
-            turret.setTargetPosition(turret.getCurrentPosition());
+//            turret.setTargetPosition(turret.getCurrentPosition());
         } else {
             turret.setPower(power);
-            turret.setTargetPosition(turret.getCurrentPosition()+value);
+//            turret.setTargetPosition(turret.getCurrentPosition()+value);
         }
         telemetry.addData("Turret Angle", Math.toDegrees(turretAngle));
         telemetry.addData("Max Angle", ActuationConstants.Launcher.turretMaxAngle);
@@ -337,6 +341,11 @@ public class Actuation {
         while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal() - AngleUnit.normalizeRadians(angle))) >= Math.toRadians(0.5)) {
             turretMoveTowards(angle);
         }
+    }
+
+    public static double voltageCompensation(double power) {
+        double multiplier = 13.0 / OttoCore.voltageSensor.getVoltage();
+        return power * multiplier;
     }
 
     /**

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
 @Config
 @TeleOp(name="IMU Test", group="tests")

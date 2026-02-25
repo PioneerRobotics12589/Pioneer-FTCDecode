@@ -118,7 +118,6 @@ public class Trajectory {
      * Builds and runs the trajectory's previously specified movements
      */
     public void run() {
-        PinpointControl.setPose(start);
         for (Runnable movement : movements) {
             movement.run();
         }
@@ -137,6 +136,7 @@ public class Trajectory {
         runLineToTeleOp(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed, gamepadButton);
     }
     private void runLineTo(Pose targetPose, double mSpeed, double tSpeed) {
+        OttoCore.resetMovementPID();
         while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
         while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
@@ -173,6 +173,7 @@ public class Trajectory {
         Actuation.drive(0.0, 0.0, 0.0);
     }
     private void runLineThrough(Pose targetPose, double mSpeed, double tSpeed) {
+        OttoCore.resetMovementPID();
         while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
         while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
@@ -216,6 +217,7 @@ public class Trajectory {
         }
     }
     private void runLineToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
+        OttoCore.resetMovementPID();
         while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
         while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 
@@ -260,6 +262,7 @@ public class Trajectory {
      * @param gamepadButton wasPressed() function for the gamepad button to stop the path
      */
     private void runLineToTeleOp(Pose targetPose, double mSpeed, double tSpeed, BooleanSupplier gamepadButton) {
+        OttoCore.resetMovementPID();
         while (targetPose.heading - OttoCore.robotPose.heading > Math.PI) OttoCore.robotPose.heading += 2 * Math.PI;
         while (targetPose.heading - OttoCore.robotPose.heading < -Math.PI) OttoCore.robotPose.heading -= 2 * Math.PI;
 

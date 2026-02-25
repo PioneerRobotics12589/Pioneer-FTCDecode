@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
 @Autonomous(name="ShortRed", group="Red Auto")
 public class ShortRed extends LinearOpMode {
@@ -34,7 +34,7 @@ public class ShortRed extends LinearOpMode {
         Paths.Red.spike2.run();
         Paths.Red.launchShort.run();
         Paths.Red.spike3.run();
-        Paths.Red.launchShort.run();
-        Paths.Red.gate.run();
+//        Paths.Red.launchShort.run();
+//        Paths.Red.gate.run();
     }
 }

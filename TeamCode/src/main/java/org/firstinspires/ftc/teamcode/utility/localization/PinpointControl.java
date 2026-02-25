@@ -29,7 +29,13 @@ public class PinpointControl {
         pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        // ^ Directions or offsets can be a reason why position accumulates
         pinpoint.resetPosAndIMU();
+        pinpoint.recalibrateIMU();
+
+        currentPose = new Pose(0, 0, 0);
+        velocityPose = new Pose(0, 0, 0);
+        poseOffset = new Pose(0, 0, 0);
     }
 
     public static void resetPose() {
@@ -37,11 +43,11 @@ public class PinpointControl {
     }
 
     public static void setPose(Pose newPose) {
-        resetPose();
-        poseOffset = newPose;
+        poseOffset = new Pose(newPose.x - currentPose.x, newPose.y - currentPose.y, AngleUnit.normalizeRadians(newPose.heading - currentPose.heading));
     }
 
     public static void updatePose() {
+        pinpoint.update();
         currentPose.x = pinpoint.getPosX(DistanceUnit.INCH) + poseOffset.x;
         currentPose.y = pinpoint.getPosY(DistanceUnit.INCH) + poseOffset.y;
         currentPose.heading = AngleUnit.normalizeRadians(pinpoint.getHeading(AngleUnit.RADIANS) + poseOffset.heading);

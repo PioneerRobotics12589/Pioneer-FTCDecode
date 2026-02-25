@@ -10,15 +10,14 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
 
 @Autonomous(name="ShortBlue", group="Blue Auto")
 public class ShortBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
-        OttoCore.robotPose = FieldConstants.Start.blueShort;
-        IMUControl.setYaw(OttoCore.robotPose.heading);
+
+        OttoCore.setPose(FieldConstants.Start.blueShort);
 
         waitForStart();
 
@@ -26,14 +25,13 @@ public class ShortBlue extends LinearOpMode {
         Actuation.turretMoveTowards(Math.toRadians(10));
         sleep(1000);
 
-        Actuation.runIntake(true);
         Paths.Blue.launchShort.run();
         Paths.Blue.spike1.run();
         Paths.Blue.launchShort.run();
         Paths.Blue.spike2.run();
         Paths.Blue.launchShort.run();
         Paths.Blue.spike3.run();
-        Paths.Blue.launchShort.run();
-        Paths.Blue.gate.run();
+//        Paths.Blue.launchShort.run();
+//        Paths.Blue.gate.run();
     }
 }

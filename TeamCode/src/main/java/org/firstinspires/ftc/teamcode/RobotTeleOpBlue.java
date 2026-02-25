@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
 import java.util.function.BooleanSupplier;
 
@@ -57,7 +58,7 @@ utoMovement.turretOperation("blue", gamepad1)
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
         }*/
-        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x*0.75);
 
         if (gamepad1.dpad_left) {
             // Speed up flywheel to shoot from the long launch zone
@@ -76,6 +77,10 @@ utoMovement.turretOperation("blue", gamepad1)
         if (gamepad2.dpad_left) {
             Actuation.turretMoveTowards(Math.toRadians(50));
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+        }
+        if (gamepad2.dpad_right) {
+            OttoCore.robotPose = new Pose(0, 0, 0);
+            IMUControl.setYaw(0);
         }
         else if (gamepad2.dpad_up) {
             Actuation.turretMoveTowards(Math.toRadians(0));

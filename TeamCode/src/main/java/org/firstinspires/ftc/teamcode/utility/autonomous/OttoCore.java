@@ -13,7 +13,8 @@ import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
-import org.firstinspires.ftc.teamcode.utility.imu.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
+import org.firstinspires.ftc.teamcode.utility.localization.PinpointControl;
 
 import java.util.List;
 public class OttoCore {
@@ -28,8 +29,8 @@ public class OttoCore {
 
     static PIDController vertical, lateral, rotational;
 
-    static List<LynxModule> allHubs;
-    static VoltageSensor voltageSensor;
+//    static List<LynxModule> allHubs;
+    public static VoltageSensor voltageSensor;
 
     static long lastTime;
 
@@ -39,30 +40,37 @@ public class OttoCore {
      */
     public static void setup(HardwareMap hardwareMap) {
         robotPose = new Pose(0, 0, 0);
+        PinpointControl.setup(hardwareMap, ActuationConstants.Drivetrain.xOdoOffset, ActuationConstants.Drivetrain.yOdoOffset);
 
-        allHubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule module : allHubs) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
+//        allHubs = hardwareMap.getAll(LynxModule.class);
+//        for (LynxModule module : allHubs) {
+//            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+//        }
 
-        IMUControl.setup(hardwareMap,
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP);
-        IMUControl.setYaw(0);
+//        IMUControl.setup(hardwareMap,
+//                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+//                RevHubOrientationOnRobot.UsbFacingDirection.UP);
+//        IMUControl.setYaw(0);
 
         // Initialize PID controllers with proper gains
         vertical = new PIDController(ActuationConstants.Movement.verticalGains);
         lateral = new PIDController(ActuationConstants.Movement.lateralGains);
         rotational = new PIDController(ActuationConstants.Movement.rotationalGains);
 
-        ticks_right = 0; ticks_left = 0; ticks_back = 0;
-        prev_ticks_right = 0; prev_ticks_left = 0; prev_ticks_back = 0;
-        dx = 0; dy = 0; dtheta = 0; dx_center = 0; dx_perpendicular = 0;
+//        ticks_right = 0; ticks_left = 0; ticks_back = 0;
+//        prev_ticks_right = 0; prev_ticks_left = 0; prev_ticks_back = 0;
+//        dx = 0; dy = 0; dtheta = 0; dx_center = 0; dx_perpendicular = 0;
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
+        robotPose = new Pose(0, 0, 0);
 
-        lastTime = System.nanoTime();
-        lastPose = new Pose(robotPose);
+//        lastTime = System.nanoTime();
+//        lastPose = new Pose(robotPose);
+    }
+
+    public static void setPose(Pose newPose) {
+        PinpointControl.setPose(newPose);
+        OttoCore.robotPose = newPose;
     }
 
     /**
@@ -71,69 +79,72 @@ public class OttoCore {
     // All equations derived from and explained by:
     // https://gm0.org/en/latest/docs/software/concepts/odometry.html
     public static void updatePosition() {
-        for (LynxModule module : allHubs) {
-            module.clearBulkCache();
-        }
-
-        lastPose = new Pose(OttoCore.robotPose);
-        lastTime = System.nanoTime();
-
-        ticks_left = -Actuation.frontLeft.getCurrentPosition();
-        ticks_right = Actuation.frontRight.getCurrentPosition();
-        ticks_back = Actuation.backRight.getCurrentPosition();
-
-        double delta_ticks_left = (ticks_left - prev_ticks_left);
-        double delta_ticks_right = (ticks_right - prev_ticks_right);
-        double delta_ticks_back = (ticks_back - prev_ticks_back);
-
-        double inchesPerTick = ActuationConstants.Drivetrain.wheel_circ / ActuationConstants.Drivetrain.ticksPerRev;
-
-        // We divide each differential by ticks per revolution and multiply by the wheel circumference in order to account for real-world distance
-        delta_ticks_left *= inchesPerTick;
-        delta_ticks_right *= inchesPerTick;
-        delta_ticks_back *= inchesPerTick;
-
-        // Change in angle
-        double delta_theta = ((delta_ticks_left - delta_ticks_right) / ActuationConstants.Drivetrain.track_width);
-
-        // Change in the center position of the robot relative to itself (just the average of the parallel wheel diffs)
-        // aka Vertical displacement
-        double delta_center = ((delta_ticks_left + delta_ticks_right) / 2);
-
-        // Change in the perpendicular position of the robot relative to itself
-        // aka Horizontal displacement
-        double delta_perp = delta_ticks_back - (ActuationConstants.Drivetrain.forward_offset * delta_theta); // The other formula is negative of this
-
-        double dx = 0;
-        double dy = 0;
-        if (delta_theta != 0) { // Accounting for division by zero
-            dx = (delta_center * (Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                    + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
-
-            dy = (delta_center * (Math.sin(robotPose.heading) * Math.sin(delta_theta) + Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta)))
-                    + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
-        }
-        else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
-            dx = delta_center * Math.cos(robotPose.heading) - delta_perp * Math.sin(robotPose.heading);
-            dy = delta_center * Math.sin(robotPose.heading) + delta_perp * Math.cos(robotPose.heading);
-        }
-
-        // Update the robots position
-        robotPose.x -= dx;
-        robotPose.y -= dy;
-//        robotPose.heading += delta_theta;
-
-//        Pose tagPosition = AprilTagDetection.getGlobalPos(Actuation.getLLResult().getFiducialResults());
-//        if (tagPosition != null) {
-//            robotPose = new Pose(tagPosition);
+//        for (LynxModule module : allHubs) {
+//            module.clearBulkCache();
 //        }
-        if (IMUControl.isInitialized()) {
-            robotPose.heading = IMUControl.getHeading();
-        }
-
-        prev_ticks_back = ticks_back;
-        prev_ticks_left = ticks_left;
-        prev_ticks_right = ticks_right;
+//
+//        lastPose = new Pose(OttoCore.robotPose);
+//        lastTime = System.nanoTime();
+//
+//        ticks_left = -Actuation.frontLeft.getCurrentPosition();
+//        ticks_right = Actuation.frontRight.getCurrentPosition();
+//        ticks_back = Actuation.backRight.getCurrentPosition();
+//
+//        double delta_ticks_left = (ticks_left - prev_ticks_left);
+//        double delta_ticks_right = (ticks_right - prev_ticks_right);
+//        double delta_ticks_back = (ticks_back - prev_ticks_back);
+//
+//        double inchesPerTick = ActuationConstants.Drivetrain.wheel_circ / ActuationConstants.Drivetrain.ticksPerRev;
+//
+//        // We divide each differential by ticks per revolution and multiply by the wheel circumference in order to account for real-world distance
+//        delta_ticks_left *= inchesPerTick;
+//        delta_ticks_right *= inchesPerTick;
+//        delta_ticks_back *= inchesPerTick;
+//
+//        // Change in angle
+//        double delta_theta = ((delta_ticks_left - delta_ticks_right) / ActuationConstants.Drivetrain.track_width);
+//
+//        // Change in the center position of the robot relative to itself (just the average of the parallel wheel diffs)
+//        // aka Vertical displacement
+//        double delta_center = ((delta_ticks_left + delta_ticks_right) / 2);
+//
+//        // Change in the perpendicular position of the robot relative to itself
+//        // aka Horizontal displacement
+//        double delta_perp = delta_ticks_back - (ActuationConstants.Drivetrain.forward_offset * delta_theta); // The other formula is negative of this
+//
+//        double dx = 0;
+//        double dy = 0;
+//        if (delta_theta != 0) { // Accounting for division by zero
+//            dx = (delta_center * (Math.cos(robotPose.heading) * Math.sin(delta_theta) - Math.sin(robotPose.heading) * (1 - Math.cos(delta_theta)))
+//                    + delta_perp * (Math.cos(robotPose.heading) * (Math.cos(delta_theta) - 1) - Math.sin(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+//
+//            dy = (delta_center * (Math.sin(robotPose.heading) * Math.sin(delta_theta) + Math.cos(robotPose.heading) * (1 - Math.cos(delta_theta)))
+//                    + delta_perp * (Math.sin(robotPose.heading) * (Math.cos(delta_theta) - 1) + Math.cos(robotPose.heading) * Math.sin(delta_theta))) / delta_theta;
+//        }
+//        else { // If delta_theta is 0 we use Euler Integration instead of Pose Exponentials
+//            dx = delta_center * Math.cos(robotPose.heading) - delta_perp * Math.sin(robotPose.heading);
+//            dy = delta_center * Math.sin(robotPose.heading) + delta_perp * Math.cos(robotPose.heading);
+//        }
+//
+//        // Update the robots position
+//        robotPose.x -= dx;
+//        robotPose.y -= dy;
+////        robotPose.heading += delta_theta;
+//
+////        Pose tagPosition = AprilTagDetection.getGlobalPos(Actuation.getLLResult().getFiducialResults());
+////        if (tagPosition != null) {
+////            robotPose = new Pose(tagPosition);
+////        }
+//        org.firstinspires.ftc.teamcode.utility.localization.IMUControl IMUControl;
+//        if (IMUControl.isInitialized()) {
+//            robotPose.heading = IMUControl.getHeading();
+//        }
+//
+//        prev_ticks_back = ticks_back;
+//        prev_ticks_left = ticks_left;
+//        prev_ticks_right = ticks_right;
+        PinpointControl.updatePose();
+        OttoCore.robotPose = PinpointControl.getPose();
     }
 
     /**
@@ -206,9 +217,10 @@ public class OttoCore {
     }
 
     public static Pose getVelocity() {
-        double dt = (System.nanoTime() - lastTime)/1000000000.00;
-
-        return new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
+        return PinpointControl.getVelocityPose();
+//        double dt = (System.nanoTime() - lastTime)/1000000000.00;
+//
+//        return new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
     }
 
     public static Pose relativeTransform(Pose reference, double distFor, double distLat, double distRot) {
@@ -217,6 +229,15 @@ public class OttoCore {
         double h = reference.heading + distRot;
 
         return new Pose(x, y, h);
+    }
+
+    /**
+     * Call when target changes for movement to dissolve integral term buildup
+     */
+    public static void resetMovementPID() {
+        vertical.reset();
+        lateral.reset();
+        rotational.reset();
     }
 
     /**

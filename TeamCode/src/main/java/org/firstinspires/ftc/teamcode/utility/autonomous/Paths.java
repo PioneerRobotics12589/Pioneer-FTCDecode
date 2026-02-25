@@ -10,7 +10,7 @@ public class Paths {
 
         // Spike 4
         public static Trajectory spike4 = new Trajectory()
-                .lineTo(FieldConstants.Spike.Start.blue4)
+                .lineThrough(FieldConstants.Spike.Start.blue4)
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue4)
                 .action(() -> Actuation.reverse(false))
@@ -18,7 +18,7 @@ public class Paths {
 
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
-                .lineTo(FieldConstants.Spike.Start.blue3)
+                .lineThrough(FieldConstants.Spike.Start.blue3)
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue3)
                 .action(() -> Actuation.reverse(false))
@@ -26,7 +26,7 @@ public class Paths {
 
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
-                .lineTo(FieldConstants.Spike.Start.blue2)
+                .lineThrough(FieldConstants.Spike.Start.blue2)
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue2)
                 .action(() -> Actuation.reverse(false))
@@ -35,7 +35,7 @@ public class Paths {
 
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
-                .lineTo(FieldConstants.Spike.Start.blue1)
+                .lineThrough(FieldConstants.Spike.Start.blue1)
                 .action(() -> Actuation.reverse(true))
                 .lineTo(FieldConstants.Spike.End.blue1)
                 .action(() -> Actuation.reverse(false))
@@ -43,48 +43,28 @@ public class Paths {
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
+                .addPeriodic(AutoLaunch::launchOperation)
                 .lineTo(FieldConstants.Launch.blueLong)
-                .action(() -> Actuation.turretMoveTowards(Math.toRadians(24.5)))
                 .action(() -> {
                     try {
-                        sleep(250);
+                        sleep(2000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .action(() -> Actuation.intake.setPower(-1.0))
-                .action(() -> Actuation.transfer.setPower(-0.7))
-                .action(() -> {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .action(() -> Actuation.runIntake(false))
-                .action(() -> Actuation.runTransfer(false));
+                });
 
         public static Trajectory launchShort = new Trajectory()
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
+                .addPeriodic(AutoLaunch::launchOperation)
                 .lineTo(FieldConstants.Launch.blueShort)
-                .action(() -> Actuation.turretMoveTowards(Math.toRadians(45)))
                 .action(() -> {
                     try {
-                        sleep(500);
+                        sleep(2000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .action(() -> Actuation.intake.setPower(-1.0))
-                .action(() -> Actuation.transfer.setPower(-0.8))
-                .action(() -> {
-                    try {
-                        sleep(1500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .action(() -> Actuation.runIntake(false))
-                .action(() -> Actuation.runTransfer(false));
+                });
 
         // Gate
         public static Trajectory gate = new Trajectory()
@@ -145,7 +125,7 @@ public class Paths {
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
                 .lineTo(FieldConstants.Launch.redLong)
-                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-24.5)))
+                .action(() -> Actuation.turretMoveTowards(Math.toRadians(-25.5)))
                 .action(() -> {
                     try {
                         sleep(250);
@@ -154,10 +134,10 @@ public class Paths {
                     }
                 })
                 .action(() -> Actuation.intake.setPower(-1.0))
-                .action(() -> Actuation.transfer.setPower(-0.7))
+                .action(() -> Actuation.transfer.setPower(-0.8))
                 .action(() -> {
                     try {
-                        sleep(1000);
+                        sleep(2000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
