@@ -27,9 +27,7 @@ public class AutoMovement {
 
     public static final double closestLaunchDist = 30; // way to many kewords man, consider changing to: double closestLaunchDIst
     public static boolean isTracking = false;
-    public static boolean turretReady = false;
-
-    public static boolean lockTracking = false;
+    public static boolean turretReady = false, flywheelReady = false;
 
     /**
      * Automatically intakes the closest artifact ahead of the robot
@@ -135,16 +133,12 @@ public class AutoMovement {
         }
 
         Actuation.setFlywheel(AutoLaunch.getTargetVel());
+        flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
         telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
     }
 
-    public static boolean isReady() {
-        return turretReady;
-    }
-    public static void toggleTracking() {
-        isTracking = !isTracking;
-    }
-    public static void setLockTracking(boolean lock) {
-        lockTracking = lock;
+    public static boolean readyToLaunch() {
+        // && Math.hypot(OttoCore.getVelocity().x, OttoCore.getVelocity().y) <= 0.05
+        return turretReady && flywheelReady;
     }
 }

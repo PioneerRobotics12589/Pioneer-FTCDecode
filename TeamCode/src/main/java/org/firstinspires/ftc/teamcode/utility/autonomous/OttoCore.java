@@ -217,6 +217,7 @@ public class OttoCore {
     }
 
     public static Pose getVelocity() {
+        PinpointControl.updateVelocityPose();
         return PinpointControl.getVelocityPose();
 //        double dt = (System.nanoTime() - lastTime)/1000000000.00;
 //

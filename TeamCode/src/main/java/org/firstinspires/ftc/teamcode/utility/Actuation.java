@@ -36,7 +36,7 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
     public static Servo blocker, launchIndicator;
-    public static DcMotorEx flywheel;
+    private static DcMotorEx flywheel;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -130,9 +130,9 @@ public class Actuation {
     public static void teleDrive(boolean toggleSlowMode, double move, double turn, double strafe) {
         if (toggleSlowMode && !slowModeToggle) slowMode = !slowMode;
 
-        double moveP = move > 0.05 ? move : 0;
-        double strafeP = strafe > 0.05 ? strafe : 0;
-        double turnP = turn > 0.05 ? strafe : 0;
+        double moveP = Math.abs(move) > 0.05 ? move : 0;
+        double strafeP = Math.abs(strafe) > 0.05 ? strafe : 0;
+        double turnP = Math.abs(turn) > 0.05 ? strafe : 0;
 
 
         double multip = (slowMode) ? 0.5 : 1.0;
@@ -164,6 +164,10 @@ public class Actuation {
      */
     public static double getFlywheel() {
         return flywheel.getVelocity();
+    }
+
+    public static boolean flywheelIsReady(int targetVelocity) {
+        return Math.abs(getFlywheel() - targetVelocity) <= 20;
     }
 
     /**

@@ -43,6 +43,7 @@ public class PinpointControl {
     }
 
     public static void setPose(Pose newPose) {
+        updatePose();
         poseOffset = new Pose(newPose.x - currentPose.x, newPose.y - currentPose.y, AngleUnit.normalizeRadians(newPose.heading - currentPose.heading));
     }
 
