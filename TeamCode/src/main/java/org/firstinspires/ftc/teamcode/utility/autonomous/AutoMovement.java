@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getMove
 import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getStrafe;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -112,26 +113,30 @@ public class AutoMovement {
      * @param team team color
      */
     public static void turretOperation(String team) {
-        List<LLResultTypes.FiducialResult> fids = AprilTagDetection.getFiducials();
-        int goalID = team.equals("blue") ? 20 : 24;
-        double tx = AprilTagDetection.getTx(fids, goalID);
+        LLResult result = AprilTagDetection.getResult();
+        int goalCode = team.equals("blue") ? 0 : 3;
+        Actuation.setPipeline(goalCode);
+        double tx = AprilTagDetection.getTx(result);
         boolean trackingAprilTag = !Double.isNaN(tx);
 
         //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-        AutoLaunch.updateAutoLaunchS(OttoCore.robotPose); // Assuming static launching
+        AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
 
         if (AutoLaunch.closeToLaunchZone(20)) {
 //            if (trackingAprilTag) {
 //                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
 //                turretReady = Math.abs(tx) < Math.toRadians(0.5);
-//            } else {
-            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-            turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
+//            } else
+
 //            }
         } else {
+
             Actuation.turretMoveTowards(OttoCore.robotPose.heading);
         }
 
+        turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
+
+        Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
         Actuation.setFlywheel(AutoLaunch.getTargetVel());
         flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
         telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
