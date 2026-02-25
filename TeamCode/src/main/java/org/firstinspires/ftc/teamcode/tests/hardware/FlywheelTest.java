@@ -26,8 +26,8 @@ public class FlywheelTest extends OpMode {
     // 0.006
     public static double ks, kv, ka;
     public static double kp, ki, kd;
-    public static PIDController flywheelPID = new PIDController(kp, ki, kd);
-    public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(ks, kv, ka);
+    public static PIDController PIDControl = new PIDController(kp, ki, kd);
+    public static SimpleMotorFeedforward feedforwardControl = new SimpleMotorFeedforward(ks, kv, ka);
     public double error;
 
     public static double intakePower, transferPower;
@@ -49,13 +49,13 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void loop() {
-        flywheelPID = new PIDController(kp, ki, kd);
-        flywheelFF = new SimpleMotorFeedforward(ks, kv, ka);
+        PIDControl = new PIDController(kp, ki, kd);
+        feedforwardControl = new SimpleMotorFeedforward(ks, kv, ka);
 
-        double feedforward = 0.0;
-//        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(rpm);
-//        double pid = 0.0;
-        double pid = flywheelPID.calculateSignal(rpm, flywheel.getVelocity());
+//        double feedforward = 0.0;
+        double feedforward = feedforwardControl.calculate(rpm);
+        double pid = 0.0;
+//        double pid = flywheelPID.calculateSignal(rpm, flywheel.getVelocity());
         double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
 
