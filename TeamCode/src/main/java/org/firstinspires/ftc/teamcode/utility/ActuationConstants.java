@@ -31,9 +31,15 @@ public class ActuationConstants {
 
     @Config
     public static class Movement {
-        public static PIDCoeffs lateralGains = new PIDCoeffs(0.008, 0, 0.008);
-        public static PIDCoeffs verticalGains = new PIDCoeffs(0.07, 0.0005, 0.008);
-        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 0, 0.2);
+        /*
+        Base control systems for autonomous movement:
+        PID: creates the essential movement speeds
+        Feedforward: Adjusts the robot better due to the friction against the field (ks term)
+         */
+        public static PIDController lateralPID = new PIDController(0.008, 0, 0.008);
+        public static PIDController verticalPID = new PIDController(0.07, 0.0005, 0.008);
+        public static PIDController rotationalPID = new PIDController(4.0, 0, 0.2);
+        public static double lateralFF = 0.1, verticalFF = 0.1, rotationalFF = 0.1;
     }
 
     @Config
