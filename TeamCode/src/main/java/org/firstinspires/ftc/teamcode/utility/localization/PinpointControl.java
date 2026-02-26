@@ -28,7 +28,7 @@ public class PinpointControl {
 
         pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         // ^ Directions or offsets can be a reason why position accumulates
         pinpoint.resetPosAndIMU();
         pinpoint.recalibrateIMU();

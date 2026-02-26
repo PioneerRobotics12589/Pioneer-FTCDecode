@@ -14,6 +14,11 @@ public class LocalizationTest extends OpMode {
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+        Actuation.packet.put("Pos", OttoCore.robotPose.toString());
+        Actuation.packet.put("Vel", OttoCore.getVelocity().toString());
+        Actuation.packet.put("VelX", OttoCore.getVelocity().x);
+        Actuation.packet.put("VelY", OttoCore.getVelocity().y);
+        Actuation.packet.put("VelHead", OttoCore.getVelocity().heading);
     }
 
     @Override
@@ -27,6 +32,9 @@ public class LocalizationTest extends OpMode {
 //        Actuation.packet.put("ticks back", OttoCore.ticks_back);
         Actuation.packet.put("Pos", OttoCore.robotPose.toString());
         Actuation.packet.put("Vel", OttoCore.getVelocity().toString());
+        Actuation.packet.put("VelX", OttoCore.getVelocity().x);
+        Actuation.packet.put("VelY", OttoCore.getVelocity().y);
+        Actuation.packet.put("VelHead", OttoCore.getVelocity().heading);
 
         Actuation.updateTelemetry();
     }

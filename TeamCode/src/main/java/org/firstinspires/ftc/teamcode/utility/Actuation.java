@@ -36,7 +36,9 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
     public static Servo blocker, launchIndicator;
-    private static DcMotorEx flywheel;
+    public static DcMotorEx flywheel;
+    private static int lastPosition = 0;
+    private static long lastTime = 0;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -152,18 +154,35 @@ public class Actuation {
     public static void setFlywheel(int velocity) {
 //        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
         double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
-        double pid = 0.0;
-//        double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
+//        double pid = 0.0;
+        double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
         double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
     }
 
     /**
-     * Determines the current flywheel velocity
+     * Determines the current flywheel velocity (Custom without flywheel.getVelocity() because it always returns 0 for some reason)
      * @return angular flywheel velocity in ticks per second
      */
     public static double getFlywheel() {
-        return flywheel.getVelocity();
+        int currentPosition = flywheel.getCurrentPosition();
+        long currentTime = System.nanoTime();
+
+        if (lastTime == 0) {
+            lastTime = currentTime;
+            lastPosition = currentPosition;
+            return 0;
+        }
+
+        double deltaTicks = currentPosition - lastPosition;
+        double deltaTime = (currentTime - lastTime) / 1e9;
+
+        lastPosition = currentPosition;
+        lastTime = currentTime;
+
+        if (deltaTime == 0) return 0;
+
+        return deltaTicks / deltaTime;
     }
 
     public static boolean flywheelIsReady(int targetVelocity) {

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests.hardware;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.packet;
 import static org.firstinspires.ftc.teamcode.utility.Actuation.voltageCompensation;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -54,8 +55,8 @@ public class FlywheelTest extends OpMode {
 
 //        double feedforward = 0.0;
         double feedforward = feedforwardControl.calculate(rpm);
-        double pid = 0.0;
-//        double pid = flywheelPID.calculateSignal(rpm, flywheel.getVelocity());
+//        double pid = 0.0;
+        double pid = PIDControl.calculateSignal(rpm, flywheel.getVelocity());
         double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
 
@@ -67,7 +68,8 @@ public class FlywheelTest extends OpMode {
         error = rpm - flywheel.getVelocity();
         packet.put("target velocity", rpm);
         packet.put("actual velocity", flywheel.getVelocity());
-        packet.put("flywheel signal", signal);
+        packet.put("flywheel signal clamped", signal);
+        packet.put("flywheel signal unclamped", voltageCompensation(feedforward + pid));
         packet.put("error", error);
         dashboard.sendTelemetryPacket(packet);
     }
