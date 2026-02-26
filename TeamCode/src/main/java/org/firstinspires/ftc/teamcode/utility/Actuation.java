@@ -399,6 +399,7 @@ public class Actuation {
      * Gets the result of the Limelight
      * @return Limelight result
      */
+
     public static LLResult getLLResult() {
         return limelight.getLatestResult();
     }

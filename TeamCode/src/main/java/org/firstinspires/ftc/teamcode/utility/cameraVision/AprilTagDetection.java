@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.utility.cameraVision;
 
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -9,15 +9,20 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 
+
 import java.util.List;
 
 public class AprilTagDetection {
     private static int artifactPattern;
-    private static String team;
+    private String team;
 
     public static List<LLResultTypes.FiducialResult> getFiducials() {
         Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
         return Actuation.getLLResult().getFiducialResults();
+    }
+
+    public static LLResult getResult(){
+        return Actuation.getLLResult();
     }
 
     /**
@@ -59,19 +64,20 @@ public class AprilTagDetection {
         team = newTeam;
     }
 
-    public static double getTx(List<LLResultTypes.FiducialResult> fiducials, int targetId) {
+    public static double getTx(LLResult result) {
         double tx = Double.NaN;
-        for (LLResultTypes.FiducialResult fid : fiducials) {
-            if (fid.getFiducialId() == targetId) {
-                tx = Math.toRadians(fid.getTargetXDegrees());
-                // Auto-adjusts robot position based on AprilTag angle;
-//                double global_angle = Actuation.getTurretGlobal()-tx;
-//                double m = Math.tan(global_angle), b = tag.y - tag.x*m;
-//                double new_x = (OttoCore.robotPose.x - m*b + m*OttoCore.robotPose.y) / (Math.pow(m, 2) + 1);
-//                OttoCore.robotPose = OttoCore.relativeTransform(new Pose(new_x, m*new_x+b, OttoCore.robotPose.heading), -ActuationConstants.Launcher.turretOffset, 0, 0);
-//                reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
-            }
-        }
+//        for (LLResultTypes.FiducialResult fid : fiducials) {
+//            if (fid.getFiducialId() == targetId) {
+//                tx = Math.toRadians(fid.getTargetXDegrees());
+//                // Auto-adjusts robot position based on AprilTag angle;
+////                double global_angle = Actuation.getTurretGlobal()-tx;
+////                double m = Math.tan(global_angle), b = tag.y - tag.x*m;
+////                double new_x = (OttoCore.robotPose.x - m*b + m*OttoCore.robotPose.y) / (Math.pow(m, 2) + 1);
+////                OttoCore.robotPose = OttoCore.relativeTransform(new Pose(new_x, m*new_x+b, OttoCore.robotPose.heading), -ActuationConstants.Launcher.turretOffset, 0, 0);
+////                reference = OttoCore.relativeTransform(fiducialGlobalPos, ActuationConstants.Launcher.turretOffset, 0, 0);
+//            }
+//        }
+        tx = Math.toRadians(result.getTx());
         return tx;
     }
 

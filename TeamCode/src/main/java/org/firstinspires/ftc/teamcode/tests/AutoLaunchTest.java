@@ -21,7 +21,7 @@ public class AutoLaunchTest extends OpMode {
     public void loop() {
         OttoCore.updatePosition();
         Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
-        AutoLaunch.updateAutoLaunchM(OttoCore.robotPose);
+        AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose);
         AutoLaunch.setFlywheel();
         AutoLaunch.rotate();
     }

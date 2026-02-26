@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.utility.autonomous;
 
 import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
 
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 public class AutoLaunch {
     private static int targetVel;
@@ -58,7 +59,7 @@ public class AutoLaunch {
     /**
      * Updates the target values for auto-launching while moving
      */
-    public static void updateAutoLaunchM(Pose reference) {
+    public static void updateAutoLaunchMobile(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
         double d_x = (reference.x - goal.x) / 39.37; // X distance
@@ -123,12 +124,44 @@ public class AutoLaunch {
      * Updates the target values for auto-launching while stationary
      * Desmos Graph: <a href="https://www.desmos.com/calculator/strglw28yh">...</a>
      */
-    public static void updateAutoLaunchS(Pose reference) {
+    public static void updateAutoLaunchStatic(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
         // Distance in inches
         double dist = Math.sqrt(Math.pow(reference.x - goal.x, 2) + Math.pow(reference.y - goal.y, 2));
         dist = dist / 39.37; // Convert from inches to meters
+
+        final double g = -9.8; // Gravitational constant ( as indicated by using the keyword final)
+
+        // Angle between robot and goal
+        targetRot = Math.atan2(goal.y - reference.y, goal.x - reference.x);
+
+        // Change in height from launcher to goal
+        double height = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
+
+//        double flywheelAngle = 0.5*Math.atan(-dist/height) + Math.PI/2.0; // Optimal flywheel angle
+        double angleFlywheel = Math.toRadians(55); // Angle of the flywheel
+
+        // As seen in the Desmos graph, if the robot is to close, there is no possible way that it can be launched such that it will hit the target
+        // to make sure that the program doesn't crash due to this issue in match, we need to make sure that everything under the square root is nonzero and positive.
+        double sqrt = g * Math.pow(dist, 2.0) / ((height - dist * Math.tan(angleFlywheel)) * (2.0 * Math.pow(Math.cos(angleFlywheel), 2.0)));
+
+        double linVel = 0.0; // Linear velocity of the flywheel
+        if (sqrt > 0) {
+            linVel = Math.sqrt(sqrt);
+        }
+
+        // Convert from linear to angular velocity with scaling
+        targetVel = getFlyVel(linVel);
+    }
+
+    public static void updateAutoLaunchStaticAprilTag(Pose reference, LLResultTypes.FiducialResult fid) {
+        Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
+
+        boolean aprilTagDistUsed = true;
+        telemetry.addData("Using Apriltag: ", aprilTagDistUsed);
+        // Distance in meters
+        double dist = fid.getRobotPoseTargetSpace().getPosition().y + 0.05;
 
         final double g = -9.8; // Gravitational constant ( as indicated by using the keyword final)
 
