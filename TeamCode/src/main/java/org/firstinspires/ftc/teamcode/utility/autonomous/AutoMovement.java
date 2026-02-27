@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
 import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
-import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getMove;
-import static org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore.getStrafe;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;

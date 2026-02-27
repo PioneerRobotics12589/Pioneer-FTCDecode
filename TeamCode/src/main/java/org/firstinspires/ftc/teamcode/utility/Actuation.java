@@ -116,10 +116,10 @@ public class Actuation {
      * @param strafe strafe power
      */
     public static void drive(double move, double turn, double strafe) {
-        frontLeft.setPower(move + turn + strafe);
-        frontRight.setPower(move - turn - strafe);
-        backLeft.setPower(move + turn - strafe);
-        backRight.setPower(move - turn + strafe);
+        frontLeft.setPower(voltageCompensation(move + turn + strafe));
+        frontRight.setPower(voltageCompensation(move - turn - strafe));
+        backLeft.setPower(voltageCompensation(move + turn - strafe));
+        backRight.setPower(voltageCompensation(move - turn + strafe));
     }
 
     /**
@@ -370,7 +370,7 @@ public class Actuation {
 
     public static double voltageCompensation(double power) {
         double multiplier = 13.0 / OttoCore.voltageSensor.getVoltage();
-        return power * multiplier;
+        return Math.min(1.0, Math.max(-1.0, power * multiplier));
     }
 
     /**
