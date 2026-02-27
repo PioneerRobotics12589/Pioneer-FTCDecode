@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDCoeffs;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
 
-public class ActuationConstants {
+public class ActuationConstants { // ryan pergola is a gay
     @Config
     public static class Autonomous {
         public static double moveSpeed = 0.5;
