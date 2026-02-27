@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
 
@@ -37,13 +38,15 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void init() {
-        Actuation.setup(hardwareMap, telemetry);
+//        Actuation.setup(hardwareMap, telemetry);
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        transfer = hardwareMap.get(DcMotor.class, "transfer");
+        OttoCore.voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+//        intake = hardwareMap.get(DcMotor.class, "intake");
+//        transfer = hardwareMap.get(DcMotor.class, "transfer");
 
         dashboard = FtcDashboard.getInstance();
     }
@@ -60,8 +63,8 @@ public class FlywheelTest extends OpMode {
         double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
 
-        intake.setPower(intakePower);
-        transfer.setPower(transferPower);
+//        intake.setPower(intakePower);
+//        transfer.setPower(transferPower);
 
         TelemetryPacket packet = new TelemetryPacket();
 

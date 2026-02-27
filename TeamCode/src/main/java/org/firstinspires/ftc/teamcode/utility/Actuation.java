@@ -332,11 +332,13 @@ public class Actuation {
     public static void turretMoveTowards(double target) {
         double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
+        double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
 
-        double turretSignal = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, AngleUnit.normalizeRadians(getTurretLocal()));
+        double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
+        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.25)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
 //        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
 //        turret.setTargetPosition(targetTicks);
-        turret.setPower(turretSignal);
+        turret.setPower(turretPID + turretFF);
     }
 
     /**

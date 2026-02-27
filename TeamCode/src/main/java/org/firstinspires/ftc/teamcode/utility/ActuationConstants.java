@@ -31,27 +31,32 @@ public class ActuationConstants {
 
     @Config
     public static class Movement {
-        public static PIDCoeffs lateralGains = new PIDCoeffs(0.008, 0, 0.008);
-        public static PIDCoeffs verticalGains = new PIDCoeffs(0.07, 0.0005, 0.008);
-        public static PIDCoeffs rotationalGains = new PIDCoeffs(4.0, 0, 0.2);
+        /*
+        Base control systems for autonomous movement:
+        PID: creates the essential movement speeds
+        Feedforward: Adjusts the robot better due to the friction against the field (ks term)
+         */
+        public static PIDController lateralPID = new PIDController(0.008, 0, 0.008);
+        public static PIDController verticalPID = new PIDController(0.021, 0.00015, 0.0024);
+        public static PIDController rotationalPID = new PIDController(4.0, 0, 0.2);
+        public static double lateralFF = 0.25, verticalFF = 0.25, rotationalFF = 0.05;
     }
 
     @Config
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
         // Before using F: P = 600, I = 50, D = 50, F = 20
-        public static PIDController flywheelPID = new PIDController(0.005, 0, 0.00002);
+        public static PIDController flywheelPID = new PIDController(0.00001, 0, 0.00002);
         public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(0.006, 0.00039, 0);
         // 1, 0.5, 0.003
         public static PIDController turretPID = new PIDController(0.3, 0, 0.003);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(130));
+        public static double turretFF = 0.05;
         public static double turretOffset = -2; // Turret offset from center of the robot (5 inches backwards from the center)
-
-        public static int shortLaunch = 1450;
-        public static int longLaunch = 1560;
-
+        public static int shortLaunch = 1350;
+        public static int longLaunch = 1450;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
     }

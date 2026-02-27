@@ -26,6 +26,9 @@ public class LocalizationTest extends OpMode {
         OttoCore.updatePosition();
         OttoCore.displayPosition();
         Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
+        Actuation.packet.put("Move",gamepad1.left_stick_y);
+        Actuation.packet.put("Strafe", -gamepad1.left_stick_x);
+        Actuation.packet.put("Turn", -gamepad1.right_stick_x);
 
 //        Actuation.packet.put("ticks left", OttoCore.ticks_left);
 //        Actuation.packet.put("ticks right", OttoCore.ticks_right);

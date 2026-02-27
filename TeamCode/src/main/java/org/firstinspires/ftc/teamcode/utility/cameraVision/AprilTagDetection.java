@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AprilTagDetection {
     private static int artifactPattern;
-    private String team;
+    private static String team;
 
     public static List<LLResultTypes.FiducialResult> getFiducials() {
         Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);

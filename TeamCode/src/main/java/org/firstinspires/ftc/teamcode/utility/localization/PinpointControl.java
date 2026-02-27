@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 public class PinpointControl {
     private static GoBildaPinpointDriver pinpoint;
-
+    public static double xMult = 1.004016064257, yMult = 1.00180863274672;
     private static Pose currentPose;
     private static Pose velocityPose;
 
@@ -49,8 +49,13 @@ public class PinpointControl {
 
     public static void updatePose() {
         pinpoint.update();
-        currentPose.x = pinpoint.getPosX(DistanceUnit.INCH) + poseOffset.x;
-        currentPose.y = pinpoint.getPosY(DistanceUnit.INCH) + poseOffset.y;
+        double xOdo = pinpoint.getPosX(DistanceUnit.INCH);
+        double yOdo = pinpoint.getPosY(DistanceUnit.INCH);
+        double angle = 0.015067;
+//        currentPose.x = (xOdo*Math.cos(angle) - yOdo*Math.sin(angle) + poseOffset.x) * xMult;
+//        currentPose.y = (xOdo*Math.sin(angle) + yOdo*Math.cos(angle) + poseOffset.y) * yMult;
+        currentPose.x = (xOdo + poseOffset.x) * xMult;
+        currentPose.y = (yOdo + poseOffset.y) * yMult;
         currentPose.heading = AngleUnit.normalizeRadians(pinpoint.getHeading(AngleUnit.RADIANS) + poseOffset.heading);
     }
 

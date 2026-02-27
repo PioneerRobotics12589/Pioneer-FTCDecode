@@ -53,7 +53,7 @@ public class Pose {
     @NonNull
     @Override
     public String toString() {
-        return "X: " + (int)(x * 100)/100.0 + ", Y: " + (int)(y*100)/100.0 + ", H: " + Math.toDegrees(heading);
+        return "X: " + (int)(x * 1000)/1000.0 + ", Y: " + (int)(y*1000)/1000.0 + ", H: " + (int)(Math.toDegrees(heading)*1000)/1000.0;
     }
 
     public boolean equals(Pose other) {
