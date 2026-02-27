@@ -159,7 +159,7 @@ public class OttoCore {
 
         // Apply feedforward to stop help against friction (if PID signal is less than 0.1, robot might not move, therefore add the smallest power in order to get the robot to move)
         // The 0.1 value and feedforward values might change depending on the robot (specifically weight)
-        double vertFF = (Math.abs(targetPose.x-OttoCore.robotPose.x) > 0.5) ? -Math.signum(vertPID) * ActuationConstants.Movement.verticalFF : 0.0;
+        double vertFF = (Math.abs(targetPose.x-OttoCore.robotPose.x) > 0.5) ? Math.signum(vertPID) * ActuationConstants.Movement.verticalFF : 0.0;
         double latFF = (Math.abs(targetPose.y-OttoCore.robotPose.y) > 0.5) ? Math.signum(latPID) * ActuationConstants.Movement.lateralFF : 0.0;
         double rotFF = (Math.abs(targetPose.heading-OttoCore.robotPose.heading) > Math.toRadians(0.5)) ? Math.signum(rotPID) * ActuationConstants.Movement.rotationalFF : 0.0;
 //        double vertFF = 0.0;
@@ -174,6 +174,9 @@ public class OttoCore {
                 rotSignal,
                 vertSignal * Math.sin(robotPose.heading) - latSignal * Math.cos(robotPose.heading));
 
+        Actuation.packet.put("vertFF", vertFF);
+        Actuation.packet.put("latFF", latFF);
+        Actuation.packet.put("rotFF", rotFF);
         Actuation.packet.put("xSignal", vertPID);
         Actuation.packet.put("ySignal", latPID);
         Actuation.packet.put("hSignal", rotPID);

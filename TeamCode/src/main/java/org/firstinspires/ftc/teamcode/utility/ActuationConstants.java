@@ -39,7 +39,7 @@ public class ActuationConstants { // ryan pergola is a gay
         public static PIDController lateralPID = new PIDController(0.008, 0, 0.008);
         public static PIDController verticalPID = new PIDController(0.021, 0.00015, 0.0024);
         public static PIDController rotationalPID = new PIDController(4.0, 0, 0.2);
-        public static double lateralFF = 0.25, verticalFF = 0.25, rotationalFF = 0.05;
+        public static double lateralFF = 0.15, verticalFF = 0.08, rotationalFF = 0.025;
     }
 
     @Config
