@@ -45,8 +45,8 @@ public class FlywheelTest extends OpMode {
 
         OttoCore.voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-//        intake = hardwareMap.get(DcMotor.class, "intake");
-//        transfer = hardwareMap.get(DcMotor.class, "transfer");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
 
         dashboard = FtcDashboard.getInstance();
     }
@@ -63,8 +63,8 @@ public class FlywheelTest extends OpMode {
         double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
 
-//        intake.setPower(intakePower);
-//        transfer.setPower(transferPower);
+        intake.setPower(intakePower);
+        transfer.setPower(transferPower);
 
         TelemetryPacket packet = new TelemetryPacket();
 

@@ -147,9 +147,9 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
 
-        while(!(vel == 0 && Math.abs(rotVel) < 0.5 && hasRun && withinRange && withinField)) {
+        while(!(Math.abs(vel) <= 0.01 && Math.abs(rotVel) < 0.01 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             runPeriodics();
             OttoCore.displayPosition();
@@ -164,10 +164,10 @@ public class Trajectory {
             Pose robot_vel = OttoCore.getVelocity();
             vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
             rotVel = robot_vel.heading;
-            if (vel != 0 || rotVel != 0) hasRun = true;
+            if (Math.abs(vel) > 0.01 || Math.abs(rotVel) > 0.01) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.5, 0.5, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
@@ -228,7 +228,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.25, 0.25, Math.toRadians(1));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(1));
 
         while(!(vel == 0 && Math.abs(rotVel) < 0.5 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
@@ -273,10 +273,10 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
         boolean stopPath = gamepadButton.getAsBoolean();
 
-        while(!(vel == 0 && rotVel == 0 && hasRun && withinRange && withinField && !stopPath)) {
+        while(!(Math.abs(vel) > 0.01 && Math.abs(rotVel) > 0.01 && hasRun && withinRange && withinField && !stopPath)) {
             OttoCore.updatePosition();
             runPeriodics();
             OttoCore.displayPosition();
@@ -291,10 +291,10 @@ public class Trajectory {
             Pose robot_vel = OttoCore.getVelocity();
             vel = Math.sqrt(Math.pow(robot_vel.x, 2) + Math.pow(robot_vel.y, 2));
             rotVel = robot_vel.heading;
-            if (vel != 0 || rotVel != 0) hasRun = true;
+            if (Math.abs(vel) > 0.01 || Math.abs(rotVel) > 0.01) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 1, 1, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
             stopPath = gamepadButton.getAsBoolean();
         }
 

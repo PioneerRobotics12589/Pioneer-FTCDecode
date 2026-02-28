@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
 public class PinpointControl {
     private static GoBildaPinpointDriver pinpoint;
-    public static double xMult = 1.004016064257, yMult = 1.00180863274672;
     private static Pose currentPose;
     private static Pose velocityPose;
 
@@ -38,6 +37,10 @@ public class PinpointControl {
         poseOffset = new Pose(0, 0, 0);
     }
 
+    public static void setOffsets(double xOffset, double yOffset) {
+        pinpoint.setOffsets(xOffset, yOffset, DistanceUnit.INCH);
+    }
+
     public static void resetPose() {
         pinpoint.resetPosAndIMU();
     }
@@ -52,10 +55,10 @@ public class PinpointControl {
         double xOdo = pinpoint.getPosX(DistanceUnit.INCH);
         double yOdo = pinpoint.getPosY(DistanceUnit.INCH);
         double angle = 0.015067;
-//        currentPose.x = (xOdo*Math.cos(angle) - yOdo*Math.sin(angle) + poseOffset.x) * xMult;
-//        currentPose.y = (xOdo*Math.sin(angle) + yOdo*Math.cos(angle) + poseOffset.y) * yMult;
-        currentPose.x = (xOdo + poseOffset.x) * xMult;
-        currentPose.y = (yOdo + poseOffset.y) * yMult;
+        currentPose.x = (xOdo*Math.cos(angle) - yOdo*Math.sin(angle) + poseOffset.x);
+        currentPose.y = (xOdo*Math.sin(angle) + yOdo*Math.cos(angle) + poseOffset.y);
+//        currentPose.x = (xOdo + poseOffset.x);
+//        currentPose.y = (yOdo + poseOffset.y);
         currentPose.heading = AngleUnit.normalizeRadians(pinpoint.getHeading(AngleUnit.RADIANS) + poseOffset.heading);
     }
 

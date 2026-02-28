@@ -285,7 +285,7 @@ public class Actuation {
 
     public static void reverse(boolean control) {
         if (control) {
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.2);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.3);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
         } else {
             intake.setPower(0);

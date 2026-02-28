@@ -1,16 +1,22 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+import org.firstinspires.ftc.teamcode.utility.localization.PinpointControl;
 
 import java.util.concurrent.TimeUnit;
 
+@Config
 @TeleOp(name="Localization Test")
 public class LocalizationTest extends OpMode {
+
+    public static double xOffset = -4.35, yOffset = -6.0;
+
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
@@ -25,6 +31,7 @@ public class LocalizationTest extends OpMode {
     public void loop() {
         OttoCore.updatePosition();
         OttoCore.displayPosition();
+        PinpointControl.setOffsets(xOffset, yOffset);
         Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
         Actuation.packet.put("Move",gamepad1.left_stick_y);
         Actuation.packet.put("Strafe", -gamepad1.left_stick_x);
