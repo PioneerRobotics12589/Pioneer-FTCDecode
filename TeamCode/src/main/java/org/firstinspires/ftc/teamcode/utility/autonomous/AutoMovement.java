@@ -120,24 +120,26 @@ public class AutoMovement {
         //                AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
         AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
 
-        if (AutoLaunch.closeToLaunchZone(20)) {
-//            if (trackingAprilTag) {
-//                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
-//                turretReady = Math.abs(tx) < Math.toRadians(0.5);
-//            } else
-
-//            }
-        } else {
-
-            Actuation.turretMoveTowards(OttoCore.robotPose.heading);
-        }
-
-        turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
+//        if (AutoLaunch.closeToLaunchZone(20)) {
+////            if (trackingAprilTag) {
+////                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
+////                turretReady = Math.abs(tx) < Math.toRadians(0.5);
+////            } else
+//
+////            }
+//            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
+//            turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < 0.5;
+//        } else {
+//            Actuation.turretMoveTowards(OttoCore.robotPose.heading);
+//        }
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < 1.0;
+//        turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
+//        Actuation.setFlywheel(AutoLaunch.getTargetVel());
         flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
         telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
+        telemetry.addData("Target Turret Rotation", Math.toDegrees(AutoLaunch.getTargetRot()));
     }
 
     public static boolean readyToLaunch() {

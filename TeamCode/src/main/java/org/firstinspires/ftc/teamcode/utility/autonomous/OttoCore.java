@@ -158,34 +158,31 @@ public class OttoCore {
         // Calculate PID
         double vertPID = ActuationConstants.Movement.verticalPID.calculateSignal(targetPose.x, OttoCore.robotPose.x) * movementSpeed;
         double latPID = ActuationConstants.Movement.lateralPID.calculateSignal(targetPose.y, OttoCore.robotPose.y) * movementSpeed;
-        double rotPID = ActuationConstants.Movement.rotationalPID.calculateSignal(targetPose.heading, OttoCore.robotPose.heading) * turnSpeed;
+        double turnSignal = ActuationConstants.Movement.rotationalPID.calculateSignal(targetPose.heading, OttoCore.robotPose.heading) * turnSpeed;
+
+        double moveSignal = -(vertPID * Math.cos(robotPose.heading) + latPID * Math.sin(robotPose.heading));
+        double strafeSignal = -(vertPID * Math.sin(robotPose.heading) - latPID * Math.cos(robotPose.heading)) * 1.5;
 
         // Apply feedforward to stop help against friction (if PID signal is less than 0.1, robot might not move, therefore add the smallest power in order to get the robot to move)
         // The 0.1 value and feedforward values might change depending on the robot (specifically weight)
-        double vertFF = (Math.abs(vertPID) > 0.02) ? Math.signum(vertPID) * ActuationConstants.Movement.verticalFF : 0.0;
-        double latFF = (Math.abs(latPID) > 0.02) ? Math.signum(latPID) * ActuationConstants.Movement.lateralFF : 0.0;
-        double rotFF = (Math.abs(rotPID) > 0.02) ? Math.signum(rotPID) * ActuationConstants.Movement.rotationalFF : 0.0;
-//        double vertFF = 0.0;
-//        double latFF = 0.0;
-//        double rotFF = 0.0;
+        double vertFF = ActuationConstants.Movement.verticalFF.calculate(0.0, Math.signum(moveSignal));
+        double latFF = ActuationConstants.Movement.lateralFF.calculate(0.0, Math.signum(strafeSignal));
+        double rotFF = ActuationConstants.Movement.rotationalFF.calculate(0.0, Math.signum(turnSignal));
 
-        double vertSignal = -(vertPID + vertFF);
-        double latSignal = -(latPID + latFF);
-        double rotSignal = rotPID + rotFF;
+        moveSignal += vertFF;
+        strafeSignal += latFF;
+        turnSignal += rotFF;
 
-        Actuation.drive(vertSignal * Math.cos(robotPose.heading) + latSignal * Math.sin(robotPose.heading),
-                rotSignal,
-                vertSignal * Math.sin(robotPose.heading) - latSignal * Math.cos(robotPose.heading));
+        Actuation.drive(moveSignal,
+                turnSignal,
+                strafeSignal);
 
         Actuation.packet.put("vertFF", vertFF);
         Actuation.packet.put("latFF", latFF);
         Actuation.packet.put("rotFF", rotFF);
-        Actuation.packet.put("vertPID", vertPID);
-        Actuation.packet.put("latPID", latPID);
-        Actuation.packet.put("rotPID", rotPID);
-        Actuation.packet.put("move", vertSignal * Math.cos(robotPose.heading) + latSignal * Math.sin(robotPose.heading));
-        Actuation.packet.put("strafe", vertSignal * Math.sin(robotPose.heading) - latSignal * Math.cos(robotPose.heading));
-        Actuation.packet.put("hPID", rotSignal);
+        Actuation.packet.put("move", moveSignal);
+        Actuation.packet.put("strafe", strafeSignal);
+        Actuation.packet.put("turn", turnSignal);
         Actuation.packet.put("X", OttoCore.robotPose.x);
         Actuation.packet.put("Y", OttoCore.robotPose.y);
         Actuation.packet.put("H", OttoCore.robotPose.heading);
@@ -200,8 +197,8 @@ public class OttoCore {
 
         // Apply feedforward to stop help against friction (if PID signal is less than 0.1, robot might not move, therefore add the smallest power in order to get the robot to move)
         // The 0.1 value and feedforward values might change depending on the robot (specifically weight)
-        double vertFF = (Math.abs(vertPID) > 0.02) ? Math.signum(vertPID) * ActuationConstants.Movement.verticalFF : 0.0;
-        double latFF = (Math.abs(latPID) > 0.02) ? Math.signum(latPID) * ActuationConstants.Movement.lateralFF : 0.0;
+        double vertFF = ActuationConstants.Movement.verticalFF.calculate(0.0, Math.signum(vertPID));
+        double latFF = ActuationConstants.Movement.lateralFF.calculate(0.0, Math.signum(latPID));
 
         double vertSignal = vertPID + vertFF;
         double latSignal = latPID + latFF;
@@ -216,8 +213,8 @@ public class OttoCore {
 
         // Apply feedforward to stop help against friction (if PID signal is less than 0.1, robot might not move, therefore add the smallest power in order to get the robot to move)
         // The 0.1 value and feedforward values might change depending on the robot (specifically weight)
-        double vertFF = (Math.abs(targetPose.x-OttoCore.robotPose.x) > 0.2) ? Math.signum(vertPID) * ActuationConstants.Movement.verticalFF : 0.0;
-        double latFF = (Math.abs(targetPose.y-OttoCore.robotPose.y) > 0.2) ? Math.signum(latPID) * ActuationConstants.Movement.lateralFF : 0.0;
+        double vertFF = ActuationConstants.Movement.verticalFF.calculate(0.0, Math.signum(vertPID));
+        double latFF = ActuationConstants.Movement.lateralFF.calculate(0.0, Math.signum(latPID));
 
         double vertSignal = vertPID + vertFF;
         double latSignal = latPID + latFF;
@@ -231,7 +228,7 @@ public class OttoCore {
 
         // Apply feedforward to stop help against friction (if PID signal is less than 0.1, robot might not move, therefore add the smallest power in order to get the robot to move)
         // The 0.1 value and feedforward values might change depending on the robot (specifically weight)
-        double rotFF = (Math.abs(targetPose.heading-OttoCore.robotPose.heading) > Math.toRadians(0.5)) ? Math.signum(rotPID) * ActuationConstants.Movement.rotationalFF : 0.0;
+        double rotFF = ActuationConstants.Movement.rotationalFF.calculate(0.0, Math.signum(rotPID));
 
         return rotPID + rotFF;
     }
@@ -239,6 +236,14 @@ public class OttoCore {
     public static Pose getVelocity() {
         PinpointControl.updateVelocityPose();
         return PinpointControl.getVelocityPose();
+//        double dt = (System.nanoTime() - lastTime)/1000000000.00;
+//
+//        return new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);
+    }
+
+    public static Pose getAcceleration() {
+        PinpointControl.updateAccelerationPose();
+        return PinpointControl.getAccelerationPose();
 //        double dt = (System.nanoTime() - lastTime)/1000000000.00;
 //
 //        return new Pose((robotPose.x - lastPose.x)/dt, (robotPose.y - lastPose.y)/dt, (robotPose.heading - lastPose.heading)/dt);

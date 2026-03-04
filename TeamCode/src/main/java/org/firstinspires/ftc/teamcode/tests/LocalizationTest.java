@@ -28,6 +28,11 @@ public class LocalizationTest extends OpMode {
     }
 
     @Override
+    public void start() {
+        OttoCore.setPose(new Pose(0, 0, Math.toRadians(0)));
+    }
+
+    @Override
     public void loop() {
         OttoCore.updatePosition();
         OttoCore.displayPosition();

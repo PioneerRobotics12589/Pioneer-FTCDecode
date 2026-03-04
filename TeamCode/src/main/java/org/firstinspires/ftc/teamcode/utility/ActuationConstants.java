@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
 public class ActuationConstants { // ryan pergola is a gay
     @Config
     public static class Autonomous {
-        public static double moveSpeed = 0.5;
+        public static double moveSpeed = 1.0;
         //        public static double moveSpeed = 0.2;
-        public static double turnSpeed = 0.8;
+        public static double turnSpeed = 1.0;
 //        public static double turnSpeed = 0.26667; // haha, 67 i love ryan fagan
     }
 
@@ -36,10 +36,12 @@ public class ActuationConstants { // ryan pergola is a gay
         PID: creates the essential movement speeds
         Feedforward: Adjusts the robot better due to the friction against the field (ks term)
          */
-        public static PIDController lateralPID = new PIDController(0.015, 0, 0.0025);
-        public static PIDController verticalPID = new PIDController(0.1, 0, 0.01);
-        public static PIDController rotationalPID = new PIDController(2.0, 0, 0.1);
-        public static double lateralFF = 0.13, verticalFF = 0.075, rotationalFF = 0.075;
+        public static PIDController lateralPID = new PIDController(0.075, 0, 0.012);
+        public static SimpleMotorFeedforward lateralFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
+        public static PIDController verticalPID = new PIDController(0.075, 0.0, 0.012);
+        public static SimpleMotorFeedforward verticalFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
+        public static PIDController rotationalPID = new PIDController(0.5, 0, 0.2);
+        public static SimpleMotorFeedforward rotationalFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
     }
 
     @Config
@@ -49,14 +51,14 @@ public class ActuationConstants { // ryan pergola is a gay
         public static PIDController flywheelPID = new PIDController(0.01, 0, 0.00001);
         public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(0.006, 0.00039, 0);
         // 1, 0.5, 0.003
-        public static PIDController turretPID = new PIDController(0.3, 0, 0.003);
+        public static PIDController turretPID = new PIDController(0.9, 0.002, 0.0003);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
-        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(130));
-        public static double turretFF = 0.05;
-        public static double turretOffset = -2; // Turret offset from center of the robot (5 inches backwards from the center)
+        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(110));
+        public static double turretFF = 0.01;
+        public static double turretOffset = -2; // Turret offset from center of the robot (2 inches backwards from the center)
         public static int shortLaunch = 1290;
-        public static int longLaunch = 1450;
+        public static int longLaunch = 1480;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
     }
@@ -65,8 +67,8 @@ public class ActuationConstants { // ryan pergola is a gay
     public static class Intake {
         public static double intakeSpeed = 1.0;
         public static double transferSpeed = 1.0;
-        public static double blockerDown = 0.1;
-        public static double blockerUp = 0.8;
+        public static double blockerDown = 0.0;
+        public static double blockerUp = 0.75;
     }
 
     @Config

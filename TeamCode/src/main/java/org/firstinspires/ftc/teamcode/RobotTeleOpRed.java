@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
@@ -18,19 +19,22 @@ import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 @Config
 public class RobotTeleOpRed extends OpMode {
     private int shootingSpeed;
+    private ElapsedTime runtime = new ElapsedTime();
+    private double time;
 
 //    private Thread turretOp;
 
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
-        AutoLaunch.setTeam("blue");
+        AutoLaunch.setTeam("red");
     }
-    /*public void start() {
-utoMovement.turretOperation("blue", gamepad1)
-        turretOp.start();
-    }*/
+
+    public void start() {
+        runtime.reset();
+    }
 
     public void loop() {
+        time = runtime.seconds();
         telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
       /*  // Toggles
@@ -86,19 +90,20 @@ utoMovement.turretOperation("blue", gamepad1)
             Actuation.turretMoveTowards(Math.toRadians(-30));
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
         }
-        Actuation.setFlywheel(shootingSpeed);
+//        Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
         Actuation.shoot(gamepad1.left_trigger > 0.5);
         //Actuation.runIntake(gamepad1.right_trigger > 0.5);
         Actuation.runTransfer(gamepad1.right_bumper);
         //Actuation.runIntake(gamepad1.right_bumper);
         Actuation.reverse(gamepad1.right_trigger > 0.5);
-        // Actuation.setLaunchIndicator();
+         Actuation.setLaunchIndicator(time);
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);
 //        } else if (gamepad1.dpad_right) {
 //            Actuation.controlTurret(-1.0);
 //        }
+        AutoMovement.turretOperation("red");
         OttoCore.updatePosition();
         telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretLocal()));
         telemetry.update();

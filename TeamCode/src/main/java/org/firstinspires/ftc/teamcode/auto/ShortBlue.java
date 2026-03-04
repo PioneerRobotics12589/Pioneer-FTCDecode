@@ -17,21 +17,42 @@ public class ShortBlue extends LinearOpMode {
     public void runOpMode() {
         Actuation.setup(hardwareMap, telemetry);
 
-        OttoCore.setPose(FieldConstants.Start.blueShort);
-
         waitForStart();
 
-        Actuation.setFlywheel(1470);
-        Actuation.turretMoveTowards(Math.toRadians(10));
-        sleep(1000);
+        AutoLaunch.setTeam("blue");
+        OttoCore.setPose(FieldConstants.Start.blueShort);
 
         Paths.Blue.launchShort.run();
+        telemetry.addLine("Launch Complete.");
+        telemetry.update();
+
         Paths.Blue.spike1.run();
+        telemetry.addLine("Spike 1 Complete.");
+        telemetry.update();
+
         Paths.Blue.launchShort.run();
+        telemetry.addLine("Launch Complete.");
+        telemetry.update();
+
         Paths.Blue.spike2.run();
+        telemetry.addLine("Spike 2 Complete.");
+        telemetry.update();
+
         Paths.Blue.launchShort.run();
+        telemetry.addLine("Launch Complete.");
+        telemetry.update();
+
         Paths.Blue.spike3.run();
+        telemetry.addLine("Spike 3 Complete.");
+        telemetry.update();
+
+        Paths.Blue.launchShort.run();
+        telemetry.addLine("Launch Complete.");
+        telemetry.update();
+
 //        Paths.Blue.launchShort.run();
-//        Paths.Blue.gate.run();
+        Paths.Blue.gateEnd.run();
+        telemetry.addLine("Gate Complete.");
+        telemetry.update();
     }
 }

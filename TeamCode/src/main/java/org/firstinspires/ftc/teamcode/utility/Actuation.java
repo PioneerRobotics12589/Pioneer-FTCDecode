@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.utility;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.teamcode.utility.ActuationConstants.Intake.blockerDown;
+import static org.firstinspires.ftc.teamcode.utility.ActuationConstants.Intake.blockerUp;
 
 import android.graphics.Color;
 
@@ -35,7 +37,7 @@ public class Actuation {
 
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
-    public static Servo blocker, launchIndicator;
+    public static Servo blocker1, blocker2, launchIndicator1, launchIndicator2;
     public static DcMotorEx flywheel;
     private static int lastPosition = 0;
     private static long lastTime = 0;
@@ -76,12 +78,16 @@ public class Actuation {
             //intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.servo.contains("blocker")) {
-            blocker = map.get(Servo.class, "blocker");
+        if (map.servo.contains("blocker1")) {
+            blocker1 = map.get(Servo.class, "blocker1");
+            blocker2 = map.get(Servo.class, "blocker2");
         }
 
-        if (map.servo.contains("launchIndicator")) {
-            launchIndicator = map.get(Servo.class, "launchIndicator");
+        if (map.servo.contains("launchIndicator1")) {
+            launchIndicator1 = map.get(Servo.class, "launchIndicator1");
+        }
+        if (map.servo.contains("launchIndicator2")) {
+            launchIndicator2 = map.get(Servo.class, "launchIndicator2");
         }
 
         if (map.dcMotor.contains("flywheel")) {
@@ -233,9 +239,11 @@ public class Actuation {
 
     public static void setBlocker(boolean control) {
         if (control) {
-            blocker.setPosition(ActuationConstants.Intake.blockerDown);
+            blocker1.setPosition(blockerDown);
+            blocker2.setPosition(blockerUp);
         } else {
-            blocker.setPosition(ActuationConstants.Intake.blockerUp);
+            blocker1.setPosition(blockerUp);
+            blocker2.setPosition(blockerDown);
         }
     }
 
@@ -273,6 +281,7 @@ public class Actuation {
 
     public static void shoot(boolean control) {
         if (control) {
+//            setBlocker(false);
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
@@ -285,9 +294,11 @@ public class Actuation {
 
     public static void reverse(boolean control) {
         if (control) {
+//            setBlocker(true);
             transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.3);
             intake.setPower(-ActuationConstants.Intake.intakeSpeed);
         } else {
+//            setBlocker(false);
             intake.setPower(0);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
@@ -301,11 +312,28 @@ public class Actuation {
     /**
      * Sets the RGB indicator depending on if the robot is in the launch zone
      */
-    public static void setLaunchIndicator() {
+    public static void setLaunchIndicator(double time) {
         if (AutoLaunch.inLaunchZone()) {
-            launchIndicator.setPosition(1.0);
+            launchIndicator1.setPosition(1);
+
+
         } else {
-            launchIndicator.setPosition(0.0);
+            launchIndicator1.setPosition(0.0);
+        }
+        if (time >= 60.0 && time < 90.0) {
+            launchIndicator2.setPosition(0.388);
+        }
+        else if (time >= 90.0 && time < 100.0) {
+            launchIndicator2.setPosition(0.333);
+        }
+        else if (time >= 100.0 && time < 110.0) {
+            launchIndicator2.setPosition(0.3);
+        }
+        else if (time >= 110.0) {
+            launchIndicator2.setPosition(0.722);
+        }
+        else {
+            launchIndicator2.setPosition(0.5);
         }
     }
 
@@ -335,7 +363,17 @@ public class Actuation {
         double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
 
         double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
-        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.25)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
+        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
+//        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
+//        turret.setTargetPosition(targetTicks);
+        turret.setPower(turretPID + turretFF);
+    }
+
+    public static void turretMoveTowardsLocal(double targetLocal) {
+        double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
+
+        double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
+        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
 //        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
 //        turret.setTargetPosition(targetTicks);
         turret.setPower(turretPID + turretFF);
@@ -363,9 +401,10 @@ public class Actuation {
     }
 
     public static void setTurret(double angle) {
-        while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal() - AngleUnit.normalizeRadians(angle))) >= Math.toRadians(0.5)) {
+        while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal() - angle)) >= Math.toRadians(0.5)) {
             turretMoveTowards(angle);
         }
+        turret.setPower(0);
     }
 
     public static double voltageCompensation(double power) {

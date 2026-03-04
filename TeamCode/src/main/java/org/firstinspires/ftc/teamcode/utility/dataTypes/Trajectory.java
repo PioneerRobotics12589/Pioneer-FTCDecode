@@ -123,6 +123,14 @@ public class Trajectory {
         }
     }
 
+    public Trajectory sleepWithPeriodics(long millis) {
+        long endTime = System.currentTimeMillis() + millis;
+        while (System.currentTimeMillis() < endTime) {
+            runPeriodics();
+        }
+        return this;
+    }
+
     private void runLineTo(Pose targetPose) {
         runLineTo(targetPose, ActuationConstants.Autonomous.moveSpeed, ActuationConstants.Autonomous.turnSpeed);
     }
@@ -147,7 +155,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.5, Math.toRadians(2));
 
         while(!(Math.abs(vel) <= 0.01 && Math.abs(rotVel) < 0.01 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
@@ -167,7 +175,7 @@ public class Trajectory {
             if (Math.abs(vel) > 0.01 || Math.abs(rotVel) > 0.01) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 0.75, 0.75, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.0, Math.toRadians(2));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
@@ -184,7 +192,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 4, 4, Math.toRadians(5));
 
         while(!(hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
@@ -203,8 +211,11 @@ public class Trajectory {
             double rotSignal = OttoCore.getTurn(targetPose, tSpeed);
 
             // Normalize based on the larger distance (strafe multiplied by 1.2 to match move speed)
-            double moveSignal = mSpeed * Math.cos(angle - OttoCore.robotPose.heading);
-            double strafeSignal = mSpeed * Math.sin(angle - OttoCore.robotPose.heading) * 1.2;
+            double moveSignal = -mSpeed * Math.cos(angle - OttoCore.robotPose.heading);
+            double strafeSignal = mSpeed * Math.sin(angle - OttoCore.robotPose.heading) * 1.4;
+
+            Actuation.packet.put("MoveSignal", moveSignal);
+            Actuation.packet.put("StrafeSignal", strafeSignal);
 
             double clampRot = Math.max(-1.0, Math.min(1, rotSignal));
             double clampMove = Math.max(-1.0, Math.min(1, moveSignal));
@@ -213,7 +224,7 @@ public class Trajectory {
             Actuation.drive(clampMove, clampRot, clampStrafe);
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 2, 2, Math.toRadians(5));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 4, 4, Math.toRadians(5));
         }
     }
     private void runLineToPrecise(Pose targetPose, double mSpeed, double tSpeed) {
