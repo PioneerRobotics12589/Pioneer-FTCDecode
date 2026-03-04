@@ -72,12 +72,9 @@ public class RobotTeleOpBlue extends OpMode {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
-        if (gamepad1.right_bumper) {
+        /*if (gamepad1.right_bumper) {
             Actuation.intake.setPower(-1.0);
-        }
-        else {
-            Actuation.intake.setPower(0.0);
-        }
+        }*/
         if (gamepad2.dpad_left) {
             Actuation.turretMoveTowards(Math.toRadians(50));
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
@@ -93,13 +90,29 @@ public class RobotTeleOpBlue extends OpMode {
             Actuation.turretMoveTowards(Math.toRadians(30));
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
         }
+        if (gamepad1.left_trigger > 0.5) {
+            // Shooting Mode
+            Actuation.shoot(true);
+        } else if (gamepad1.right_trigger > 0.5) {
+            // Reverse Mode (Make sure to fix the direction in Actuation.java!)
+            Actuation.reverse(true);
+        } else if (gamepad1.right_bumper) {
+            // Intake Mode
+            Actuation.intake(true);
+            Actuation.runTransfer(true);
+        } else {
+            // Everything Off
+            Actuation.intake(false);
+            Actuation.runTransfer(false);
+        }
 //        Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
-        Actuation.shoot(gamepad1.left_trigger > 0.5);
+        //Actuation.shoot(gamepad1.left_trigger > 0.5);
         //Actuation.runIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_bumper);
+        //Actuation.runTransfer(gamepad1.right_bumper);
+        //Actuation.intake(gamepad1.right_bumper);
         //Actuation.runIntake(gamepad1.right_bumper);
-        Actuation.reverse(gamepad1.right_trigger > 0.5);
+        //Actuation.reverse(gamepad1.right_trigger > 0.5);
          Actuation.setLaunchIndicator(time);
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);

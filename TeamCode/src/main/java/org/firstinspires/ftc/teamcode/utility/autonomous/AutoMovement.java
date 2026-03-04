@@ -136,7 +136,7 @@ public class AutoMovement {
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
         turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < 1.0;
 //        turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
-//        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+        Actuation.setFlywheel(AutoLaunch.getTargetVel());
         flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
         telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
         telemetry.addData("Target Turret Rotation", Math.toDegrees(AutoLaunch.getTargetRot()));
