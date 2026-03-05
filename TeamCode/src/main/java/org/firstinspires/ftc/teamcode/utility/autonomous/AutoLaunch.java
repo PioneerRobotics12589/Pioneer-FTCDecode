@@ -68,7 +68,7 @@ public class AutoLaunch {
         final double h = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
         final double g = -9.8;
         final double theta_f = 50.0 * Math.PI / 180.0; // Flywheel Angle
-        final double lr = 0.1; // Learning Rate
+        final double lr = 0.25; // Learning Rate
 
         int iterations = 1;
 
@@ -105,7 +105,7 @@ public class AutoLaunch {
         curr_v = iter.velocity(curr_t, curr_v);
 
         // Perform Iterations
-        while (Math.abs(curr_t - prev_t) > 0.00001 && iterations < 200) {
+        while (Math.abs(curr_t - prev_t) > 0.000001 && iterations < 200) {
             iterations++;
 
             prev_t = curr_t;
@@ -113,7 +113,7 @@ public class AutoLaunch {
             curr_v = iter.velocity(curr_t, curr_v);
         }
 
-        targetRot = iter.heading(curr_t);
+        targetRot = 0.5*(iter.heading(curr_t) - Actuation.getTurretGlobal()) + Actuation.getTurretGlobal();
         targetVel = getFlyVel(curr_v);
 
         // Convert linear flywheel velocity to angular
