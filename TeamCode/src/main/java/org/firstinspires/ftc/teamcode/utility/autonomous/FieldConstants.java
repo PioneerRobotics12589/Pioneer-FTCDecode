@@ -78,6 +78,8 @@ public class FieldConstants {
     @Config
     public static class Goal {
         // Aim for FTC logos
+        public static double redX = 62, redY = -62.5;
+        public static double blueX = 62, blueY = 62.5;
         public static Point red = new Point(62, -62.5);
         public static Point blue = new Point(62, 62.5);
     }

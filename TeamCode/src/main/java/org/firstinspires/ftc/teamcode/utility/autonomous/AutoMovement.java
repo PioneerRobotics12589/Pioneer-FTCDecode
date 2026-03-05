@@ -118,7 +118,7 @@ public class AutoMovement {
         boolean trackingAprilTag = !Double.isNaN(tx);
 
         // AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
-        AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
+        AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose); // Assuming static launching
 
 //        if (AutoLaunch.closeToLaunchZone(20)) {
 ////            if (trackingAprilTag) {

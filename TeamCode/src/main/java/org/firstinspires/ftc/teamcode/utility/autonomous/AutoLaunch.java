@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
@@ -57,16 +58,68 @@ public class AutoLaunch {
     public static void updateAutoLaunchMobile(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
-        double d_x = (reference.x - goal.x) / 39.37; // X distance
-        double d_y = (reference.y - goal.y) / 39.37; // Y distance
+        double dx = (goal.x - reference.x) / 39.37; // X distance
+        double dy = (goal.y - reference.y) / 39.37; // Y distance
 
         Pose vel = OttoCore.getVelocity(); // Get current velocities
+        double vx = vel.x / 39.37;
+        double vy = vel.y / 39.37;
 
-        targetVel = getFlyVel((4.8441270688 + (0.1802078198 * d_x) + (0.1833721958 * d_y) + (0.0413811466 * vel.x) + (0.0279143290 * vel.y) + (0.1326523733 * d_x*d_x) + (-0.0507610667 * d_x*d_y) + (-0.2052237052 * d_x*vel.x) + (-0.0243015090 * d_x*vel.y) + (0.1328960696 * d_y*d_y) + (-0.0271567227 * d_y*vel.x) + (-0.2095355507 * d_y*vel.y) + (0.0676393013 * vel.x*vel.x) + (0.0443569373 * vel.x*vel.y) + (0.0769738471 * vel.y*vel.y) + (-0.0098544120 * d_x*d_x*d_x) + (-0.0027375016 * d_x*d_x*d_y) + (0.0113618273 * d_x*d_x*vel.x) + (0.0053323178 * d_x*d_x*vel.y) + (-0.0032396893 * d_x*d_y*d_y) + (0.0090960928 * d_x*d_y*vel.x) + (0.0096150530 * d_x*d_y*vel.y) + (0.0012637035 * d_x*vel.x*vel.x) + (-0.0071646824 * d_x*vel.x*vel.y) + (-0.0034042167 * d_x*vel.y*vel.y) + (-0.0098325331 * d_y*d_y*d_y) + (0.0054107393 * d_y*d_y*vel.x) + (0.0125597581 * d_y*d_y*vel.y) + (-0.0021258349 * d_y*vel.x*vel.x) + (-0.0073579327 * d_y*vel.x*vel.y) + (-0.0007484920 * d_y*vel.y*vel.y) + (-0.0032378693 * vel.x*vel.x*vel.x) + (0.0003376211 * vel.x*vel.x*vel.y) + (0.0011173520 * vel.x*vel.y*vel.y) + (-0.0028310896 * vel.y*vel.y*vel.y)));
-        targetRot = getRot(0.7965269017 + (-0.5502373893 * d_x) + (0.5382293956 * d_y) + (0.2302603267 * vel.x) + (-0.2217951683 * vel.y) + (0.0948967216 * d_x*d_x) + (0.0038175622 * d_x*d_y) + (-0.0691073204 * d_x*vel.x) + (-0.0439749237 * d_x*vel.y) + (-0.0949920764 * d_y*d_y) + (0.0408508871 * d_y*vel.x) + (0.0691250905 * d_y*vel.y) + (0.0048890543 * vel.x*vel.x) + (0.0013956383 * vel.x*vel.y) + (-0.0074973437 * vel.y*vel.y) + (-0.0035247029 * d_x*d_x*d_x) + (-0.0109953764 * d_x*d_x*d_y) + (0.0024813607 * d_x*d_x*vel.x) + (0.0076420578 * d_x*d_x*vel.y) + (0.0104375821 * d_x*d_y*d_y) + (0.0061484484 * d_x*d_y*vel.x) + (-0.0060848250 * d_x*d_y*vel.y) + (0.0002822522 * d_x*vel.x*vel.x) + (-0.0036288430 * d_x*vel.x*vel.y) + (0.0000457961 * d_x*vel.y*vel.y) + (0.0037589706 * d_y*d_y*d_y) + (-0.0075781053 * d_y*d_y*vel.x) + (-0.0026426180 * d_y*d_y*vel.y) + (0.0006803577 * d_y*vel.x*vel.x) + (0.0039938061 * d_y*vel.x*vel.y) + (-0.0002690869 * d_y*vel.y*vel.y) + (-0.0000206521 * vel.x*vel.x*vel.x) + (-0.0011237318 * vel.x*vel.x*vel.y) + (0.0001889585 * vel.x*vel.y*vel.y) + (0.0002403688 * vel.y*vel.y*vel.y), Math.atan2(d_y, d_x));
+        final double h = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
+        final double g = -9.8;
+        final double theta_f = 50.0 * Math.PI / 180.0; // Flywheel Angle
+        final double lr = 0.1; // Learning Rate
+
+        int iterations = 1;
+
+        double curr_t = 0.67; // Initial projectile time "guess" (Keep at 0.67)
+        double prev_t = 0.0; // Used to measure convergence
+        double curr_v = 0.0;
+
+        class Iterate {
+            double velocity(double t_proj, double vel) {
+                double sqrt = ((dx - vx*t_proj)*(dx - vx*t_proj) + (dy - vy*t_proj)*(dy - vy*t_proj)) / (t_proj*t_proj*Math.cos(theta_f)*Math.cos(theta_f));
+                // Catch domain error
+                if (sqrt < 0) {
+                    return vel;
+                }
+                return Math.sqrt(sqrt);
+            }
+
+            double heading(double t_proj) {
+                return Math.atan2(dy - vy*t_proj, dx - vx*t_proj);
+            }
+
+            double time(double t_proj, double vel) {
+                double sqrt = (vel*vel*Math.sin(theta_f)*Math.sin(theta_f)) + 2*g*h;
+                // Catch domain error
+                if (sqrt < 0) {
+                    return t_proj;
+                }
+                return t_proj + lr * (((-vel*Math.sin(theta_f) - Math.sqrt(sqrt)) / g) - t_proj);
+            }
+        }
+
+        Iterate iter = new Iterate();
+
+        curr_v = iter.velocity(curr_t, curr_v);
+
+        // Perform Iterations
+        while (Math.abs(curr_t - prev_t) > 0.00001 && iterations < 200) {
+            iterations++;
+
+            prev_t = curr_t;
+            curr_t = iter.time(curr_t, curr_v);
+            curr_v = iter.velocity(curr_t, curr_v);
+        }
+
+        targetRot = iter.heading(curr_t);
+        targetVel = getFlyVel(curr_v);
+
         // Convert linear flywheel velocity to angular
         telemetry.addData("Target Flywheel Velocity", targetVel);
-        telemetry.addData("Target Robot Angle", targetRot);
+        telemetry.addData("Target Turret Angle", targetRot);
+        telemetry.addData("Current Turret Angle", AngleUnit.normalizeRadians(Actuation.getTurretGlobal()));
     }
 
     /**

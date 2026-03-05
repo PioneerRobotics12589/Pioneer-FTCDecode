@@ -90,13 +90,21 @@ public class RobotTeleOpRed extends OpMode {
             Actuation.turretMoveTowards(Math.toRadians(-30));
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
         }
-//        Actuation.setFlywheel(shootingSpeed);
-        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
-        Actuation.shoot(gamepad1.left_trigger > 0.5);
-        //Actuation.runIntake(gamepad1.right_trigger > 0.5);
-        Actuation.runTransfer(gamepad1.right_bumper);
-        //Actuation.runIntake(gamepad1.right_bumper);
-        Actuation.reverse(gamepad1.right_trigger > 0.5);
+        if (gamepad1.left_trigger > 0.5) {
+            // Shooting Mode
+            Actuation.shoot(true);
+        } else if (gamepad1.right_trigger > 0.5) {
+            // Reverse Mode (Make sure to fix the direction in Actuation.java!)
+            Actuation.reverse(true);
+        } else if (gamepad1.right_bumper) {
+            // Intake Mode
+            Actuation.runIntake(true);
+            Actuation.runTransfer(true);
+        } else {
+            // Everything Off
+            Actuation.runIntake(false);
+            Actuation.runTransfer(false);
+        }
          Actuation.setLaunchIndicator(time);
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);
