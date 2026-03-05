@@ -177,15 +177,9 @@ public class OttoCore {
                 turnSignal,
                 strafeSignal);
 
-        Actuation.packet.put("vertFF", vertFF);
-        Actuation.packet.put("latFF", latFF);
-        Actuation.packet.put("rotFF", rotFF);
         Actuation.packet.put("move", moveSignal);
         Actuation.packet.put("strafe", strafeSignal);
         Actuation.packet.put("turn", turnSignal);
-        Actuation.packet.put("X", OttoCore.robotPose.x);
-        Actuation.packet.put("Y", OttoCore.robotPose.y);
-        Actuation.packet.put("H", OttoCore.robotPose.heading);
 
         Actuation.updateTelemetry();
     }

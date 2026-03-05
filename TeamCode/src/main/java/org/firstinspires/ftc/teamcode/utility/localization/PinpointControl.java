@@ -16,7 +16,6 @@ public class PinpointControl {
     private static Pose velocityPose;
     private static Pose accelerationPose;
     private static long lastTime;
-    private static double deltaX, deltaY;
     private final static double xMult = 1.0, yMult = -1.0;
 
     /**
@@ -64,8 +63,8 @@ public class PinpointControl {
         double xOdo = pinpoint.getPosX(DistanceUnit.INCH);
         double yOdo = pinpoint.getPosY(DistanceUnit.INCH);
         double angle = 0.015067;
-        deltaX = currentPose.x - lastPose.x;
-        deltaY = currentPose.y - lastPose.y;
+        double deltaX = currentPose.x - lastPose.x;
+        double deltaY = currentPose.y - lastPose.y;
         currentPose.x = xOdo + (deltaX*Math.cos(angle) - deltaY*Math.sin(angle)) * xMult;
         currentPose.y = yOdo + (deltaX*Math.sin(angle) + deltaY*Math.cos(angle)) * yMult;
         lastPose = new Pose(currentPose);

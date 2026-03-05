@@ -19,6 +19,7 @@ public class ShortBlue extends LinearOpMode {
 
         waitForStart();
 
+        Actuation.setFlywheel(1290);
         AutoLaunch.setTeam("blue");
         OttoCore.setPose(FieldConstants.Start.blueShort);
 

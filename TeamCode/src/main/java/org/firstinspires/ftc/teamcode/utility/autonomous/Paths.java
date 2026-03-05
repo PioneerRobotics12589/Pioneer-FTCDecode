@@ -50,15 +50,16 @@ public class Paths {
                 .action(() -> Actuation.setTurret(1480))
                 .lineTo(FieldConstants.Launch.blueLong)
                 .action(AutoLaunch::launchOperation)
-                .sleepWithPeriodics(1500)
+                .sleepWithPeriodics(2000)
                 .action(() -> Actuation.turret.setPower(0));
 
         public static Trajectory launchShort = new Trajectory()
-                .addPeriodic(() -> Actuation.turretMoveTowardsLocal(Math.toRadians(0)))
-                .action(() -> Actuation.setTurret(1290))
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .lineTo(FieldConstants.Launch.blueShort)
                 .action(AutoLaunch::launchOperation)
-                .sleepWithPeriodics(1500)
+                .action(() -> Actuation.transfer.setPower(-1))
+                .action(() -> Actuation.intake.setPower(-1))
+                .sleepWithPeriodics(2000)
                 .action(() -> Actuation.turret.setPower(0));
 
         // Gate

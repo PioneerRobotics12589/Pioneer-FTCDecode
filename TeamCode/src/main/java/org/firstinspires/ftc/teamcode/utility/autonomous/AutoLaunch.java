@@ -49,8 +49,6 @@ public class AutoLaunch {
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
         }
-        Actuation.runIntake(true);
-        Actuation.runTransfer(true);
     }
 
     /**
@@ -151,8 +149,9 @@ public class AutoLaunch {
         double difference = rot-directRot;
 
         double kMult = 1.0;
+        double kBias = 0.0;
 
-        return rot + difference*kMult;
+        return rot + difference*kMult + kBias;
     }
 
     /**
@@ -177,7 +176,7 @@ public class AutoLaunch {
     public static boolean notTooClose() {
         Pose pos = OttoCore.robotPose;
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
-        return ((Math.sqrt((goal.x-pos.x)*(goal.x-pos.x) + (goal.y-pos.y)*(goal.y-pos.y))) > 65);
+        return ((Math.sqrt((goal.x-pos.x)*(goal.x-pos.x) + (goal.y-pos.y)*(goal.y-pos.y))) > 55);
     }
 
     /**

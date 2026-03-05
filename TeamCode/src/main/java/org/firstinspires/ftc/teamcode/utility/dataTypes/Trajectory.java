@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.localization.PinpointControl;
 
@@ -155,7 +156,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.5, Math.toRadians(2));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.5, Math.toRadians(5));
 
         while(!(Math.abs(vel) <= 0.01 && Math.abs(rotVel) < 0.01 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
@@ -165,6 +166,9 @@ public class Trajectory {
             Actuation.packet.put("Robot Pos", OttoCore.robotPose);
             Actuation.packet.put("vel", vel);
             Actuation.packet.put("rot vel", rotVel);
+            Actuation.packet.put("Turret ready", AutoMovement.turretReady);
+            Actuation.packet.put("Flywheel ready", AutoMovement.flywheelReady);
+            Actuation.packet.put("Within range", withinRange);
             Actuation.updateTelemetry();
 
             OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
@@ -175,7 +179,7 @@ public class Trajectory {
             if (Math.abs(vel) > 0.01 || Math.abs(rotVel) > 0.01) hasRun = true;
 
             withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-            withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.0, Math.toRadians(2));
+            withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.5, Math.toRadians(5));
         }
 
         Actuation.drive(0.0, 0.0, 0.0);
