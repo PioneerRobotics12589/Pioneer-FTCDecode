@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 
 import java.util.function.BooleanSupplier;
@@ -18,8 +20,11 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Ryan Saito Testing")
 @Config
 public class D1TeleOp extends OpMode {
+    private ElapsedTime runtime = new ElapsedTime();
+    private double time;
     private boolean trackArtifact = false;
     private int shootingSpeed;
+
 
      //private final Thread turretOp = AutoMovement.turretOperation("blue", gamepad1);
 
@@ -27,12 +32,16 @@ public class D1TeleOp extends OpMode {
         Actuation.setup(hardwareMap, telemetry);
         AutoLaunch.setTeam("blue");
     }
-    /*public void start() {
-        turretOp.start();
-    }*/
+    public void start() {
+        runtime.reset();
+        //turretOp.start();
+    }
 
     public void loop() {
         telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
+        time = runtime.seconds();
+        telemetry.addLine("Time=" + time);
+
 
       /*  // Toggles
         if (gamepad2.squareWasPressed()) {
@@ -72,6 +81,9 @@ public class D1TeleOp extends OpMode {
         else {
             Actuation.intake.setPower(0.0);
         }
+        if (gamepad1.cross) {
+            OttoCore.robotPose = new Pose(0, 0, 0);
+        }
         if (gamepad2.dpad_left) {
             Actuation.turretMoveTowards(Math.toRadians(50));
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
@@ -90,7 +102,7 @@ public class D1TeleOp extends OpMode {
         Actuation.runTransfer(gamepad1.right_bumper);
         //Actuation.runIntake(gamepad1.right_bumper);
         Actuation.reverse(gamepad1.right_trigger > 0.5);
-        // Actuation.setLaunchIndicator();
+        Actuation.setLaunchIndicator(time);
 //        if (gamepad1.dpad_left) {
 //            Actuation.controlTurret(1.0);
 //        } else if (gamepad1.dpad_right) {

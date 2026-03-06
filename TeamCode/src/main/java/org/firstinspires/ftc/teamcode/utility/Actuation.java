@@ -214,7 +214,14 @@ public class Actuation {
      */
     public static void runIntake(boolean control) {
         if (control) {
-            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+        }else {
+            intake.setPower(0.0);
+        }
+    }
+    public static void intake(boolean control) {
+        if (control) {
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
         }else {
             intake.setPower(0.0);
         }
@@ -296,7 +303,7 @@ public class Actuation {
         if (control) {
 //            setBlocker(true);
             transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.3);
-            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
 //            setBlocker(false);
             intake.setPower(0);
