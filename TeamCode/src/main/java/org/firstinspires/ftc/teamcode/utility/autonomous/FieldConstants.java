@@ -78,10 +78,10 @@ public class FieldConstants {
     @Config
     public static class Goal {
         // Aim for FTC logos
-        public static double redX = 62, redY = -62.5;
-        public static double blueX = 62, blueY = 62.5;
-        public static Point red = new Point(62, -62.5);
-        public static Point blue = new Point(62, 62.5);
+        public static double redX = 62, redY = -58;
+        public static double blueX = 62, blueY = 58;
+        public static Point red = new Point(62, -58);
+        public static Point blue = new Point(62, 58);
     }
 
     // End Positions
@@ -94,7 +94,12 @@ public class FieldConstants {
         public static Pose blueLong = new Pose(-60, 50, Math.toRadians(0));
     }
 
-    // Dump Scan Positions
+    public static class Reset {
+        public static Pose redCorner = new Pose(-62.13, -61.13, Math.toRadians(-90));
+        public static Pose blueCorner = new Pose(-62.13, 60.3, Math.toRadians(0));
+    }
+
+    // Dump Positions
     @Config
     public static class Dump {
         public static Pose red = new Pose(40, -60, Math.toRadians(90));

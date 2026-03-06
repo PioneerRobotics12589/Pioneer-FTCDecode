@@ -401,7 +401,9 @@ public class Actuation {
     }
 
     public static void setTurret(double angle) {
-        while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal() - angle)) >= Math.toRadians(0.5)) {
+        while (Math.abs(AngleUnit.normalizeRadians(getTurretGlobal() - angle)) >= Math.toRadians(1)) {
+            telemetry.addData("Turret Angle", Math.toDegrees(AngleUnit.normalizeRadians(getTurretGlobal())));
+            telemetry.addData("Target Angle", angle);
             turretMoveTowards(angle);
         }
         turret.setPower(0);

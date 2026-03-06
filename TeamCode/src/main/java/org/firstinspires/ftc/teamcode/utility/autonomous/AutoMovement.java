@@ -111,22 +111,22 @@ public class AutoMovement {
      * @param team team color
      */
     public static void turretOperation(String team) {
-        LLResult result = AprilTagDetection.getResult();
+//        LLResult result = AprilTagDetection.getResult();
         int goalCode = team.equals("blue") ? 0 : 3;
-        Actuation.setPipeline(goalCode);
-        double tx = AprilTagDetection.getTx(result);
-        boolean trackingAprilTag = !Double.isNaN(tx);
+//        Actuation.setPipeline(goalCode);
+//        double tx = AprilTagDetection.getTx(result);
+//        boolean trackingAprilTag = !Double.isNaN(tx);
 
         // AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
         AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose); // Assuming static launching
 
 //        if (AutoLaunch.closeToLaunchZone(20)) {
-////            if (trackingAprilTag) {
-////                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
-////                turretReady = Math.abs(tx) < Math.toRadians(0.5);
-////            } else
+//            if (trackingAprilTag) {
+//                Actuation.turretMoveTowards(Actuation.getTurretGlobal() - tx);
+//                turretReady = Math.abs(tx) < Math.toRadians(0.5);
+//            } else
 //
-////            }
+//            }
 //            Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
 //            turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < 0.5;
 //        } else {

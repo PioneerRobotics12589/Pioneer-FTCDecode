@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
@@ -75,26 +76,16 @@ public class RobotTeleOpBlue extends OpMode {
         /*if (gamepad1.right_bumper) {
             Actuation.intake.setPower(-1.0);
         }*/
-        if (gamepad2.dpad_left) {
-            Actuation.turretMoveTowards(Math.toRadians(50));
-            shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+        if (gamepad1.left_stick_button) {
+            OttoCore.setPose(FieldConstants.Reset.blueCorner);
+        } else if (gamepad1.right_stick_button) {
+            OttoCore.setPose(new Pose(0, 0, 0));
         }
-        if (gamepad2.dpad_right) {
-            OttoCore.robotPose = new Pose(0, 0, 0);
-            IMUControl.setYaw(0);
-        }
-        else if (gamepad2.dpad_up) {
-            Actuation.turretMoveTowards(Math.toRadians(0));
-        }
-        else if (gamepad2.dpad_down) {
-            Actuation.turretMoveTowards(Math.toRadians(30));
-            shootingSpeed = ActuationConstants.Launcher.longLaunch;
-        }
+
         if (gamepad1.left_trigger > 0.5) {
             // Shooting Mode
             Actuation.shoot(true);
         } else if (gamepad1.right_trigger > 0.5) {
-            // Reverse Mode (Make sure to fix the direction in Actuation.java!)
             Actuation.reverse(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
@@ -114,12 +105,10 @@ public class RobotTeleOpBlue extends OpMode {
         //Actuation.runIntake(gamepad1.right_bumper);
         //Actuation.reverse(gamepad1.right_trigger > 0.5);
         Actuation.setLaunchIndicator(time);
-//        if (gamepad1.dpad_left) {
-//            Actuation.controlTurret(1.0);
-//        } else if (gamepad1.dpad_right) {
-//            Actuation.controlTurret(-1.0);
-//        }
         AutoMovement.turretOperation("blue");
+
+        FieldConstants.Goal.blue = new Point(FieldConstants.Goal.blueX, FieldConstants.Goal.blueY);
+
         OttoCore.updatePosition();
         OttoCore.displayPosition();
         telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));

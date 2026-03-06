@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.utility.dataTypes;
 
 import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
+import static org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch.inLaunchZone;
+import static org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch.notTooClose;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
+import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
 import org.firstinspires.ftc.teamcode.utility.localization.PinpointControl;
@@ -130,6 +133,21 @@ public class Trajectory {
             runPeriodics();
         }
         return this;
+    }
+
+    public Trajectory launchOp() {
+        movements.add(() -> {
+            while (!(AutoLaunch.inLaunchZone() && AutoLaunch.notTooClose() && AutoMovement.readyToLaunch())) {
+                Actuation.runIntake(false);
+                Actuation.runTransfer(false);
+                runPeriodics();
+            }
+            Actuation.runIntake(false);
+            Actuation.runTransfer(false);
+            runPeriodics();
+        });
+        return this;
+
     }
 
     private void runLineTo(Pose targetPose) {

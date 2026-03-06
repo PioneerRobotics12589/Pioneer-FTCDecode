@@ -113,7 +113,7 @@ public class AutoLaunch {
             curr_v = iter.velocity(curr_t, curr_v);
         }
 
-        targetRot = 0.5*(iter.heading(curr_t) - Actuation.getTurretGlobal()) + Actuation.getTurretGlobal();
+        targetRot = ActuationConstants.Launcher.sotmAdjustMult*(iter.heading(curr_t) - Math.atan2(dy, dx)) + Math.atan2(dy, dx);
         targetVel = getFlyVel(curr_v);
 
         // Convert linear flywheel velocity to angular

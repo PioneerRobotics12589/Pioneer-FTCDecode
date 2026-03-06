@@ -56,11 +56,16 @@ public class Paths {
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .lineTo(FieldConstants.Launch.blueShort)
-                .action(AutoLaunch::launchOperation)
-                .action(() -> Actuation.transfer.setPower(-1))
-                .action(() -> Actuation.intake.setPower(-1))
-                .sleepWithPeriodics(2000)
-                .action(() -> Actuation.turret.setPower(0));
+                .launchOp()
+                .action(() -> {
+                    Actuation.runTransfer(true);
+                    Actuation.runIntake(true);
+                })
+                .sleepWithPeriodics(1500)
+                .action(() -> {
+                    Actuation.runTransfer(false);
+                    Actuation.runIntake(false);
+                });
 
         // Gate
         public static Trajectory gateEnd = new Trajectory()
