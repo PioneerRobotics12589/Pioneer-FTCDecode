@@ -140,7 +140,7 @@ public class Actuation {
 
         double moveP = Math.abs(move) > 0.05 ? move : 0;
         double strafeP = Math.abs(strafe) > 0.05 ? strafe : 0;
-        double turnP = Math.abs(turn) > 0.05 ? strafe : 0;
+        double turnP = Math.abs(turn) > 0.05 ? turn : 0;
 
 
         double multip = (slowMode) ? 0.5 : 1.0;

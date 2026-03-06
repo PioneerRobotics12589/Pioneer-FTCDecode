@@ -45,25 +45,20 @@ public class AutoLaunch {
         targetRot = angle;
     }
 
-    public static void launchOperation() {
-        while (!(inLaunchZone() && notTooClose() && AutoMovement.readyToLaunch())) {
-            Actuation.runIntake(false);
-            Actuation.runTransfer(false);
-        }
-    }
-
     /**
      * Updates the target values for auto-launching while moving
      */
     public static void updateAutoLaunchMobile(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
-        double dx = (goal.x - reference.x) / 39.37; // X distance
-        double dy = (goal.y - reference.y) / 39.37; // Y distance
+        double t_future = 0.2;
 
         Pose vel = OttoCore.getVelocity(); // Get current velocities
+
         double vx = vel.x / 39.37;
         double vy = vel.y / 39.37;
+        double dx = (goal.x - reference.x - vel.x * t_future) / 39.37; // X distance
+        double dy = (goal.y - reference.y - vel.y * t_future) / 39.37; // Y distance
 
         final double h = ActuationConstants.Launcher.targetHeight + ActuationConstants.Launcher.artifactRadius - ActuationConstants.Drivetrain.launcherHeight;
         final double g = -9.8;
@@ -189,22 +184,17 @@ public class AutoLaunch {
     private static int getFlyVel(double linVel) {
         int flyVel = (int) (linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI);
 
+        double short_calc = 1478.453291;
+        double long_calc = 1672.245106;
+
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
-        double kMult = 0.481013; // Flywheel tunable multiplier
-        double kBias = 877.29114; // Flywheel tunable bias
+        // Tune based on short/long launch coefficients
+        double kMult = (ActuationConstants.Launcher.longLaunch - ActuationConstants.Launcher.shortLaunch) / (long_calc - short_calc); // Flywheel tunable multiplier
+        double kBias = ActuationConstants.Launcher.shortLaunch - kMult * short_calc; // Flywheel tunable bias
 
         flyVel = (int) (flyVel * kMult + kBias);
         return flyVel;
-    }
-
-    private static double getRot(double rot, double directRot) {
-        double difference = rot-directRot;
-
-        double kMult = 1.0;
-        double kBias = 0.0;
-
-        return rot + difference*kMult + kBias;
     }
 
     /**

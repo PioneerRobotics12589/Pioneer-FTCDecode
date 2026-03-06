@@ -23,7 +23,7 @@ public class ActuationConstants { // ryan pergola is a gay
 //        public static double wheel_circ = 3.9566929; // inches circumference of dead wheels
         public static double track_width = 8.7637249881059645; // inches distance between odo wheels
         public static double forward_offset = 7.5; // inches distance from center of robot to perp wheel
-        public static double launcherHeight = 4.325; // meters height from ground to launcher
+        public static double launcherHeight = 0.4325; // meters height from ground to launcher
         public static double flwheelRad = 0.1; // meters flywheel radius
         public static double xOdoOffset = -4.38;
         public static double yOdoOffset = -7.5;
@@ -53,12 +53,12 @@ public class ActuationConstants { // ryan pergola is a gay
         // 1, 0.5, 0.003
         public static PIDController turretPID = new PIDController(0.9, 0.002, 0.0003);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
-        public static double turretRatio = 80.0 / 21.0 / (2*Math.PI); // 80:21 gear ratio
+        public static double turretRatio = 130.0 / 34.0 / (2*Math.PI); // 80:21 gear ratio
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(110));
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
         public static double turretOffset = -2; // Turret offset from center of the robot (2 inches backwards from the center)
-        public static int shortLaunch = 1290;
+        public static int shortLaunch = 1310;
         public static int longLaunch = 1480;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;

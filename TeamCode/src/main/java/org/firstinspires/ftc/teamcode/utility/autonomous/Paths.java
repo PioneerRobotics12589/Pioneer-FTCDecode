@@ -46,12 +46,18 @@ public class Paths {
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
-                .addPeriodic(() -> Actuation.turretMoveTowards(Math.toRadians(25.5)))
-                .action(() -> Actuation.setTurret(1480))
-                .lineTo(FieldConstants.Launch.blueLong)
-                .action(AutoLaunch::launchOperation)
-                .sleepWithPeriodics(2000)
-                .action(() -> Actuation.turret.setPower(0));
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
+                .lineTo(FieldConstants.Launch.blueShort)
+                .launchOp()
+                .action(() -> {
+                    Actuation.runTransfer(true);
+                    Actuation.runIntake(true);
+                })
+                .sleepWithPeriodics(1500)
+                .action(() -> {
+                    Actuation.runTransfer(false);
+                    Actuation.runIntake(false);
+                });
 
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
