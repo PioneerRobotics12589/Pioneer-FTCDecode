@@ -128,10 +128,13 @@ public class Trajectory {
     }
 
     public Trajectory sleepWithPeriodics(long millis) {
-        long endTime = System.currentTimeMillis() + millis;
-        while (System.currentTimeMillis() < endTime) {
-            runPeriodics();
-        }
+        movements.add(() -> {
+            long endTime = System.currentTimeMillis() + millis;
+
+            while (System.currentTimeMillis() < endTime) {
+                runPeriodics();
+            }
+        });
         return this;
     }
 
@@ -139,16 +142,12 @@ public class Trajectory {
         movements.add(() -> {
             while (!(AutoLaunch.inLaunchZone() && AutoLaunch.notTooClose() && AutoMovement.readyToLaunch())) {
                 OttoCore.updatePosition();
-                Actuation.runIntake(false);
                 Actuation.runTransfer(false);
                 runPeriodics();
             }
-            Actuation.runIntake(false);
-            Actuation.runTransfer(false);
             runPeriodics();
         });
         return this;
-
     }
 
     private void runLineTo(Pose targetPose) {
@@ -177,18 +176,18 @@ public class Trajectory {
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
         boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 2.5, 2.5, Math.toRadians(5));
 
-        while(!(Math.abs(vel) <= 0.01 && Math.abs(rotVel) < 0.01 && hasRun && withinRange && withinField)) {
+        while(!(Math.abs(vel) <= 0.1 && Math.abs(rotVel) < 0.1 && hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();
             runPeriodics();
             OttoCore.displayPosition();
 
-            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
-            Actuation.packet.put("vel", vel);
-            Actuation.packet.put("rot vel", rotVel);
-            Actuation.packet.put("Turret ready", AutoMovement.turretReady);
-            Actuation.packet.put("Flywheel ready", AutoMovement.flywheelReady);
-            Actuation.packet.put("Within range", withinRange);
-            Actuation.updateTelemetry();
+//            Actuation.packet.put("Robot Pos", OttoCore.robotPose);
+//            Actuation.packet.put("vel", vel);
+//            Actuation.packet.put("rot vel", rotVel);
+//            Actuation.packet.put("Turret ready", AutoMovement.turretReady);
+//            Actuation.packet.put("Flywheel ready", AutoMovement.flywheelReady);
+//            Actuation.packet.put("Within range", withinRange);
+//            Actuation.updateTelemetry();
 
             OttoCore.moveTowards(targetPose, mSpeed, tSpeed);
 
@@ -215,7 +214,7 @@ public class Trajectory {
 
         Pose center = new Pose(0, 0, 0);
         boolean withinField = OttoCore.robotPose.withinRange(center, 72, 72, Math.toRadians(360));
-        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 4, 4, Math.toRadians(5));
+        boolean withinRange = OttoCore.robotPose.withinRange(targetPose, 3, 3, Math.toRadians(5));
 
         while(!(hasRun && withinRange && withinField)) {
             OttoCore.updatePosition();

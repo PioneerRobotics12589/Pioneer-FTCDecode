@@ -18,23 +18,21 @@ public class LongBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Actuation.setup(hardwareMap, telemetry);
-        OttoCore.robotPose = FieldConstants.Start.blueLong;
-        IMUControl.setYaw(OttoCore.robotPose.heading);
+        OttoCore.setup(hardwareMap);
+        AutoLaunch.setTeam("blue");
 
         waitForStart();
 
+        OttoCore.setPose(FieldConstants.Start.blueLong);
+
         // FULL AUTO (15 artifacts? 6 teammate, 9 us)
 
-        Actuation.setFlywheel(1550);
-        Actuation.turretMoveTowards(Math.toRadians(-17.5));
-        sleep(1750);
-
         Paths.Blue.launchLong.run();
-        Paths.Blue.spike4.run();
-        Paths.Blue.launchLong.run();
-        Paths.Blue.spike3.run();
+//        Paths.Blue.spike4long.run();
 //        Paths.Blue.launchLong.run();
-//        Paths.Blue.spike2.run();
+        Paths.Blue.spike3.run();
+        Paths.Blue.launchLong.run();
+        Paths.Blue.spike2.run();
         Paths.Blue.launchLong.run();
         Paths.Blue.gateEnd.run();
 //        Paths.Blue.endLong.run();

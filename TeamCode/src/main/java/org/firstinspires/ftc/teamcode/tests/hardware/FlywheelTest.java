@@ -38,7 +38,7 @@ public class FlywheelTest extends OpMode {
 
     @Override
     public void init() {
-//        Actuation.setup(hardwareMap, telemetry);
+        Actuation.setup(hardwareMap, telemetry);
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

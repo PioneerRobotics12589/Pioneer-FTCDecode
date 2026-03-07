@@ -184,8 +184,8 @@ public class AutoLaunch {
     private static int getFlyVel(double linVel) {
         int flyVel = (int) (linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI);
 
-        double short_calc = 1478.453291;
-        double long_calc = 1672.245106;
+        double short_calc = 1377;
+        double long_calc = 1610;
 
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.

@@ -177,11 +177,11 @@ public class OttoCore {
                 turnSignal,
                 strafeSignal);
 
-        Actuation.packet.put("move", moveSignal);
-        Actuation.packet.put("strafe", strafeSignal);
-        Actuation.packet.put("turn", turnSignal);
+//        Actuation.packet.put("move", moveSignal);
+//        Actuation.packet.put("strafe", strafeSignal);
+//        Actuation.packet.put("turn", turnSignal);
 
-        Actuation.updateTelemetry();
+//        Actuation.updateTelemetry();
     }
 
     public static double getMove(Pose targetPose, double movementSpeed) {

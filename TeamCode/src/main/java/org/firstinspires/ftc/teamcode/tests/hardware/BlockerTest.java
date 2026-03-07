@@ -20,15 +20,15 @@ public class BlockerTest extends OpMode {
     public void init() {
         blocker1 = hardwareMap.get(Servo.class, "blocker1");
         blocker2 = hardwareMap.get(Servo.class, "blocker2");
-        /*intake = hardwareMap.get(DcMotor.class, "intake");
-        transfer = hardwareMap.get(DcMotor.class, "transfer");*/
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
     }
 
     @Override
     public void loop() {
         blocker1.setPosition(angle1);
         blocker2.setPosition(angle2);
-        //intake.setPower(intakePower);
-        //transfer.setPower(transferPower);
+        intake.setPower(intakePower);
+        transfer.setPower(transferPower);
     }
 }

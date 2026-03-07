@@ -58,7 +58,7 @@ public class ActuationConstants { // ryan pergola is a gay
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
         public static double turretOffset = -2; // Turret offset from center of the robot (2 inches backwards from the center)
-        public static int shortLaunch = 1310;
+        public static int shortLaunch = 1340;
         public static int longLaunch = 1480;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
@@ -68,8 +68,8 @@ public class ActuationConstants { // ryan pergola is a gay
     public static class Intake {
         public static double intakeSpeed = -1.0;
         public static double transferSpeed = 1.0;
-        public static double blockerDown = 0.0;
-        public static double blockerUp = 0.75;
+        public static double blockerDown = 0.04;
+        public static double blockerUp = 0.6;
     }
 
     @Config

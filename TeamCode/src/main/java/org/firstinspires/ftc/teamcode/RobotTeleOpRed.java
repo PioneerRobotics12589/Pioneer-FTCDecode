@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
@@ -59,7 +60,7 @@ public class RobotTeleOpRed extends OpMode {
         } else {
             Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x*0.75);
         }*/
-        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x*0.75);
 
         if (gamepad1.dpad_left) {
             // Speed up flywheel to shoot from the long launch zone
@@ -69,15 +70,11 @@ public class RobotTeleOpRed extends OpMode {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
         }
-        if (gamepad1.right_bumper) {
+        /*if (gamepad1.right_bumper) {
             Actuation.intake.setPower(-1.0);
-        }
-        else {
-            Actuation.intake.setPower(0.0);
-        }
-
+        }*/
         if (gamepad1.left_stick_button) {
-            OttoCore.setPose(FieldConstants.Reset.redCorner);
+            OttoCore.setPose(FieldConstants.Reset.blueCorner);
         } else if (gamepad1.right_stick_button) {
             OttoCore.setPose(new Pose(0, 0, 0));
         }
@@ -85,22 +82,38 @@ public class RobotTeleOpRed extends OpMode {
         if (gamepad1.left_trigger > 0.5) {
             // Shooting Mode
             Actuation.shoot(true);
+            Actuation.setBlocker(true);
         } else if (gamepad1.right_trigger > 0.5) {
             Actuation.reverse(true);
+            Actuation.setBlocker(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
             Actuation.runIntake(true);
             Actuation.runTransfer(true);
+            Actuation.setBlocker(false);
         } else {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
+            Actuation.setBlocker(false);
         }
-         Actuation.setLaunchIndicator(time);
 
+//        Actuation.setFlywheel(shootingSpeed);
+        Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+        //Actuation.shoot(gamepad1.left_trigger > 0.5);
+        //Actuation.runIntake(gamepad1.right_trigger > 0.5);
+        //Actuation.runTransfer(gamepad1.right_bumper);
+        //Actuation.intake(gamepad1.right_bumper);
+        //Actuation.runIntake(gamepad1.right_bumper);
+        //Actuation.reverse(gamepad1.right_trigger > 0.5);
+        Actuation.setLaunchIndicator(time);
         AutoMovement.turretOperation("red");
+
+        FieldConstants.Goal.red = new Point(FieldConstants.Goal.redX, FieldConstants.Goal.redY);
+
         OttoCore.updatePosition();
-        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretLocal()));
+        OttoCore.displayPosition();
+        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
         telemetry.update();
     }
 }

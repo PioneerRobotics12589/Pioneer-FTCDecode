@@ -30,7 +30,7 @@ public class LongRed extends LinearOpMode {
         sleep(2000);
 
         Paths.Red.launchLong.run();
-        Paths.Red.spike4.run();
+        Paths.Red.spike4long.run();
         Paths.Red.launchLong.run();
         Paths.Red.spike3.run();
 //        Paths.Red.launchLong.run();

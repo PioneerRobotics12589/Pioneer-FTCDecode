@@ -24,7 +24,7 @@ public class AutoMovement {
 //        System.out.println("Ryan Pergola mad cute :)");
 //    }
 
-    public static final double closestLaunchDist = 30; // way to many kewords man, consider changing to: double closestLaunchDIst
+    public static final double closestLaunchDist = 55; // way to many kewords man, consider changing to: double closestLaunchDIst
     public static boolean isTracking = false;
     public static boolean turretReady = false, flywheelReady = false;
 
@@ -111,7 +111,7 @@ public class AutoMovement {
      * @param team team color
      */
     public static void turretOperation(String team) {
-        int goalCode = team.equals("blue") ? 0 : 3;
+//        int goalCode = team.equals("blue") ? 0 : 3;
 
         // AutoLaunch.updateAutoLaunchM(team, reference); // Assuming mobile or static launching
         AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose); // Assuming static launching
@@ -124,6 +124,7 @@ public class AutoMovement {
         telemetry.addData("Target Flywheel Velocity", AutoLaunch.getTargetVel());
         telemetry.addData("Target Turret Rotation", Math.toDegrees(AutoLaunch.getTargetRot()));
         telemetry.addData("Current Turret Rotation", Math.toDegrees(AngleUnit.normalizeRadians(Actuation.getTurretGlobal())));
+        telemetry.update();
     }
 
     public static boolean readyToLaunch() {

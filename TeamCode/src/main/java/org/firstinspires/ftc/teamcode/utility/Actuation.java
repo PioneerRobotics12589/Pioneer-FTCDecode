@@ -49,7 +49,6 @@ public class Actuation {
 
     public static void setup(HardwareMap map, Telemetry tel) {
         telemetry = tel;
-        OttoCore.setup(map);
 
         if (map.dcMotor.contains("frontLeft")) {
             frontLeft = map.get(DcMotor.class, "frontLeft");
@@ -80,9 +79,10 @@ public class Actuation {
 
         if (map.servo.contains("blocker1")) {
             blocker1 = map.get(Servo.class, "blocker1");
+        }
+        if (map.servo.contains("blocker2")) {
             blocker2 = map.get(Servo.class, "blocker2");
         }
-
         if (map.servo.contains("launchIndicator1")) {
             launchIndicator1 = map.get(Servo.class, "launchIndicator1");
         }
@@ -158,11 +158,12 @@ public class Actuation {
      * @param velocity target flywheel angular velocity
      */
     public static void setFlywheel(int velocity) {
+        velocity = Math.max(1330, velocity);
 //        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
         double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
 //        double pid = 0.0;
         double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
-        double signal = Math.max(-1, Math.min(1, voltageCompensation(feedforward + pid)));
+        double signal = Math.max(0, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
     }
 
@@ -192,7 +193,7 @@ public class Actuation {
     }
 
     public static boolean flywheelIsReady(int targetVelocity) {
-        return Math.abs(getFlywheel() - targetVelocity) <= 20;
+        return getFlywheel() >= targetVelocity-10;
     }
 
     /**
@@ -247,10 +248,10 @@ public class Actuation {
     public static void setBlocker(boolean control) {
         if (control) {
             blocker1.setPosition(blockerDown);
-            blocker2.setPosition(blockerUp);
+            blocker2.setPosition(blockerDown);
         } else {
             blocker1.setPosition(blockerUp);
-            blocker2.setPosition(blockerDown);
+            blocker2.setPosition(blockerUp);
         }
     }
 
@@ -302,11 +303,12 @@ public class Actuation {
     public static void reverse(boolean control) {
         if (control) {
 //            setBlocker(true);
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.3);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5);
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
 //            setBlocker(false);
             intake.setPower(0);
+            transfer.setPower(0);
             //flywheel.setVelocity(-670);
             //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         } /*else {
