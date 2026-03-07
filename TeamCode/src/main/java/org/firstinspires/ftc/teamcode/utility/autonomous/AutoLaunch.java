@@ -51,7 +51,7 @@ public class AutoLaunch {
     public static void updateAutoLaunchMobile(Pose reference) {
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
 
-        double t_future = 0.2;
+        double t_future = 0.0;
 
         Pose vel = OttoCore.getVelocity(); // Get current velocities
 

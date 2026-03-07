@@ -25,16 +25,19 @@ public class LongBlue extends LinearOpMode {
 
         OttoCore.setPose(FieldConstants.Start.blueLong);
 
-        // FULL AUTO (15 artifacts? 6 teammate, 9 us)
 
         Paths.Blue.launchLong.run();
-//        Paths.Blue.spike4long.run();
-//        Paths.Blue.launchLong.run();
+
         Paths.Blue.spike3.run();
+
         Paths.Blue.launchLong.run();
+
         Paths.Blue.spike2.run();
+
         Paths.Blue.launchLong.run();
+
         Paths.Blue.gateEnd.run();
+
 //        Paths.Blue.endLong.run();
     }
 }

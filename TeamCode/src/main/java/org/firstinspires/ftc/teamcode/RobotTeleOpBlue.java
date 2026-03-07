@@ -31,6 +31,7 @@ public class RobotTeleOpBlue extends OpMode {
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
         AutoLaunch.setTeam("blue");
+        Actuation.setBlocker(false);
     }
 
     public void start() {
@@ -85,21 +86,19 @@ public class RobotTeleOpBlue extends OpMode {
         if (gamepad1.left_trigger > 0.5) {
             // Shooting Mode
             Actuation.shoot(true);
-            Actuation.setBlocker(true);
         } else if (gamepad1.right_trigger > 0.5) {
             Actuation.reverse(true);
-            Actuation.setBlocker(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
             Actuation.runIntake(true);
             Actuation.runTransfer(true);
-            Actuation.setBlocker(false);
         } else {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
-            Actuation.setBlocker(false);
         }
+
+        Actuation.setBlocker(false);
 
 //        Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);

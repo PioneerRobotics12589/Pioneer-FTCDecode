@@ -92,10 +92,10 @@ public class FieldConstants {
     @Config
     public static class End {
 
-        public static Pose redShort = new Pose(50, -45, Math.toRadians(-55.6));
-        public static Pose blueShort = new Pose(50, 45, Math.toRadians(55.6));
-        public static Pose redLong = new Pose(-60, -50, Math.toRadians(0));
-        public static Pose blueLong = new Pose(-60, 50, Math.toRadians(0));
+        public static Pose redShort = new Pose(30, -15, Math.toRadians(0));
+        public static Pose blueShort = new Pose(30, 15, Math.toRadians(0));
+        public static Pose redLong = new Pose(-60, -36, Math.toRadians(-90));
+        public static Pose blueLong = new Pose(-60, 36, Math.toRadians(90));
     }
 
     public static class Reset {
