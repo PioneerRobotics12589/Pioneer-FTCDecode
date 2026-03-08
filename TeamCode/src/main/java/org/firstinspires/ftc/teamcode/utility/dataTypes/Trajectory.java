@@ -140,7 +140,7 @@ public class Trajectory {
 
     public Trajectory launchOp() {
         movements.add(() -> {
-            while (!(AutoLaunch.inLaunchZone() && AutoLaunch.notTooClose() && AutoMovement.readyToLaunch())) {
+            while (!(AutoLaunch.notTooClose() && AutoMovement.readyToLaunch())) {
                 OttoCore.updatePosition();
                 Actuation.runTransfer(false);
                 runPeriodics();

@@ -28,15 +28,15 @@ public class LongRed extends LinearOpMode {
 
         Paths.Red.launchLong.run();
 
-        Paths.Red.spike3.run();
-
-        Paths.Red.launchLong.run();
-
-        Paths.Red.spike2.run();
-
-        Paths.Red.launchLong.run();
-
-        Paths.Red.gateEnd.run();
+//        Paths.Red.spike3.run();
+//
+//        Paths.Red.launchLong.run();
+//
+//        Paths.Red.spike2.run();
+//
+//        Paths.Red.launchLong.run();
+//
+//        Paths.Red.gateEnd.run();
 
 //        Paths.Red.endLong.run();
     }

@@ -51,10 +51,10 @@ public class FieldConstants {
     // Launch Positions
     @Config
     public static class Launch {
-        public static Pose redLong = new Pose(-60.8, -8.9, Math.toRadians(-20));
-        public static Pose redShort = new Pose(12, -11, Math.toRadians(-122.81));
-        public static Pose blueLong = new Pose(-60.8, 8.9, Math.toRadians(20));
-        public static Pose blueShort = new Pose(12, 11, Math.toRadians(122.81));
+        public static Pose redLong = new Pose(-61, -8.9, Math.toRadians(-20));
+        public static Pose redShort = new Pose(13, -11, Math.toRadians(-122.81));
+        public static Pose blueLong = new Pose(-61, 8.9, Math.toRadians(20));
+        public static Pose blueShort = new Pose(13, 11, Math.toRadians(122.81));
     }
 
     // Gate Positions

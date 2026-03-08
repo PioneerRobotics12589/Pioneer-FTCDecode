@@ -20,6 +20,7 @@ public class LocalizationTest extends OpMode {
     @Override
     public void init() {
         Actuation.setup(hardwareMap, telemetry);
+        OttoCore.setup(hardwareMap);
         Actuation.packet.put("Pos", OttoCore.robotPose.toString());
         Actuation.packet.put("Vel", OttoCore.getVelocity().toString());
         Actuation.packet.put("VelX", OttoCore.getVelocity().x);

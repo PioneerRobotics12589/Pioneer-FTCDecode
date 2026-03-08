@@ -94,7 +94,7 @@ public class RobotTeleOpRed extends OpMode {
             Actuation.runTransfer(false);
         }
 
-        Actuation.setBlocker(false);
+        Actuation.setBlocker(!gamepad2.dpad_up);
 
 //        Actuation.setFlywheel(shootingSpeed);
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
