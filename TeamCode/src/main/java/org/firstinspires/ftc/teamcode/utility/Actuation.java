@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utility;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.teamcode.utility.ActuationConstants.Intake.blockerDown;
 import static org.firstinspires.ftc.teamcode.utility.ActuationConstants.Intake.blockerUp;
+import static org.firstinspires.ftc.teamcode.utility.ActuationConstants.Launcher.turretFF;
 
 import android.graphics.Color;
 
@@ -100,9 +101,6 @@ public class Actuation {
 
         if (map.dcMotor.contains("turret")) {
             turret = map.get(DcMotor.class, "turret");
-//            turret.setTargetPosition(0);
-//            turret.setPower(1); // Comment if using turret PID
-//            turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
@@ -255,6 +253,10 @@ public class Actuation {
         }
     }
 
+    public static boolean blockerAtPos(double position) {
+        return blocker1.getPosition() == position && blocker2.getPosition() == position;
+    }
+
     /**
      * Runs the transfer at the specified power
      * @param control on/off
@@ -365,46 +367,25 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
-        double targetLocal = AngleUnit.normalizeRadians(target - AngleUnit.normalizeRadians(OttoCore.robotPose.heading));
+        double targetLocal = AngleUnit.normalizeRadians(target - OttoCore.robotPose.heading);
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
         double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
 
         double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
         double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
-//        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
-//        turret.setTargetPosition(targetTicks);
-        turret.setPower(turretPID + turretFF);
+        turret.setPower(voltageCompensation(turretPID + turretFF));
+
+        telemetry.addData("Actuation: Current Local Angle", AngleUnit.normalizeRadians(getTurretLocal()));
+        telemetry.addData("Actuation: Target Local Angle", targetLocal);
+        telemetry.addData("Actuation: Current Global Angle", AngleUnit.normalizeRadians(getTurretGlobal()));
+        telemetry.addData("Actuation: Target Global Angle", target);
     }
 
     public static void turretMoveTowardsLocal(double targetLocal) {
-        double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
+        double currentLocal = getTurretLocal();
 
         double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
-        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
-//        int targetTicks = (int) (targetLocal * (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio));
-//        turret.setTargetPosition(targetTicks);
-        turret.setPower(turretPID + turretFF);
-    }
-
-    /**
-     * Sets the turret motor value directly
-     * @param value motor power
-     */
-    public static void controlTurret(int value, double power) {
-        double turretAngle = AngleUnit.normalizeRadians(getTurretLocal());
-
-        if (turretAngle > ActuationConstants.Launcher.turretMaxAngle && value > 0) {
-            turret.setPower(0);
-//            turret.setTargetPosition(turret.getCurrentPosition());
-        } else if (turretAngle < -ActuationConstants.Launcher.turretMaxAngle && value < 0) {
-            turret.setPower(0);
-//            turret.setTargetPosition(turret.getCurrentPosition());
-        } else {
-            turret.setPower(power);
-//            turret.setTargetPosition(turret.getCurrentPosition()+value);
-        }
-        telemetry.addData("Turret Angle", Math.toDegrees(turretAngle));
-        telemetry.addData("Max Angle", ActuationConstants.Launcher.turretMaxAngle);
+        turret.setPower(voltageCompensation(turretPID));
     }
 
     public static void setTurret(double angle) {
