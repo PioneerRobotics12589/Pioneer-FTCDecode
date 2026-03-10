@@ -51,7 +51,7 @@ public class RobotTeleOpRed extends OpMode {
 
 
         if (gamepad1.left_stick_button) {
-            OttoCore.setPose(FieldConstants.Reset.blueCorner);
+            OttoCore.setPose(FieldConstants.Reset.redCorner);
         } else if (gamepad1.right_stick_button) {
             OttoCore.setPose(new Pose(0, 0, 0));
         }

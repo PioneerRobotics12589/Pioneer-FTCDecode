@@ -41,10 +41,6 @@ public class AutoLaunch {
         return targetRot;
     }
 
-    public static void setTargetRot(double angle) {
-        targetRot = angle;
-    }
-
     /**
      * Updates the target values for auto-launching while moving
      */
@@ -201,25 +197,47 @@ public class AutoLaunch {
      * Determines whether the robot is inside a launch zone
      * @return true: robot is in a launch zone; false: robot is NOT in a launch zone
      */
+    // i love dcosig
     public static boolean inLaunchZone() {
         Pose pos = OttoCore.robotPose;
-        if (pos.x >= 0 && pos.x <= 72 && pos.y >= -pos.x && pos.y <= pos.x) {
-            // In short launch zone
-            return true;
-        }
-        // In long launch zone
-        return pos.x >= -72 && pos.x <= -49 && pos.y >= pos.x + 49 && pos.y <= -pos.x - 49;
 
-        // X-Bounds for long-launch: -72 to -49
-        // X-Bounds for short-launch: 0 to 72
-        // Y-Bounds for long-launch: between y = x + 49 and y = -x - 49
-        // Y-Bounds for short-launch: between y = x and y = -x
+        // Half length && half width
+        double len = 8.5, wid = 6.25;
+
+        class subMethods {
+            boolean pointInZone(Point p) {
+                if (p.x >= 0 && p.x <= 72 && p.y >= -p.x && p.y <= p.x) {
+                    // In short launch zone
+                    return true;
+                }
+                // In long launch zone
+                return p.x >= -72 && p.x <= -49 && p.y >= p.x + 49 && p.y <= -p.x - 49;
+                // X-Bounds for long-launch: -72 to -49
+                // X-Bounds for short-launch: 0 to 72
+                // Y-Bounds for long-launch: between y = x + 49 and y = -x - 49
+                // Y-Bounds for short-launch: between y = x and y = -x
+            }
+
+            Point rotPoint(Pose pos, double x, double y) {
+                return new Point(x*Math.cos(pos.heading) - y*Math.sin(pos.heading) + pos.x, x*Math.sin(pos.heading) + y*Math.cos(pos.heading) + pos.y);
+            }
+        }
+
+        subMethods subM = new subMethods();
+
+        // Robot corners
+        Point c1 = subM.rotPoint(pos, len, wid);
+        Point c2 = subM.rotPoint(pos, -len, wid);
+        Point c3 = subM.rotPoint(pos, -len, -wid);
+        Point c4 = subM.rotPoint(pos, len, -wid);
+
+        return (subM.pointInZone(c1) || subM.pointInZone(c2) || subM.pointInZone(c3) || subM.pointInZone(c4));
     }
 
     public static boolean notTooClose() {
         Pose pos = OttoCore.robotPose;
         Point goal = team.equalsIgnoreCase("blue") ? FieldConstants.Goal.blue : FieldConstants.Goal.red;
-        return ((Math.sqrt((goal.x-pos.x)*(goal.x-pos.x) + (goal.y-pos.y)*(goal.y-pos.y))) > 55);
+        return ((Math.sqrt((goal.x-pos.x)*(goal.x-pos.x) + (goal.y-pos.y)*(goal.y-pos.y))) > 50);
     }
 
     /**

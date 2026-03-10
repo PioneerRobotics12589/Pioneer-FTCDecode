@@ -63,8 +63,8 @@ public class PinpointControl {
         double xOdo = pinpoint.getPosX(DistanceUnit.INCH);
         double yOdo = pinpoint.getPosY(DistanceUnit.INCH);
         double angle = 0.015067;
-        double deltaX = xOdo - lastPose.x;
-        double deltaY = yOdo - lastPose.y;
+        double deltaX = currentPose.x - lastPose.x;
+        double deltaY = currentPose.y - lastPose.y;
         currentPose.x = xOdo + (deltaX*Math.cos(angle) - deltaY*Math.sin(angle)) * xMult;
         currentPose.y = yOdo + (deltaX*Math.sin(angle) + deltaY*Math.cos(angle)) * yMult;
         lastPose = new Pose(currentPose);

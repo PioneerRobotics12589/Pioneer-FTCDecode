@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.utility.autonomous;
 
 import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.cameraVision.AprilTagDetection;
@@ -141,6 +144,27 @@ public class OttoCore {
 //        prev_ticks_back = ticks_back;
 //        prev_ticks_left = ticks_left;
 //        prev_ticks_right = ticks_right;
+
+        // *** Tag Localization *** https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-pose-estimation
+//        Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
+//
+//        LLResult result = Actuation.getLLResult();
+//
+//        if (result != null & result.isValid()) {
+//            Pose3D botPose = result.getBotpose();
+//            int tags = result.getBotposeTagCount();
+//
+//            if (tags >= 1) {
+//                // Calculated Pose in inches
+//                Pose newPose = new Pose(botPose.getPosition().x * 39.37, botPose.getPosition().y * 39.37, botPose.getOrientation().getYaw(AngleUnit.RADIANS));
+//                Pose vel = getVelocity();
+//                // Pinpoint update if the velocity is low
+//                if (Math.hypot(vel.y, vel.x) < 0.01 && vel.heading < 0.01) {
+//                    PinpointControl.setPose(newPose);
+//                }
+//            }
+//        }
+
         PinpointControl.updatePose();
         OttoCore.robotPose = PinpointControl.getPose();
     }

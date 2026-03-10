@@ -42,6 +42,7 @@ public class Actuation {
     public static DcMotorEx flywheel;
     private static int lastPosition = 0;
     private static long lastTime = 0;
+    private static long lastBlockerTime = 0;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -159,7 +160,6 @@ public class Actuation {
         velocity = Math.max(1330, velocity);
 //        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
         double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
-//        double pid = 0.0;
         double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
         double signal = Math.max(0, Math.min(1, voltageCompensation(feedforward + pid)));
         flywheel.setPower(signal);
@@ -232,18 +232,15 @@ public class Actuation {
      * @param control2 gamepad2 intake control
      */
     public static void runIntake(boolean control1, boolean control2) {
-        if (control1) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
-//            setBlocker(true);
-        } else if (control2) {
+        if (control1 || control2) {
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
-//            setBlocker(false);
             intake.setPower(0.0);
         }
     }
 
     public static void setBlocker(boolean control) {
+        double prevPos = blocker1.getPosition();
         if (control) {
             blocker1.setPosition(blockerDown);
             blocker2.setPosition(blockerDown);
@@ -251,10 +248,13 @@ public class Actuation {
             blocker1.setPosition(blockerUp);
             blocker2.setPosition(blockerUp);
         }
+        if (prevPos != blocker1.getPosition()) {
+            lastBlockerTime = System.currentTimeMillis();
+        }
     }
 
     public static boolean blockerAtPos(double position) {
-        return blocker1.getPosition() == position && blocker2.getPosition() == position;
+        return (System.currentTimeMillis() - lastBlockerTime > 300 && blocker1.getPosition() == position);
     }
 
     /**
@@ -291,12 +291,9 @@ public class Actuation {
 
     public static void shoot(boolean control) {
         if (control) {
-//            setBlocker(false);
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
-            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
         } else {
-            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
             intake.setPower(0.0);
             transfer.setPower(0.0);
         }
@@ -304,18 +301,12 @@ public class Actuation {
 
     public static void reverse(boolean control) {
         if (control) {
-            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.3);
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5);
             intake.setPower(ActuationConstants.Intake.intakeSpeed);
         } else {
             intake.setPower(0);
             transfer.setPower(0);
-            //flywheel.setVelocity(-670);
-            //blocker.setPosition(ActuationConstants.Intake.blockerDown);
-        } /*else {
-            //blocker.setPosition(ActuationConstants.Intake.blockerUp);
-            intake.setPower(0.0);
-            transfer.setPower(0.0);
-        }*/
+        }
     }
 
     /**
@@ -372,8 +363,8 @@ public class Actuation {
         double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
 
         double turretPID = ActuationConstants.Launcher.turretPID.calculateSignal(targetLocal, currentLocal);
-        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
-        turret.setPower(voltageCompensation(turretPID + turretFF));
+//        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
+        turret.setPower(voltageCompensation(turretPID));
 
         telemetry.addData("Actuation: Current Local Angle", AngleUnit.normalizeRadians(getTurretLocal()));
         telemetry.addData("Actuation: Target Local Angle", targetLocal);

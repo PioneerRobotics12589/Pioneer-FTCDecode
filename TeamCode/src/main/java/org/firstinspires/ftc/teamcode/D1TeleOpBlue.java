@@ -11,17 +11,12 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
-import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
-import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
-import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
-import java.util.function.BooleanSupplier;
-
-@TeleOp(name = "Awe(sigma) Sauce Blue")
+@TeleOp(name = "Ryan Cutie Testing Blue")
 @Config
-public class RobotTeleOpBlue extends OpMode {
+public class D1TeleOpBlue extends OpMode {
     private int shootingSpeed;
     private ElapsedTime runtime = new ElapsedTime();
     private double time;
@@ -53,34 +48,26 @@ public class RobotTeleOpBlue extends OpMode {
         }
 
         if (gamepad1.left_stick_button) {
-            OttoCore.setPose(FieldConstants.Reset.redCorner);
+            OttoCore.setPose(FieldConstants.Reset.blueCorner);
         } else if (gamepad1.right_stick_button) {
             OttoCore.setPose(new Pose(0, 0, 0));
         }
 
         if (gamepad1.left_trigger > 0.5) {
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
-                Actuation.shoot(true);
-            }
-            Actuation.setBlocker(true);
+            Actuation.shoot(true);
         } else if (gamepad1.right_trigger > 0.5) {
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
-                Actuation.reverse(true);
-            }
-            Actuation.setBlocker(true);
+            Actuation.reverse(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp)) {
-                Actuation.runIntake(true);
-                Actuation.runTransfer(true);
-            }
-            Actuation.setBlocker(false);
+            Actuation.runIntake(true);
+            Actuation.runTransfer(true);
         } else {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
-            Actuation.setBlocker(true);
         }
+
+        Actuation.setBlocker(false);
 
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
         Actuation.setLaunchIndicator(time);
@@ -92,7 +79,5 @@ public class RobotTeleOpBlue extends OpMode {
         OttoCore.displayPosition();
         telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
         telemetry.update();
-
-
     }
 }

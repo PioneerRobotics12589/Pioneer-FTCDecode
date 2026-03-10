@@ -31,6 +31,8 @@ public class ShortBlue extends LinearOpMode {
 
         Paths.Blue.spike1.run();
 
+        Paths.Blue.gateOpen.run();
+
         Paths.Blue.launchShort.run();
 
         Paths.Blue.spike2.run();

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
+import org.firstinspires.ftc.teamcode.utility.ActuationConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
@@ -21,12 +22,16 @@ public class ShortRed extends LinearOpMode {
 
         waitForStart();
 
+        Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
+
         OttoCore.setPose(FieldConstants.Start.redShort);
 
 
         Paths.Red.launchShort.run();
 
         Paths.Red.spike1.run();
+
+        Paths.Red.gateOpen.run();
 
         Paths.Red.launchShort.run();
 

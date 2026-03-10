@@ -117,7 +117,7 @@ public class AutoMovement {
         AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose); // Assuming static launching
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(1.0);
+        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(2);
 //        turretReady = Math.abs(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal()) < Math.toRadians(0.5);
         Actuation.setFlywheel(AutoLaunch.getTargetVel());
         flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
