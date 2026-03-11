@@ -57,7 +57,7 @@ public class ActuationConstants { // ryan pergola is a gay
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(110));
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
-        public static double turretOffset = -2; // Turret offset from center of the robot (2 inches backwards from the center)
+        public static double turretOffset = -4; // Turret offset from center of the robot (2 inches backwards from the center)
         public static int shortLaunch = 1340;
         public static int longLaunch = 1480;
         public static double targetHeight = 0.984;

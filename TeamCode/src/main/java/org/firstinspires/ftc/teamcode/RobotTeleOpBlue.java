@@ -79,7 +79,6 @@ public class RobotTeleOpBlue extends OpMode {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
-            Actuation.setBlocker(true);
         }
 
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);

@@ -145,7 +145,7 @@ public class OttoCore {
 //        prev_ticks_left = ticks_left;
 //        prev_ticks_right = ticks_right;
 
-        // *** Tag Localization *** https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-pose-estimation
+//        // *** Tag Localization ***
 //        Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
 //
 //        LLResult result = Actuation.getLLResult();

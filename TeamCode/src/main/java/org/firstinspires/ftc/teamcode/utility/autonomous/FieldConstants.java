@@ -11,10 +11,11 @@ public class FieldConstants {
     @Config
     public static class Start {
         public static Pose redLong = new Pose(-62.2, -18.8, Math.toRadians(0.0));
-        public static Pose redShort = new Pose(54.12, -47.41, Math.toRadians(-48.0));
+        public static Pose redShort = new Pose(53.4, -48.51, Math.toRadians(-53.57));
+        public static Pose redShort1 = new Pose(40.88, -54.707, Math.toRadians(-90.89));
         public static Pose blueLong = new Pose(-62.2, 18.8, Math.toRadians(0.0));
         public static Pose blueShort = new Pose(53.4, 47.25, Math.toRadians(52.84));
-        public static Pose blueShort1 = new Pose(41.89, 53.80, Math.toRadians(89.05));
+        public static Pose blueShort1 = new Pose(41.4, 54.17, Math.toRadians(91.36));
     }
 
     // Spike Positions
@@ -37,8 +38,8 @@ public class FieldConstants {
 
         public static class End {
             public static Pose red1 = new Pose(13.64, -52.5, Math.toRadians(-90.0));
-            public static Pose red2 = new Pose(-11.5, -54.5, Math.toRadians(-90.0));
-            public static Pose red3 = new Pose(-35.3, -54.5, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-11.5, -56, Math.toRadians(-90.0));
+            public static Pose red3 = new Pose(-35.3, -56, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-56.7, -62.8, Math.toRadians(-175.0));
             public static Pose red4long = new Pose(-30.2, -59.5, Math.toRadians(-130.0));
             public static Pose blue1 = new Pose(13.64, 52.5, Math.toRadians(90.0));
@@ -68,8 +69,8 @@ public class FieldConstants {
         }
 
         public static class End {
-            public static Pose red = new Pose(0, -51, Math.toRadians(-90.0));
-            public static Pose blue = new Pose(0, 51, Math.toRadians(90.0));
+            public static Pose red = new Pose(0, -53.5, Math.toRadians(-90.0));
+            public static Pose blue = new Pose(0, 52.5, Math.toRadians(90.0));
         }
     }
 
@@ -83,9 +84,9 @@ public class FieldConstants {
     @Config
     public static class Goal {
         // Aim for FTC logos
-        public static double redX = 62, redY = -58;
+        public static double redX = 62, redY = -60;
         public static double blueX = 62, blueY = 58;
-        public static Point red = new Point(62, -58);
+        public static Point red = new Point(62, -60);
         public static Point blue = new Point(62, 58);
     }
 

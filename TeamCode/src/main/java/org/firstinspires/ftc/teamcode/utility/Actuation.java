@@ -254,7 +254,7 @@ public class Actuation {
     }
 
     public static boolean blockerAtPos(double position) {
-        return (System.currentTimeMillis() - lastBlockerTime > 300 && blocker1.getPosition() == position);
+        return (System.currentTimeMillis() - lastBlockerTime > 350 && blocker1.getPosition() == position);
     }
 
     /**
