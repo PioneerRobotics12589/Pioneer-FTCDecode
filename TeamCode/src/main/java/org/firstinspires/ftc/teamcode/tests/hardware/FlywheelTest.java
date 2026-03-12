@@ -41,7 +41,7 @@ public class FlywheelTest extends OpMode {
         Actuation.setup(hardwareMap, telemetry);
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         OttoCore.voltageSensor = hardwareMap.voltageSensor.iterator().next();
 

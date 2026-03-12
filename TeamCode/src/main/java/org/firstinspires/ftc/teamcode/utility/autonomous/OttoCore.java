@@ -151,7 +151,7 @@ public class OttoCore {
 //        LLResult result = Actuation.getLLResult();
 //
 //        if (result != null & result.isValid()) {
-//            Pose3D botPose = result.getBotpose();
+//            Pose3D botPose = result.getBotpose_MT2();
 //            int tags = result.getBotposeTagCount();
 //
 //            if (tags >= 1) {

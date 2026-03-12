@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class LocalizationTest extends OpMode {
 
     public static double xOffset = -4.35, yOffset = -6.0;
-    private static ArrayList<Pose> tagAvg = new ArrayList<>();
+    public static double llxM = 1.0, llyM = 1.0, llxB = 0.0, llyB = 0.0;
 
     @Override
     public void init() {
@@ -42,28 +42,22 @@ public class LocalizationTest extends OpMode {
         // *** Tag Localization ***
         Actuation.setPipeline(ActuationConstants.LimelightConsts.PIPELINE_APRILTAG);
 
+        Actuation.limelight.updateRobotOrientation(Math.toDegrees(OttoCore.robotPose.heading));
         LLResult result = Actuation.getLLResult();
 
         Pose poseLL = new Pose(0, 0, 0);
-        Pose avgLL = new Pose(0, 0, 0);
 
-        if (result != null & result.isValid()) {
-            Pose3D botPose = result.getBotpose();
+        if (result != null && result.isValid()) {
+            Pose3D botPose = result.getBotpose_MT2();
             int tags = result.getBotposeTagCount();
+            double dist = result.getBotposeAvgDist();
 
             if (tags >= 1) {
                 // Calculated Pose in inches
-                poseLL = new Pose(-botPose.getPosition().x * 39.37, -botPose.getPosition().y * 39.37, OttoCore.robotPose.heading);
-                tagAvg.add(poseLL);
-                if (tagAvg.size() > 5) {
-                    tagAvg.remove(0);
-                }
-                for (Pose p : tagAvg) {
-                    avgLL.x += p.x / tagAvg.size();
-                    avgLL.y += p.y / tagAvg.size();
-                    avgLL.heading = p.heading;
-                }
+                poseLL = new Pose(-botPose.getPosition().x * 39.37 * llxM + llxB, -botPose.getPosition().y * 39.37 * llyM + llyB, botPose.getOrientation().getYaw(AngleUnit.RADIANS));
+                poseLL = OttoCore.relativeTransform(poseLL, -0.15875*39.37, 0, poseLL.heading);
             }
+            Actuation.packet.put("Pos LL Average Dist", dist);
         }
 
 
@@ -74,7 +68,7 @@ public class LocalizationTest extends OpMode {
         Actuation.packet.put("Turn", -gamepad1.right_stick_x);
 
         Actuation.packet.put("Pos LL", poseLL);
-        Actuation.packet.put("Avg LL", avgLL);
+//        Actuation.packet.put("Avg LL", avgLL);
         Actuation.packet.put("Pos Odo", OttoCore.robotPose.toString());
         Actuation.packet.put("Vel", OttoCore.getVelocity().toString());
 

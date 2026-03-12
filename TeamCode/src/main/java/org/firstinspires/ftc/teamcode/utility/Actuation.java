@@ -309,6 +309,14 @@ public class Actuation {
         }
     }
 
+    public static void runTransferSlow(boolean control) {
+        if (control) {
+            transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5);
+        } else {
+            transfer.setPower(0);
+        }
+    }
+
     /**
      * Sets the RGB indicator depending on if the robot is in the launch zone
      */

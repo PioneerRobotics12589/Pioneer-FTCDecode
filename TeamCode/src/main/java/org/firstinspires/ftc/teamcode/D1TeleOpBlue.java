@@ -56,7 +56,7 @@ public class D1TeleOpBlue extends OpMode {
         if (gamepad1.left_trigger > 0.5) {
             Actuation.shoot(true);
         } else if (gamepad1.right_trigger > 0.5) {
-            Actuation.reverse(true);
+            Actuation.transfer.setPower(-0.5);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
             Actuation.runIntake(true);

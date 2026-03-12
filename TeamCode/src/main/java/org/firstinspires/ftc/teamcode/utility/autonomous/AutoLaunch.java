@@ -180,16 +180,16 @@ public class AutoLaunch {
     private static int getFlyVel(double linVel) {
         int flyVel = (int) (linVel / (ActuationConstants.Drivetrain.flwheelRad + ActuationConstants.Launcher.artifactRadius) * 180.0 / Math.PI);
 
-        double short_calc = 1377;
-        double long_calc = 1610;
-
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
         // Tune based on short/long launch coefficients
-        double kMult = (ActuationConstants.Launcher.longLaunch - ActuationConstants.Launcher.shortLaunch) / (long_calc - short_calc); // Flywheel tunable multiplier
-        double kBias = ActuationConstants.Launcher.shortLaunch - kMult * short_calc; // Flywheel tunable bias
+        double c1 = -1.635897 * Math.pow(10, -7);
+        double c2 = 0.0009515488;
+        double c3 = -2.065347;
+        double c4 = 1983.48761;
+        double c5 = -710201.5;
 
-        flyVel = (int) (flyVel * kMult + kBias);
+        flyVel = (int) (c1*Math.pow(flyVel, 4) + c2*Math.pow(flyVel, 3) + c3*Math.pow(flyVel, 2) + c4*flyVel + c5);
         return flyVel;
     }
 

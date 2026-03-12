@@ -68,10 +68,10 @@ public class Paths {
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
-                .lineTo(FieldConstants.Launch.blueLong)
+                .lineTo(FieldConstants.Launch.blueLong, 0.5, 0.5)
                 .launchOp()
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.75))
-                .sleepWithPeriodics(1500)
+                .sleepWithPeriodics(2000)
                 .action(() -> Actuation.runTransfer(false))
                 .action(() -> Actuation.setBlocker(true));
 
@@ -93,8 +93,8 @@ public class Paths {
         public static Trajectory gateOpen = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .lineTo(FieldConstants.Gate.Start.blue)
-                .lineTo(FieldConstants.Gate.End.blue)
-                .sleepWithPeriodics(2000);
+                .lineTo(FieldConstants.Gate.End.blue, 1.5, 1.0)
+                .sleepWithPeriodics(1000);
 
         // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()
@@ -170,7 +170,7 @@ public class Paths {
                 .lineTo(FieldConstants.Launch.redLong)
                 .launchOp()
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.75))
-                .sleepWithPeriodics(1500)
+                .sleepWithPeriodics(2000)
                 .action(() -> Actuation.runTransfer(false))
                 .action(() -> Actuation.setBlocker(true));
 
@@ -193,7 +193,7 @@ public class Paths {
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
                 .lineTo(FieldConstants.Gate.Start.red)
                 .lineTo(FieldConstants.Gate.End.red)
-                .sleepWithPeriodics(2000);
+                .sleepWithPeriodics(1000);
 
         // End Long (Move out of launch zone)
         public static Trajectory endLong = new Trajectory()
