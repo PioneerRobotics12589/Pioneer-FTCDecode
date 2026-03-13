@@ -23,7 +23,7 @@ public class ShortRed extends LinearOpMode {
         waitForStart();
 
         Actuation.setFlywheel(1250);
-        sleep(400);
+        sleep(500);
         Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
 
         OttoCore.setPose(FieldConstants.Start.redShort);

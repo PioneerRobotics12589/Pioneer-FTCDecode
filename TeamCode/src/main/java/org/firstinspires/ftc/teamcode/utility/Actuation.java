@@ -157,12 +157,13 @@ public class Actuation {
      * @param velocity target flywheel angular velocity
      */
     public static void setFlywheel(int velocity) {
-        velocity = Math.max(1330, velocity);
-//        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
-        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
-        double pid = ActuationConstants.Launcher.flywheelPID.calculateSignal(velocity, flywheel.getVelocity());
-        double signal = Math.max(0, Math.min(1, voltageCompensation(feedforward + pid)));
-        flywheel.setPower(signal);
+//        velocity = Math.max(1330, velocity);
+        flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+//        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
+//        double pid = ActuationConstants.Launcher.flywheelPID.calculate(velocity);
+//        double signal = Math.max(0, Math.min(1, voltageCompensation(feedforward + pid)));
+//        flywheel.setPower(signal);
+        flywheel.setVelocity(velocity);
     }
 
     /**
@@ -254,7 +255,7 @@ public class Actuation {
     }
 
     public static boolean blockerAtPos(double position) {
-        return (System.currentTimeMillis() - lastBlockerTime > 400 && blocker1.getPosition() == position);
+        return (System.currentTimeMillis() - lastBlockerTime > 450 && blocker1.getPosition() == position);
     }
 
     /**

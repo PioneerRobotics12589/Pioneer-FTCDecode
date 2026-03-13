@@ -48,9 +48,11 @@ public class ActuationConstants { // ryan pergola is a gay
     public static class Launcher {
         // Two Motors: P = 40, I = 3, D = 0
         // Before using F: P = 600, I = 50, D = 50, F = 20
-        public static PIDController flywheelPID = new PIDController(0.65, 0, 0.0002);
-        public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(0.006, 0.00039, 0);
+//        public static PIDController flywheelPID = new PIDController(0.65, 0, 0.0002);
+//        public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(0.006, 0.00039, 0);
         // 1, 0.5, 0.003
+
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 0, 0, 17);
         public static PIDController turretPID = new PIDController(0.9, 0, 0.0015);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 130.0 / 34.0 / (2*Math.PI); // 80:21 gear ratio
@@ -58,7 +60,7 @@ public class ActuationConstants { // ryan pergola is a gay
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
         public static double turretOffset = -4; // Turret offset from center of the robot (2 inches backwards from the center)
-        public static int shortLaunch = 1340;
+        public static int shortLaunch = 1300;
         public static int longLaunch = 1480;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;

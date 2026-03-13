@@ -81,6 +81,7 @@ public class RobotTeleOpRed extends OpMode {
         }
 
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+        Actuation.setFlywheel(shootingSpeed);
         Actuation.setLaunchIndicator(time);
         AutoMovement.turretOperation("red");
 
