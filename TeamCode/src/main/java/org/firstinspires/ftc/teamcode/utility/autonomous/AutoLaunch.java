@@ -183,11 +183,11 @@ public class AutoLaunch {
         // Due to inaccuracies that would be too difficult to account for, such as inconsistent actual launch angle, drag, and spin
         // we use a linear scale to roughly account for these inconsistencies.
         // Tune based on short/long launch coefficients
-        double c1 = -1.635897 * Math.pow(10, -7);
-        double c2 = 0.0009515488;
-        double c3 = -2.065347;
-        double c4 = 1983.48761;
-        double c5 = -710201.5;
+        double c1 = -2.13833 * Math.pow(10, -8);
+        double c2 = 0.000111738;
+        double c3 = -0.215125;
+        double c4 = 181.50463;
+        double c5 = -55735.9109;
 
         flyVel = (int) (c1*Math.pow(flyVel, 4) + c2*Math.pow(flyVel, 3) + c3*Math.pow(flyVel, 2) + c4*flyVel + c5);
         return flyVel;

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class LocalizationTest extends OpMode {
 
     public static double xOffset = -4.35, yOffset = -6.0;
-    public static double llxM = 1.0, llyM = 1.0, llxB = 0.0, llyB = 0.0;
+    public static double llxM = 1.0, llyM = 1.0, llxB = 0.0, llyB = 0.0, llF = -0.263;
 
     @Override
     public void init() {
@@ -54,8 +54,8 @@ public class LocalizationTest extends OpMode {
 
             if (tags >= 1) {
                 // Calculated Pose in inches
-                poseLL = new Pose(-botPose.getPosition().x * 39.37 * llxM + llxB, -botPose.getPosition().y * 39.37 * llyM + llyB, botPose.getOrientation().getYaw(AngleUnit.RADIANS));
-                poseLL = OttoCore.relativeTransform(poseLL, -0.15875*39.37, 0, poseLL.heading);
+                poseLL = new Pose(-botPose.getPosition().x * llxM * 39.37 + llxB, -botPose.getPosition().y * 39.37 * llyM + llyB, botPose.getOrientation().getYaw(AngleUnit.RADIANS));
+                poseLL = OttoCore.relativeTransform(poseLL, llF * 39.37, 0, poseLL.heading);
             }
             Actuation.packet.put("Pos LL Average Dist", dist);
         }

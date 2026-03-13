@@ -113,14 +113,18 @@ public class AutoMovement {
     public static void turretOperation(String team) {
 //        int goalCode = team.equals("blue") ? 0 : 3;
 
-        // AutoLaunch.updateAutoLaunchMobile(team, reference); // Assuming mobile or static launching
-        AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
+
+        Pose reference = OttoCore.relativeTransform(OttoCore.robotPose, -4, 0, OttoCore.robotPose.heading);
+
+         AutoLaunch.updateAutoLaunchMobile(reference); // Assuming mobile or static launching
+//        AutoLaunch.updateAutoLaunchStatic(reference); // Assuming static launching
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
         turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(1.0);
 
-        Actuation.setFlywheel(AutoLaunch.getTargetVel());
-        flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
+//        Actuation.setFlywheel(AutoLaunch.getTargetVel());
+//        flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
+        flywheelReady = true;
 
         telemetry.addData("AutoMovement: Target Flywheel Velocity", AutoLaunch.getTargetVel());
         telemetry.addData("AutoMovement: Target Turret Rotation", Math.toDegrees(AutoLaunch.getTargetRot()));

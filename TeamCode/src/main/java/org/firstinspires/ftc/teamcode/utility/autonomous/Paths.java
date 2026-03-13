@@ -134,8 +134,9 @@ public class Paths {
         // Spike 3
         public static Trajectory spike3 = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
+                .addPeriodic(() -> Actuation.setFlywheel(1250))
                 .action(() -> Actuation.setBlocker(true))
-                .lineThrough(FieldConstants.Spike.Start.red3, 1.0, 1.0)
+                .lineTo(FieldConstants.Spike.Start.red3, 0.75, 0.75)
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5))
                 .lineTo(FieldConstants.Spike.End.red3, 1.0, 1.0)
@@ -144,8 +145,9 @@ public class Paths {
         // Spike 2
         public static Trajectory spike2 = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
+                .addPeriodic(() -> Actuation.setFlywheel(1250))
                 .action(() -> Actuation.setBlocker(true))
-                .lineThrough(FieldConstants.Spike.Start.red2, 1.0, 1.0)
+                .lineTo(FieldConstants.Spike.Start.red2, 1.0, 0.75)
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5))
                 .lineTo(FieldConstants.Spike.End.red2, 1.0, 1.0)
@@ -155,8 +157,9 @@ public class Paths {
         // Spike 1
         public static Trajectory spike1 = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
+                .addPeriodic(() -> Actuation.setFlywheel(1250))
                 .action(() -> Actuation.setBlocker(true))
-                .lineThrough(FieldConstants.Spike.Start.red1, 1.0, 1.0)
+                .lineTo(FieldConstants.Spike.Start.red1, 0.75, 0.75)
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.5))
                 .lineTo(FieldConstants.Spike.End.red1, 1.0, 1.0)
@@ -176,12 +179,13 @@ public class Paths {
 
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
+                .addPeriodic(() -> Actuation.setFlywheel(1250))
                 .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
-                .lineTo(FieldConstants.Launch.redShort)
+                .lineTo(FieldConstants.Launch.redShort, 1.0, 0.75)
                 .launchOp()
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.75))
-                .sleepWithPeriodics(1500)
+                .sleepWithPeriodics(1750)
                 .action(() -> Actuation.runTransfer(false))
                 .action(() -> Actuation.setBlocker(true));
 

@@ -24,7 +24,7 @@ public class FieldConstants {
         // 1 - Closest to goal; 3 - Farthest from goal
 
         public static class Start {
-            public static Pose red1 = new Pose(13.63, -30.25, Math.toRadians(-90.0));
+            public static Pose red1 = new Pose(15, -30.25, Math.toRadians(-90.0));
             public static Pose red2 = new Pose(-10.95, -30.25, Math.toRadians(-90.0));
             public static Pose red3 = new Pose(-35.3, -30.25, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-35.63, -59.8, Math.toRadians(-145.0));
@@ -37,9 +37,9 @@ public class FieldConstants {
         }
 
         public static class End {
-            public static Pose red1 = new Pose(13.64, -52.5, Math.toRadians(-90.0));
-            public static Pose red2 = new Pose(-11.5, -56, Math.toRadians(-90.0));
-            public static Pose red3 = new Pose(-35.3, -56, Math.toRadians(-90.0));
+            public static Pose red1 = new Pose(15, -55, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-11.5, -60, Math.toRadians(-90.0));
+            public static Pose red3 = new Pose(-35.3, -60, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-56.7, -62.8, Math.toRadians(-175.0));
             public static Pose red4long = new Pose(-30.2, -59.5, Math.toRadians(-130.0));
             public static Pose blue1 = new Pose(13.64, 53, Math.toRadians(90.0));
@@ -54,7 +54,7 @@ public class FieldConstants {
     @Config
     public static class Launch {
         public static Pose redLong = new Pose(-61, -8.9, Math.toRadians(-20));
-        public static Pose redShort = new Pose(11.1, -12.43, Math.toRadians(-111.29));
+        public static Pose redShort = new Pose(11.1, -14, Math.toRadians(-111.29));
         public static Pose blueLong = new Pose(-61, 8.9, Math.toRadians(20));
         public static Pose blueShort = new Pose(11.1, 12.43, Math.toRadians(111.29));
     }
@@ -84,9 +84,9 @@ public class FieldConstants {
     @Config
     public static class Goal {
         // Aim for FTC logos
-        public static double redX = 62, redY = -60;
-        public static double blueX = 62, blueY = 58;
-        public static Point red = new Point(62, -60);
+        public static double redX = 62, redY = -58;
+        public static double blueX = 62, blueY = 60;
+        public static Point red = new Point(62, -58);
         public static Point blue = new Point(62, 58);
     }
 

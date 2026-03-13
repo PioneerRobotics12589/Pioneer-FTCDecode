@@ -95,7 +95,7 @@ public class Actuation {
         if (map.dcMotor.contains("flywheel")) {
             flywheel = map.get(DcMotorEx.class, "flywheel");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
             //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -254,7 +254,7 @@ public class Actuation {
     }
 
     public static boolean blockerAtPos(double position) {
-        return (System.currentTimeMillis() - lastBlockerTime > 350 && blocker1.getPosition() == position);
+        return (System.currentTimeMillis() - lastBlockerTime > 400 && blocker1.getPosition() == position);
     }
 
     /**
@@ -321,7 +321,7 @@ public class Actuation {
      * Sets the RGB indicator depending on if the robot is in the launch zone
      */
     public static void setLaunchIndicator(double time) {
-        if (AutoLaunch.inLaunchZone()) {
+        if (AutoLaunch.inLaunchZone() && AutoMovement.turretReady && AutoMovement.flywheelReady) {
             launchIndicator1.setPosition(1);
 
 

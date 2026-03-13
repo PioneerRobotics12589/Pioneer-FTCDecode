@@ -54,7 +54,7 @@ public class ActuationConstants { // ryan pergola is a gay
         public static PIDController turretPID = new PIDController(0.9, 0, 0.0015);
         public static double turretTicks = 384.5; // Ticks per revolution on the turret input motor
         public static double turretRatio = 130.0 / 34.0 / (2*Math.PI); // 80:21 gear ratio
-        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(110));
+        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(135));
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
         public static double turretOffset = -4; // Turret offset from center of the robot (2 inches backwards from the center)
