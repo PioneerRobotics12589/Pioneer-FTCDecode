@@ -25,6 +25,7 @@ public class RobotTeleOpBlue extends OpMode {
     private int shootingSpeed;
     private ElapsedTime runtime = new ElapsedTime();
     private double time;
+    private double transferSpeed;
 
 //    private Thread turretOp;
 
@@ -41,15 +42,17 @@ public class RobotTeleOpBlue extends OpMode {
         time = runtime.seconds();
         telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
-        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x*0.75);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x);
 
-        if (gamepad1.dpad_left) {
+        if (gamepad2.dpad_up) {
             // Speed up flywheel to shoot from the long launch zone
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
+            transferSpeed = -0.8;
 
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad2.dpad_down) {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+            transferSpeed = -1.0;
         }
 
         if (gamepad1.left_stick_button) {
@@ -66,19 +69,20 @@ public class RobotTeleOpBlue extends OpMode {
         } else if (gamepad1.right_trigger > 0.5) {
             if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
                 //Actuation.reverse(true);
-                Actuation.transfer.setPower(-0.4);
+                Actuation.runIntake(true);
             }
             Actuation.setBlocker(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
             if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp)) {
-                //Actuation.runIntake(true);
-                Actuation.runTransfer(true);
+                Actuation.runIntake(true);
+                Actuation.transfer.setPower(transferSpeed);
             }
             Actuation.setBlocker(false);
-        } else {
+        }
+         else {
             // Everything Off
-            Actuation.runIntake(true);
+            Actuation.runIntake(false);
             Actuation.runTransfer(false);
         }
 

@@ -43,6 +43,7 @@ public class Actuation {
     private static int lastPosition = 0;
     private static long lastTime = 0;
     private static long lastBlockerTime = 0;
+    private static double lastBlockerPos = 0;
 
     public static Telemetry telemetry;
     public static Limelight3A limelight;
@@ -241,7 +242,6 @@ public class Actuation {
     }
 
     public static void setBlocker(boolean control) {
-        double prevPos = blocker1.getPosition();
         if (control) {
             blocker1.setPosition(blockerDown);
             blocker2.setPosition(blockerDown);
@@ -249,9 +249,10 @@ public class Actuation {
             blocker1.setPosition(blockerUp);
             blocker2.setPosition(blockerUp);
         }
-        if (prevPos != blocker1.getPosition()) {
+        if (lastBlockerPos != blocker1.getPosition()) {
             lastBlockerTime = System.currentTimeMillis();
         }
+        lastBlockerPos = blocker1.getPosition();
     }
 
     public static boolean blockerAtPos(double position) {
