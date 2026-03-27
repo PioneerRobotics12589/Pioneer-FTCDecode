@@ -39,7 +39,7 @@ public class Actuation {
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
     public static DcMotor intake, transfer, turret;
     public static Servo blocker1, blocker2, launchIndicator1, launchIndicator2;
-    public static DcMotorEx flywheel;
+    public static DcMotorEx flywheel, flywheel1;
     private static int lastPosition = 0;
     private static long lastTime = 0;
     private static long lastBlockerTime = 0;
@@ -93,10 +93,19 @@ public class Actuation {
             launchIndicator2 = map.get(Servo.class, "launchIndicator2");
         }
 
-        if (map.dcMotor.contains("flywheel")) {
-            flywheel = map.get(DcMotorEx.class, "flywheel");
+        if (map.dcMotor.contains("flywheel1")) {
+            flywheel = map.get(DcMotorEx.class, "flywheel1");
             flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+            //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+
+        if (map.dcMotor.contains("flywheel2")) {
+            flywheel1 = map.get(DcMotorEx.class, "flywheel2");
+            flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            flywheel1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
 //            flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
             //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -160,11 +169,13 @@ public class Actuation {
     public static void setFlywheel(int velocity) {
 //        velocity = Math.max(1330, velocity);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
+        flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ActuationConstants.Launcher.flywheelPID);
 //        double feedforward = ActuationConstants.Launcher.flywheelFF.calculate(velocity);
 //        double pid = ActuationConstants.Launcher.flywheelPID.calculate(velocity);
 //        double signal = Math.max(0, Math.min(1, voltageCompensation(feedforward + pid)));
 //        flywheel.setPower(signal);
         flywheel.setVelocity(velocity);
+        flywheel1.setVelocity(velocity);
     }
 
     /**
