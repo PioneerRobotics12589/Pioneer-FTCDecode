@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.PIDController;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
@@ -37,7 +38,8 @@ public class Actuation {
     private static boolean slowModeToggle = false;
 
     public static DcMotor frontLeft, frontRight, backLeft, backRight;
-    public static DcMotor intake, transfer, turret;
+    public static DcMotor intake, transfer;
+    public static CRServo turret;
     public static Servo blocker1, blocker2, launchIndicator1, launchIndicator2;
     public static DcMotorEx flywheel, flywheel1;
     private static int lastPosition = 0;
@@ -77,6 +79,7 @@ public class Actuation {
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
+            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
@@ -110,9 +113,8 @@ public class Actuation {
             //flywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.dcMotor.contains("turret")) {
-            turret = map.get(DcMotor.class, "turret");
-            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (map.crservo.contains("turret")) {
+            turret = map.get(CRServo.class, "turret");
         }
 
         if (map.getAllNames(Limelight3A.class).contains("limelight")) {
@@ -363,7 +365,7 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretGlobal() {
-        return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading;
+        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading;
     }
 
     /**
@@ -371,7 +373,7 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretLocal() {
-        return (double) turret.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
     }
 
     /**
@@ -379,6 +381,7 @@ public class Actuation {
      * @param target global angle
      */
     public static void turretMoveTowards(double target) {
+        ActuationConstants.Launcher.turretPID = new PIDController(ActuationConstants.Launcher.turretPID);
         double targetLocal = AngleUnit.normalizeRadians(target - OttoCore.robotPose.heading);
         targetLocal = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, targetLocal));
         double currentLocal = AngleUnit.normalizeRadians(getTurretLocal());
@@ -387,10 +390,11 @@ public class Actuation {
 //        double turretFF = (Math.abs(targetLocal - currentLocal) > Math.toRadians(0.5)) ? Math.signum(turretPID) * ActuationConstants.Launcher.turretFF : 0.0;
         turret.setPower(voltageCompensation(turretPID));
 
-        telemetry.addData("Actuation: Current Local Angle", AngleUnit.normalizeRadians(getTurretLocal()));
-        telemetry.addData("Actuation: Target Local Angle", targetLocal);
-        telemetry.addData("Actuation: Current Global Angle", AngleUnit.normalizeRadians(getTurretGlobal()));
-        telemetry.addData("Actuation: Target Global Angle", target);
+        telemetry.addData("Actuation: Current Local Angle", Math.toDegrees(AngleUnit.normalizeRadians(getTurretLocal())));
+        telemetry.addData("Actuation: Target Local Angle", Math.toDegrees(targetLocal));
+        telemetry.addData("Actuation: Current Global Angle", Math.toDegrees(AngleUnit.normalizeRadians(getTurretGlobal())));
+        telemetry.addData("Actuation: Target Global Angle", Math.toDegrees(target));
+        telemetry.addData("Actuation: Turret Signal", turretPID);
     }
 
     public static void turretMoveTowardsLocal(double targetLocal) {

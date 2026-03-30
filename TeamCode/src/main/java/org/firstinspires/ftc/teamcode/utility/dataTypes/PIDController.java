@@ -44,6 +44,21 @@ public class PIDController {
         lastTime = System.nanoTime();
     }
 
+    public PIDController(PIDController pid) {
+        this.Kp = pid.Kp;
+        this.Ki = pid.Ki;
+        this.Kd = pid.Kd;
+
+        prevError = 0.0;
+
+        integral = 0;
+        error = 0;
+        derivative = 0;
+
+        startTime = TimeUnit.SECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+        lastTime = System.nanoTime();
+    }
+
     public void updateCoeffs(double Kp, double Ki, double Kd) {
         this.Kp = Kp;
         this.Ki = Ki;

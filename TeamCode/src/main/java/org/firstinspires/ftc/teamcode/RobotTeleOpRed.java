@@ -92,7 +92,7 @@ public class RobotTeleOpRed extends OpMode {
 
         OttoCore.updatePosition();
         OttoCore.displayPosition();
-        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
+//        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
         telemetry.update();
     }
 }
