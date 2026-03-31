@@ -306,7 +306,7 @@ public class Actuation {
 
     public static void shoot(boolean control) {
         if (control) {
-            intake.setPower(ActuationConstants.Intake.intakeSpeed);
+            intake.setPower(-ActuationConstants.Intake.intakeSpeed);
             transfer.setPower(ActuationConstants.Intake.transferSpeed);
         } else {
             intake.setPower(0.0);

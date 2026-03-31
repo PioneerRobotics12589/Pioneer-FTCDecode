@@ -47,7 +47,7 @@ public class RobotTeleOpBlue extends OpMode {
         if (gamepad2.dpad_up) {
             // Speed up flywheel to shoot from the long launch zone
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
-            transferSpeed = -0.8;
+            transferSpeed = -0.7;
 
         } else if (gamepad2.dpad_down) {
             // Speed up flywheel to shoot from the short launch zone
@@ -60,7 +60,6 @@ public class RobotTeleOpBlue extends OpMode {
         } else if (gamepad1.right_stick_button) {
             OttoCore.setPose(new Pose(0, 0, 0));
         }
-
         if (gamepad1.left_trigger > 0.5) {
             if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
                 Actuation.shoot(true);

@@ -52,16 +52,16 @@ public class ActuationConstants { // ryan pergola is a gay
 //        public static SimpleMotorFeedforward flywheelFF = new SimpleMotorFeedforward(0.006, 0.00039, 0);
         // 1, 0.5, 0.003
 
-        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(500, 0, 0, 17);
+        public static PIDFCoefficients flywheelPID = new PIDFCoefficients(150, 0, 0, 11);
         public static PIDController turretPID = new PIDController(-0.3, -150, 0.0);
         public static double turretTicks = 8192.0; // Ticks per revolution on the turret input shaft
         public static double turretRatio = 119.0 / 34.0 / (2*Math.PI); // 130:21 gear ratio
-        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(120));
+        public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(130));
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;
         public static double turretOffset = -4; // Turret offset from center of the robot (2 inches backwards from the center)
-        public static int shortLaunch = 1350;
-        public static int longLaunch = 1530;
+        public static int shortLaunch = 1380;
+        public static int longLaunch = 1580;
         public static double targetHeight = 0.984;
         public static double artifactRadius = 0.12446;
     }
