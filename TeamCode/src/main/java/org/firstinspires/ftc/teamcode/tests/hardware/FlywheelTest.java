@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
 public class FlywheelTest extends OpMode {
     DcMotorEx flywheel, flywheel1;
     DcMotor intake, transfer;
-    public static int rpm, rpm1;
-    public static double kp = 500, ki = 0, kd = 0, kf = 17;
+    public static int rpm;
+    public static double kp = 150, ki = 0, kd = 0, kf = 11;
     // 0.006
 //    public static double ks = 0.006, kv = 0.00039, ka = 0.0;
 //    public static double kp = 0.65, ki = 0.0, kd = 0.0002;

@@ -11,15 +11,21 @@ import org.firstinspires.ftc.teamcode.utility.autonomous.AutoLaunch;
 import org.firstinspires.ftc.teamcode.utility.autonomous.AutoMovement;
 import org.firstinspires.ftc.teamcode.utility.autonomous.FieldConstants;
 import org.firstinspires.ftc.teamcode.utility.autonomous.OttoCore;
+import org.firstinspires.ftc.teamcode.utility.autonomous.Paths;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Point;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
+import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
+import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
-@TeleOp(name = "Ryan Cutie Testing Blue")
+import java.util.function.BooleanSupplier;
+
+@TeleOp(name = "Ryan Saito Testing Blue")
 @Config
 public class D1TeleOpBlue extends OpMode {
     private int shootingSpeed;
     private ElapsedTime runtime = new ElapsedTime();
     private double time;
+    private double transferSpeed;
 
 //    private Thread turretOp;
 
@@ -36,40 +42,41 @@ public class D1TeleOpBlue extends OpMode {
         time = runtime.seconds();
         telemetry.addLine("X=" + OttoCore.robotPose.x + "\nY=" + OttoCore.robotPose.y + "\nθ=" + Math.toDegrees(OttoCore.robotPose.heading));
 
-        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x*0.75);
+        Actuation.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x*0.75, -gamepad1.left_stick_x);
 
-        if (gamepad1.dpad_left) {
+        if (gamepad1.dpad_up) {
             // Speed up flywheel to shoot from the long launch zone
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
+            transferSpeed = -0.7;
 
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad1.dpad_down) {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
+            transferSpeed = -1.0;
         }
 
         if (gamepad1.left_stick_button) {
-            OttoCore.setPose(FieldConstants.Reset.blueCorner);
+            OttoCore.setPose(FieldConstants.Reset.redCorner);
         } else if (gamepad1.right_stick_button) {
             OttoCore.setPose(new Pose(0, 0, 0));
         }
-
         if (gamepad1.left_trigger > 0.5) {
             Actuation.shoot(true);
         } else if (gamepad1.right_trigger > 0.5) {
-            Actuation.transfer.setPower(-0.5);
+            Actuation.runIntake(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
             Actuation.runIntake(true);
-            Actuation.runTransfer(true);
-        } else {
+            Actuation.transfer.setPower(transferSpeed);
+        }
+        else {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
         }
 
-        Actuation.setBlocker(false);
-
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
+        Actuation.setFlywheel(shootingSpeed);
         Actuation.setLaunchIndicator(time);
         AutoMovement.turretOperation("blue");
 
@@ -77,7 +84,9 @@ public class D1TeleOpBlue extends OpMode {
 
         OttoCore.updatePosition();
         OttoCore.displayPosition();
-        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
+//        telemetry.addData("Turret Pos", Math.toDegrees(Actuation.getTurretGlobal()));
         telemetry.update();
+
+
     }
 }

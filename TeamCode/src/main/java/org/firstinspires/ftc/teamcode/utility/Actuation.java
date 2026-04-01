@@ -79,7 +79,7 @@ public class Actuation {
         }
         if (map.dcMotor.contains("intake")) {
             intake = map.get(DcMotor.class, "intake");
-            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             //intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
