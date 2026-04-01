@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
 import org.firstinspires.ftc.teamcode.utility.Astar.Astar;
+import org.firstinspires.ftc.teamcode.utility.cameraVision.ArtifactDetection;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 
-@Disabled
 @Autonomous(name="Pathfinding Test", group="tests")
 public class PathFindingTest extends LinearOpMode {
     @Override
@@ -17,7 +17,8 @@ public class PathFindingTest extends LinearOpMode {
         Actuation.setup(hardwareMap, telemetry);
 
         Trajectory movement = new Trajectory(new Pose(0, 0, Math.toRadians(0)));
-        for(Pose p : Astar.pathFind(0,0,35,0)){
+        Pose nearestArtifact = ArtifactDetection.locateArtifact();
+        for(Pose p : Astar.pathFind(0,0,(int) nearestArtifact.x,(int) nearestArtifact.y)){
             movement.lineTo(p);
         }
 
