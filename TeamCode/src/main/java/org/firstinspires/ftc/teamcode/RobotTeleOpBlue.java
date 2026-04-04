@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.Pose;
 import org.firstinspires.ftc.teamcode.utility.dataTypes.Trajectory;
 import org.firstinspires.ftc.teamcode.utility.localization.IMUControl;
 
+import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
 @TeleOp(name = "Awe(sigma) Sauce Blue")
@@ -48,11 +49,13 @@ public class RobotTeleOpBlue extends OpMode {
             // Speed up flywheel to shoot from the long launch zone
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
             transferSpeed = -0.7;
+            FieldConstants.Goal.blue = FieldConstants.Goal.blueLong;
 
         } else if (gamepad2.dpad_down) {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
             transferSpeed = -1.0;
+            FieldConstants.Goal.blue = FieldConstants.Goal.blueShort;
         }
 
         if (gamepad1.left_stick_button) {
@@ -90,7 +93,7 @@ public class RobotTeleOpBlue extends OpMode {
         Actuation.setLaunchIndicator(time);
         AutoMovement.turretOperation("blue");
 
-        FieldConstants.Goal.blue = new Point(FieldConstants.Goal.blueX, FieldConstants.Goal.blueY);
+//        FieldConstants.Goal.blue = new Point(FieldConstants.Goal.blueX, FieldConstants.Goal.blueY);
 
         OttoCore.updatePosition();
         OttoCore.displayPosition();

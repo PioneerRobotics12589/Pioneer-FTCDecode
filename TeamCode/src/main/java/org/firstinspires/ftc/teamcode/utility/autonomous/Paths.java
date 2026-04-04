@@ -63,6 +63,18 @@ public class Paths {
                 .lineTo(FieldConstants.Spike.End.blue1, 1.0, 1.0);
                 //.action(() -> Actuation.transfer.setPower(0));
 
+
+        public static Trajectory gateIntake = new Trajectory()
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
+//                .action(() -> Actuation.setBlocker(true))
+                .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
+//                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
+                .lineToTime(FieldConstants.Gate.Start.intakeBlue, 0.15, 0.15, 1000)
+//                .lineToTime(FieldConstants.Gate.End.blue, 0.75, 0.6, 1000)
+//                .action(() -> Actuation.drive(0.5, 0.0, 0.0))
+                .sleepWithPeriodics(1000);
+//                .action(() -> Actuation.transfer.setPower(0));
+
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
@@ -99,7 +111,7 @@ public class Paths {
         public static Trajectory gateOpen = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .lineTo(FieldConstants.Gate.Start.blue)
-                .lineTo(FieldConstants.Gate.End.blue, 1.5, 1.0)
+                .lineTo(FieldConstants.Gate.End.blue, 1.0, 1.0)
                 .sleepWithPeriodics(1000);
 
         // End Long (Move out of launch zone)
@@ -117,7 +129,7 @@ public class Paths {
         // Spike 4
         public static Trajectory spike4long = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
-                .action(() -> Actuation.setBlocker(true))
+//                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
                 .lineTo(FieldConstants.Spike.Start.red4long, 1.0, 1.0)
@@ -167,6 +179,15 @@ public class Paths {
                 .lineTo(FieldConstants.Spike.Start.red1, 1.0, 1.0)
                 .lineTo(FieldConstants.Spike.End.red1, 1.0, 1.0)
                 .action(() -> Actuation.transfer.setPower(0));
+
+        public static Trajectory gateIntake = new Trajectory()
+                    .addPeriodic(() -> AutoMovement.turretOperation("red"))
+                    .action(() -> Actuation.setBlocker(true))
+                    .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
+                    .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
+                    .lineTo(FieldConstants.Gate.Start.intakeRed, 1.0, 1.0)
+                    .sleepWithPeriodics(1000)
+                    .action(() -> Actuation.transfer.setPower(0));
 
         // Long Launch
         public static Trajectory launchLong = new Trajectory()

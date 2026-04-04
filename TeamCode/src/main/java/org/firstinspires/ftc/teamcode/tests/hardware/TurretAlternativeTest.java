@@ -22,11 +22,10 @@ import org.firstinspires.ftc.teamcode.utility.dataTypes.SimpleMotorFeedforward;
 public class TurretAlternativeTest extends OpMode {
     public static double targetAngle;
     public static double turretPower;
-    public static double kp, ki, kd, ks;
-    private PIDController pid = new PIDController(kp, ki, kd);
+    public static double kps, kis, kds, kpl, kil, kdl, threshold = 7.5;
+    private PIDController pids = new PIDController(kps, kis, kds);
+    private PIDController pidl = new PIDController(kpl, kil, kdl);
     private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.07, -0.0000230769);
-    private double accel_max = 15000;
-    private double vel_max = 15000;
     private CRServo turret;
     private DcMotorEx intake;
     private double lastTime;
@@ -48,21 +47,28 @@ public class TurretAlternativeTest extends OpMode {
         packet = new TelemetryPacket();
         Actuation.setup(hardwareMap, telemetry);
 
-        pid = new PIDController(kp, ki, kd);
+        pids = new PIDController(kps, kis, kds);
+        pidl = new PIDController(kpl, kil, kdl);
         lastTime = System.nanoTime();
 //        Actuation.setTurret(Math.toRadians(10));
     }
 
     @Override
     public void loop() {
-        pid = new PIDController(kp, ki, kd);
+        pids = new PIDController(kps, kis, kds);
+        pidl = new PIDController(kpl, kil, kdl);
         double current = intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
         current = AngleUnit.normalizeRadians(current + OttoCore.robotPose.heading);
 
         double target = AngleUnit.normalizeRadians(Math.toRadians(targetAngle));
         target = Math.max(-ActuationConstants.Launcher.turretMaxAngle, Math.min(ActuationConstants.Launcher.turretMaxAngle, target));
 
-        double turretSignal = pid.calculateSignal(target, current);
+        double turretSignal;
+        if (Math.abs(target-current) > Math.toRadians(threshold)) {
+            turretSignal = pids.calculateSignal(target, current);
+        } else {
+            turretSignal = pidl.calculateSignal(target, current);
+        }
 ////        double turretFF = (Math.abs(target - current) > Math.toRadians(0.5)) ? Math.signum(turretSignal) * ks : 0.0;
         double clampedTurret = Math.max(-1.0, Math.min(1.0, turretSignal)); // Clamp signal between -1 & 1
 //
