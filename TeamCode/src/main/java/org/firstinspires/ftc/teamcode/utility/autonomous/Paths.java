@@ -69,10 +69,10 @@ public class Paths {
 //                .action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
 //                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
-                .lineToTime(FieldConstants.Gate.Start.intakeBlue, 0.15, 0.15, 1000)
+                .lineToTime(FieldConstants.Gate.Start.intakeBlue, 0.1, 0.1, 2000)
 //                .lineToTime(FieldConstants.Gate.End.blue, 0.75, 0.6, 1000)
 //                .action(() -> Actuation.drive(0.5, 0.0, 0.0))
-                .sleepWithPeriodics(1000);
+                .sleepWithPeriodics(1250);
 //                .action(() -> Actuation.transfer.setPower(0));
 
         // Long Launch

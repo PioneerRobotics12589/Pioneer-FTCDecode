@@ -30,7 +30,7 @@ public class FieldConstants {
             public static Pose red4short = new Pose(-35.63, -64, Math.toRadians(-145.0));
             public static Pose red4long = new Pose(-35, -62, Math.toRadians(-143.3));
             public static Pose blue1 = new Pose(13.1, 30.25, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-17.6, 25, Math.toRadians(90.0));
+            public static Pose blue2 = new Pose(-16.2, 25, Math.toRadians(90.0));
             public static Pose blue3 = new Pose(-45.3, 25, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-35.63, 59.8, Math.toRadians(145.0));
             public static Pose blue4long = new Pose(-35, 62, Math.toRadians(143.3));
@@ -43,7 +43,7 @@ public class FieldConstants {
             public static Pose red4short = new Pose(-56.7, -62.8, Math.toRadians(-175.0));
             public static Pose red4long = new Pose(-62, -62, Math.toRadians(-158.0));
             public static Pose blue1 = new Pose(13.1, 48, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-17.6, 50, Math.toRadians(90.0)); //HelloWorld('print'):
+            public static Pose blue2 = new Pose(-16.2, 50, Math.toRadians(90.0)); //HelloWorld('print'):
             public static Pose blue3 = new Pose(-45.3, 53, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-56.7, 62.8, Math.toRadians(175.0));
             public static Pose blue4long = new Pose(-62, 62, Math.toRadians(158.0));
@@ -67,7 +67,7 @@ public class FieldConstants {
             public static Pose red = new Pose(-1.5, -40, Math.toRadians(-90.0));
             public static Pose intakeRed = new Pose(-18.2, -56, Math.toRadians(-52));
             public static Pose blue = new Pose(1.5, 40, Math.toRadians(90.0));
-                public static Pose intakeBlue = new Pose(-15.9, 80, Math.toRadians(53));
+            public static Pose intakeBlue = new Pose(-29.8, 73.1, Math.toRadians(48));
         }
 
         public static class End {

@@ -31,15 +31,7 @@ public class ShortBlue extends LinearOpMode {
 
         Paths.Blue.launchShort.run();
 
-//        Paths.Blue.spike1.run();
-//
-//        Paths.Blue.launchShort.run();
-//
-//        Paths.Blue.spike2.run();
-//
-//        Paths.Blue.launchShort.run();
-
-        Paths.Blue.gateIntake.run();
+        Paths.Blue.spike2.run();
 
         Paths.Blue.launchShort.run();
 
@@ -49,8 +41,16 @@ public class ShortBlue extends LinearOpMode {
 
         Paths.Blue.gateIntake.run();
 
-        FieldConstants.Launch.blueShort.x += 20;
-        FieldConstants.Launch.blueShort.y -= 10;
+        Paths.Blue.launchShort.run();
+
+        Paths.Blue.gateIntake.run();
+
+        Paths.Blue.launchShort.run();
+
+        Paths.Blue.spike1.run();
+
+        FieldConstants.Launch.blueShort.x += 24;
+        FieldConstants.Launch.blueShort.y -= 2;
 
         Paths.Blue.launchShort.run();
 
