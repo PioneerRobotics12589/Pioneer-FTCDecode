@@ -29,9 +29,9 @@ public class FieldConstants {
             public static Pose red3 = new Pose(-35.3, -30.25, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-35.63, -64, Math.toRadians(-145.0));
             public static Pose red4long = new Pose(-35, -62, Math.toRadians(-143.3));
-            public static Pose blue1 = new Pose(13.64, 30.25, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-10.95, 30.25, Math.toRadians(90.0));
-            public static Pose blue3 = new Pose(-35.3, 30.25, Math.toRadians(90.0));
+            public static Pose blue1 = new Pose(13.1, 30.25, Math.toRadians(90.0));
+            public static Pose blue2 = new Pose(-11.95, 27.5, Math.toRadians(90.0));
+            public static Pose blue3 = new Pose(-45.3, 25, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-35.63, 59.8, Math.toRadians(145.0));
             public static Pose blue4long = new Pose(-35, 62, Math.toRadians(143.3));
         }
@@ -42,9 +42,9 @@ public class FieldConstants {
             public static Pose red3 = new Pose(-35.3, -62, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-56.7, -62.8, Math.toRadians(-175.0));
             public static Pose red4long = new Pose(-62, -62, Math.toRadians(-158.0));
-            public static Pose blue1 = new Pose(13.64, 53, Math.toRadians(90.0));
-            public static Pose blue2 = new Pose(-11.5, 62, Math.toRadians(90.0)); //HelloWorld('print'):
-            public static Pose blue3 = new Pose(-35.3, 62, Math.toRadians(90.0));
+            public static Pose blue1 = new Pose(13.1, 45, Math.toRadians(90.0));
+            public static Pose blue2 = new Pose(-12.5, 54, Math.toRadians(90.0)); //HelloWorld('print'):
+            public static Pose blue3 = new Pose(-35.3, 54, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-56.7, 62.8, Math.toRadians(175.0));
             public static Pose blue4long = new Pose(-62, 62, Math.toRadians(158.0));
         }
