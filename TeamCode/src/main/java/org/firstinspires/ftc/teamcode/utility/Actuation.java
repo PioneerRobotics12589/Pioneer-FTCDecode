@@ -83,12 +83,12 @@ public class Actuation {
             //intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        if (map.servo.contains("blocker1")) {
-            blocker1 = map.get(Servo.class, "blocker1");
-        }
-        if (map.servo.contains("blocker2")) {
-            blocker2 = map.get(Servo.class, "blocker2");
-        }
+//        if (map.servo.contains("blocker1")) {
+//            blocker1 = map.get(Servo.class, "blocker1");
+//        }
+//        if (map.servo.contains("blocker2")) {
+//            blocker2 = map.get(Servo.class, "blocker2");
+//        }
         if (map.servo.contains("launchIndicator1")) {
             launchIndicator1 = map.get(Servo.class, "launchIndicator1");
         }
@@ -254,23 +254,23 @@ public class Actuation {
         }
     }
 
-    public static void setBlocker(boolean control) {
-        if (control) {
-            blocker1.setPosition(blockerDown);
-            blocker2.setPosition(blockerDown);
-        } else {
-            blocker1.setPosition(blockerUp);
-            blocker2.setPosition(blockerUp);
-        }
-        if (lastBlockerPos != blocker1.getPosition()) {
-            lastBlockerTime = System.currentTimeMillis();
-        }
-        lastBlockerPos = blocker1.getPosition();
-    }
+//    public static void setBlocker(boolean control) {
+//        if (control) {
+//            blocker1.setPosition(blockerDown);
+//            blocker2.setPosition(blockerDown);
+//        } else {
+//            blocker1.setPosition(blockerUp);
+//            blocker2.setPosition(blockerUp);
+//        }
+//        if (lastBlockerPos != blocker1.getPosition()) {
+//            lastBlockerTime = System.currentTimeMillis();
+//        }
+//        lastBlockerPos = blocker1.getPosition();
+//    }
 
-    public static boolean blockerAtPos(double position) {
-        return (System.currentTimeMillis() - lastBlockerTime > 450 && blocker1.getPosition() == position);
-    }
+//    public static boolean blockerAtPos(double position) {
+//        return (System.currentTimeMillis() - lastBlockerTime > 450 && blocker1.getPosition() == position);
+//    }
 
     /**
      * Runs the transfer at the specified power

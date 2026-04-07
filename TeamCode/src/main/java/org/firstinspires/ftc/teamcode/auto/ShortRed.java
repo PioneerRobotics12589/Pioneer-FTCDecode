@@ -22,18 +22,14 @@ public class ShortRed extends LinearOpMode {
 
         waitForStart();
 
-        Actuation.setFlywheel(1250);
-        sleep(500);
-        Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
+        Actuation.setFlywheel(1400);
+        //Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
 
         OttoCore.setPose(FieldConstants.Start.redShort);
-
 
         Paths.Red.launchShort.run();
 
         Paths.Red.spike1.run();
-
-        Paths.Red.gateOpen.run();
 
         Paths.Red.launchShort.run();
 
@@ -41,10 +37,33 @@ public class ShortRed extends LinearOpMode {
 
         Paths.Red.launchShort.run();
 
-        Paths.Red.spike3.run();
+        Paths.Red.gateIntake.run();
 
         Paths.Red.launchShort.run();
 
+        Paths.Red.gateIntake.run();
+
+        Paths.Red.launchShort.run();
+
+
+        Paths.Red.gateIntake.run();
+
+        //Paths.Blue.launchShort.run();
+
+//        Paths.Blue.spike1.run();
+
+//        FieldConstants.Launch.blueShort.x += 24;
+//        FieldConstants.Launch.blueShort.y -= 2;
+//        FieldConstants.Launch.blueShort.heading -= Math.toRadians(65);
+
+        Paths.Red.launchShort.run();
+
+//        Paths.Blue.spike3.run();
+//
+//        Paths.Blue.launchShort.run();
+
         Paths.Red.gateEnd.run();
+
+//        Paths.Blue.endShort.run();
     }
 }

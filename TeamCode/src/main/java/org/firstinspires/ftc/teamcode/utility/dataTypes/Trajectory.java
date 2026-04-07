@@ -147,11 +147,11 @@ public class Trajectory {
 
                 telemetry.addData("Trajectory: notTooClose", AutoLaunch.notTooClose());
                 telemetry.addData("Trajectory: readyToLaunch", AutoMovement.readyToLaunch());
-                telemetry.addData("Trajectory: blockerAtPos", Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp));
+                //telemetry.addData("Trajectory: blockerAtPos", Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp));
 
                 OttoCore.updatePosition();
                 Actuation.runTransfer(false);
-                Actuation.setBlocker(false);
+                //Actuation.setBlocker(false);
                 runPeriodics();
             }
             runPeriodics();

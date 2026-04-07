@@ -66,11 +66,8 @@ public class D1TeleOpRed extends OpMode {
             Actuation.runIntake(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp)) {
-                Actuation.runIntake(true);
-                Actuation.transfer.setPower(transferSpeed);
-            }
-            Actuation.setBlocker(false);
+            Actuation.runIntake(true);
+            Actuation.transfer.setPower(transferSpeed);
         }
         else {
             // Everything Off

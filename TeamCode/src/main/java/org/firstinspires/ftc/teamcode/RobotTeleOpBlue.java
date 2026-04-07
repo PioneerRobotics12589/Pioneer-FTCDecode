@@ -64,25 +64,15 @@ public class RobotTeleOpBlue extends OpMode {
             OttoCore.setPose(new Pose(0, 0, 0));
         }
         if (gamepad1.left_trigger > 0.5) {
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
-                Actuation.shoot(true);
-            }
-            Actuation.setBlocker(true);
+            Actuation.shoot(true);
         } else if (gamepad1.right_trigger > 0.5) {
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerDown)) {
-                //Actuation.reverse(true);
-                Actuation.runIntake(true);
-            }
-            Actuation.setBlocker(true);
+            Actuation.runIntake(true);
         } else if (gamepad1.right_bumper) {
             // Intake Mode
-            if (Actuation.blockerAtPos(ActuationConstants.Intake.blockerUp)) {
-                Actuation.runIntake(true);
-                Actuation.transfer.setPower(transferSpeed);
-            }
-            Actuation.setBlocker(false);
+            Actuation.runIntake(true);
+            Actuation.transfer.setPower(transferSpeed);
         }
-         else {
+        else {
             // Everything Off
             Actuation.runIntake(false);
             Actuation.runTransfer(false);
