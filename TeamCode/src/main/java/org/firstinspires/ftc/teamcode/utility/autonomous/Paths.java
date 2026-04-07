@@ -92,7 +92,7 @@ public class Paths {
 
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
-                .addPeriodic(() -> Actuation.setFlywheel(1400))
+                .addPeriodic(() -> Actuation.setFlywheel(1380))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .lineTo(FieldConstants.Launch.blueShort, 0.6, 1.0)
                 //.action(() -> Actuation.setBlocker(false))
@@ -206,7 +206,7 @@ public class Paths {
 
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
-                .addPeriodic(() -> Actuation.setFlywheel(1400))
+                .addPeriodic(() -> Actuation.setFlywheel(1380))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .lineTo(FieldConstants.Launch.redShort, 0.6, 1.0)
                 //.action(() -> Actuation.setBlocker(false))

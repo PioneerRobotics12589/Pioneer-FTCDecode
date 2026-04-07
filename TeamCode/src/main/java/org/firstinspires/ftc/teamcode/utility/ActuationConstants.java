@@ -53,7 +53,7 @@ public class ActuationConstants { // ryan pergola is a gay
         // 1, 0.5, 0.003
 
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(150, 0, 0, 11);
-        public static PIDController turretPID = new PIDController(-0.3, -100, 0.0);
+        public static PIDController turretPID = new PIDController(-0.35, -250, 0.0);
         public static double turretTicks = 8192.0; // Ticks per revolution on the turret input shaft
         public static double turretRatio = 119.0 / 34.0 / (2*Math.PI); // 119:34 gear ratio
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(130));

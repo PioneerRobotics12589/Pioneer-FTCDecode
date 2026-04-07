@@ -22,16 +22,12 @@ public class ShortBlue extends LinearOpMode {
 
         waitForStart();
 
-        Actuation.setFlywheel(1400);
+        Actuation.setFlywheel(1380);
         //sleep(500);
         //Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
 
         OttoCore.setPose(FieldConstants.Start.blueShort);
 
-
-        Paths.Blue.launchShort.run();
-
-        Paths.Blue.spike1.run();
 
         Paths.Blue.launchShort.run();
 
@@ -57,6 +53,10 @@ public class ShortBlue extends LinearOpMode {
 //        FieldConstants.Launch.blueShort.x += 24;
 //        FieldConstants.Launch.blueShort.y -= 2;
 //        FieldConstants.Launch.blueShort.heading -= Math.toRadians(65);
+
+        Paths.Blue.launchShort.run();
+
+        Paths.Blue.spike1.run();
 
         Paths.Blue.launchShort.run();
 
