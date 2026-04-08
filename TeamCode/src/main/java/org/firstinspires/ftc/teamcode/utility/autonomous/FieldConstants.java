@@ -54,7 +54,7 @@ public class FieldConstants {
     @Config
     public static class Launch {
         public static Pose redLong = new Pose(-58, -15, Math.toRadians(-20));
-        public static Pose redShort = new Pose(5.1, -10.9, Math.toRadians(-90));
+        public static Pose redShort = new Pose(6.7, -15.3, Math.toRadians(-90));
         public static Pose blueLong = new Pose(-58, 15, Math.toRadians(20));
         public static Pose blueShort = new Pose(2.3, 6.7, Math.toRadians(90));
     }
@@ -65,7 +65,7 @@ public class FieldConstants {
         // Gate Distance: 2.5
         public static class Start {
             public static Pose red = new Pose(20, -40, Math.toRadians(-90.0));
-            public static Pose intakeRed = new Pose(-34.91, -92.8, Math.toRadians(-46.7));
+            public static Pose intakeRed = new Pose(-25.6, -90.87, Math.toRadians(-53.7));
 
             public static Pose blue = new Pose(20, 40, Math.toRadians(90.0));
             public static Pose intakeBlue = new Pose(-28.7, 81.8, Math.toRadians(53.7));
@@ -89,12 +89,12 @@ public class FieldConstants {
         // Aim for FTC logos
         public static double redX = 62, redY = -72;
         public static double blueX = 62, blueY = 62;
-        public static Point red = new Point(62, -72);
-        public static Point redLong = new Point(62, -72);
-        public static Point redShort = new Point(62, -72);
+        public static Point red = new Point(62, -70);
+        public static Point redLong = new Point(62, -70);
+        public static Point redShort = new Point(62, -70);
         public static Point blue = new Point(62, 54);
         public static Point blueLong = new Point(62, 46);
-        public static Point blueShort = new Point(62, 54);
+        public static Point blueShort = new Point(62, 58);
     }
 
     // End Positions

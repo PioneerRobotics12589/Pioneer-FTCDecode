@@ -29,22 +29,18 @@ public class ShortRed extends LinearOpMode {
 
         Paths.Red.launchShort.run();
 
-        Paths.Red.spike1.run();
-
-        Paths.Red.launchShort.run();
-
         Paths.Red.spike2.run();
 
         Paths.Red.launchShort.run();
 
-        Paths.Red.gateIntake.run();
-
-        Paths.Red.launchShort.run();
 
         Paths.Red.gateIntake.run();
 
         Paths.Red.launchShort.run();
 
+        Paths.Red.gateIntake.run();
+
+        Paths.Red.launchShort.run();
 
         Paths.Red.gateIntake.run();
 
@@ -55,6 +51,10 @@ public class ShortRed extends LinearOpMode {
 //        FieldConstants.Launch.blueShort.x += 24;
 //        FieldConstants.Launch.blueShort.y -= 2;
 //        FieldConstants.Launch.blueShort.heading -= Math.toRadians(65);
+
+        Paths.Red.launchShort.run();
+
+        Paths.Red.spike1.run();
 
         Paths.Red.launchShort.run();
 

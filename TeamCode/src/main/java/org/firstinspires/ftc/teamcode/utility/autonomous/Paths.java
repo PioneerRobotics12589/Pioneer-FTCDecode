@@ -186,7 +186,7 @@ public class Paths {
                     .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                     //.action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
                     .lineToTime(FieldConstants.Gate.Start.intakeRed, 0.1, 0.1, 1750)
-                    .sleepWithPeriodics(1300);
+                    .sleepWithPeriodics(1050);
                     //.action(() -> Actuation.transfer.setPower(0));
 
         // Long Launch
@@ -206,9 +206,9 @@ public class Paths {
 
         public static Trajectory launchShort = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("red"))
-                .addPeriodic(() -> Actuation.setFlywheel(1380))
+                //.addPeriodic(() -> Actuation.setFlywheel(1380))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
-                .lineTo(FieldConstants.Launch.redShort, 0.6, 1.0)
+                .lineTo(FieldConstants.Launch.redShort, 0.5, 1.0)
                 //.action(() -> Actuation.setBlocker(false))
                 .sleepWithPeriodics(500)
                 .launchOp()

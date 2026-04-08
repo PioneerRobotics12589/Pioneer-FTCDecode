@@ -120,7 +120,7 @@ public class AutoMovement {
         AutoLaunch.updateAutoLaunchStatic(reference); // Assuming static launching
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(5.0);
+        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(3.0);
 
 //        Actuation.setFlywheel(AutoLaunch.getTargetVel());
         flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
