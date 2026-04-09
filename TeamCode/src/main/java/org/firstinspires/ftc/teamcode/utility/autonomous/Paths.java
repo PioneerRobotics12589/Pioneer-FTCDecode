@@ -72,7 +72,7 @@ public class Paths {
                 .lineToTime(FieldConstants.Gate.Start.intakeBlue, 0.1, 0.1, 1750)
 //                .lineToTime(FieldConstants.Gate.End.blue, 0.75, 0.6, 1000)
 //                .action(() -> Actuation.drive(0.5, 0.0, 0.0))
-                .sleepWithPeriodics(1050);
+                .sleepWithPeriodics(1100);
 //                .action(() -> Actuation.transfer.setPower(0));
 
         // Long Launch
@@ -210,7 +210,7 @@ public class Paths {
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .lineTo(FieldConstants.Launch.redShort, 0.5, 1.0)
                 //.action(() -> Actuation.setBlocker(false))
-                .sleepWithPeriodics(500)
+                .sleepWithPeriodics(400)
                 .launchOp()
                 .action(() -> Actuation.transfer.setPower(-1.0))
                 .sleepWithPeriodics(670)

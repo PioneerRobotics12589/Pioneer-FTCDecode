@@ -38,7 +38,7 @@ public class FieldConstants {
 
         public static class End {
             public static Pose red1 = new Pose(13.1, -57, Math.toRadians(-90.0));
-            public static Pose red2 = new Pose(-14.1, -61, Math.toRadians(-90.0));
+            public static Pose red2 = new Pose(-12.6, -61, Math.toRadians(-90.0));
             public static Pose red3 = new Pose(-45.3, -62, Math.toRadians(-90.0));
             public static Pose red4short = new Pose(-56.7, -62.8, Math.toRadians(-175.0));
             public static Pose red4long = new Pose(-62, -62, Math.toRadians(-158.0));
@@ -65,10 +65,10 @@ public class FieldConstants {
         // Gate Distance: 2.5
         public static class Start {
             public static Pose red = new Pose(20, -40, Math.toRadians(-90.0));
-            public static Pose intakeRed = new Pose(-25.6, -90.87, Math.toRadians(-53.7));
+            public static Pose intakeRed = new Pose(-27.81, -94.3, Math.toRadians(-90));
 
             public static Pose blue = new Pose(20, 40, Math.toRadians(90.0));
-            public static Pose intakeBlue = new Pose(-28.7, 81.8, Math.toRadians(53.7));
+            public static Pose intakeBlue = new Pose(-28.67, 81.8, Math.toRadians(90));
         }
 
         public static class End {
