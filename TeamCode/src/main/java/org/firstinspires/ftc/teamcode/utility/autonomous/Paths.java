@@ -21,6 +21,14 @@ public class Paths {
 //                .lineToTime(FieldConstants.Spike.End.blue4long, 1.0, 1.0, 1000)
                 //.action(() -> Actuation.transfer.setPower(0));
 
+        public static Trajectory spike4straight = new Trajectory()
+                .addPeriodic(() -> AutoMovement.turretOperation("blue"))
+                //.action(() -> Actuation.setBlocker(true))
+                .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
+                //.action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
+                .lineTo(FieldConstants.Spike.Start.blue4straight, 1.0, 1.0)
+                .lineToTime(FieldConstants.Spike.End.blue4straight, 0.5, 1.0, 1500);
+
         public static Trajectory spike4short = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 //.action(() -> Actuation.setBlocker(true))
@@ -78,14 +86,14 @@ public class Paths {
         // Long Launch
         public static Trajectory launchLong = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
-                .addPeriodic(() -> Actuation.setFlywheel(1600))
+                .addPeriodic(() -> Actuation.setFlywheel(1500))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
-                .lineTo(FieldConstants.Launch.blueLong, 1.0, 1.0)
+                .lineTo(FieldConstants.Launch.blueLong, 0.5, 1.0)
                 //.action(() -> Actuation.setBlocker(false))
-                .sleepWithPeriodics(500)
+                .sleepWithPeriodics(700)
                 .launchOp()
-                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.8))
-                .sleepWithPeriodics(2000)
+                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.7))
+                .sleepWithPeriodics(950)
                 .action(() -> Actuation.transfer.setPower(0.0));
                 //.action(() -> Actuation.setBlocker(true))
                 //.action(() -> Actuation.flywheel.setPower(0.8));

@@ -20,10 +20,12 @@ public class LongBlue extends LinearOpMode {
         Actuation.setup(hardwareMap, telemetry);
         OttoCore.setup(hardwareMap);
         AutoLaunch.setTeam("blue");
+        FieldConstants.Goal.blue = FieldConstants.Goal.blueLongAuto;
 
         waitForStart();
 
         OttoCore.setPose(FieldConstants.Start.blueLong);
+        Actuation.setFlywheel(1500);
 
 
         Paths.Blue.launchLong.run();
@@ -32,11 +34,15 @@ public class LongBlue extends LinearOpMode {
 
         Paths.Blue.launchLong.run();
 
-        Paths.Blue.spike4long.run();
+        Paths.Blue.spike4straight.run();
 
         Paths.Blue.launchLong.run();
 
-        Paths.Blue.spike4long.run();
+        Paths.Blue.spike4straight.run();
+
+        Paths.Blue.launchLong.run();
+
+        Paths.Blue.spike4straight.run();
 
         Paths.Blue.launchLong.run();
 

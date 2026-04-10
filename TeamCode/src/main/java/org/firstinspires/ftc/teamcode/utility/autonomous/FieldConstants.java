@@ -34,6 +34,7 @@ public class FieldConstants {
             public static Pose blue3 = new Pose(-45.3, 25, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-35.63, 59.8, Math.toRadians(145.0));
             public static Pose blue4long = new Pose(-35, 62, Math.toRadians(143.3));
+            public static Pose blue4straight = new Pose(-67.67, 23, Math.toRadians(90));
         }
 
         public static class End {
@@ -44,9 +45,10 @@ public class FieldConstants {
             public static Pose red4long = new Pose(-62, -62, Math.toRadians(-158.0));
             public static Pose blue1 = new Pose(13.1, 48, Math.toRadians(90.0));
             public static Pose blue2 = new Pose(-16.2, 52, Math.toRadians(90.0)); //HelloWorld('print'):
-            public static Pose blue3 = new Pose(-45.3, 53, Math.toRadians(90.0));
+            public static Pose blue3 = new Pose(-45.3, 56, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-56.7, 62.8, Math.toRadians(175.0));
-            public static Pose blue4long = new Pose(-62, 62, Math.toRadians(158.0));
+            public static Pose blue4long = new Pose(-64, 62, Math.toRadians(90.0));
+            public static Pose blue4straight = new Pose(-67.67, 52, Math.toRadians(90));
         }
     }
 
@@ -55,12 +57,13 @@ public class FieldConstants {
     public static class Launch {
         public static Pose redLong = new Pose(-58, -15, Math.toRadians(-20));
         public static Pose redShort = new Pose(6.7, -15.3, Math.toRadians(-90));
-        public static Pose blueLong = new Pose(-58, 15, Math.toRadians(20));
+        public static Pose blueLong = new Pose(-59, 6.7, Math.toRadians(90));
         public static Pose blueShort = new Pose(2.3, 6.7, Math.toRadians(90));
     }
 
     // Gate Positions
     @Config
+
     public static class Gate {
         // Gate Distance: 2.5
         public static class Start {
@@ -94,6 +97,7 @@ public class FieldConstants {
         public static Point redShort = new Point(62, -70);
         public static Point blue = new Point(62, 54);
         public static Point blueLong = new Point(62, 46);
+        public static Point blueLongAuto = new Point(62, 52);
         public static Point blueShort = new Point(62, 58);
     }
 
