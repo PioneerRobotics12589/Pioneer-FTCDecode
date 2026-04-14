@@ -20,7 +20,7 @@ public class LongBlue extends LinearOpMode {
         Actuation.setup(hardwareMap, telemetry);
         OttoCore.setup(hardwareMap);
         AutoLaunch.setTeam("blue");
-        FieldConstants.Goal.blue = FieldConstants.Goal.blueLongAuto;
+//        FieldConstants.Goal.blue = FieldConstants.Goal.blueLongAuto;
 
         waitForStart();
 

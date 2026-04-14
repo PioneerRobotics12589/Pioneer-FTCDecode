@@ -36,9 +36,9 @@ public class ActuationConstants { // ryan pergola is a gay
         PID: creates the essential movement speeds
         Feedforward: Adjusts the robot better due to the friction against the field (ks term)
          */
-        public static PIDController lateralPID = new PIDController(0.08, 0, 0.012);
+        public static PIDController lateralPID = new PIDController(0.075, 0, 0.012);
         public static SimpleMotorFeedforward lateralFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
-        public static PIDController verticalPID = new PIDController(0.08, 0.0, 0.012);
+        public static PIDController verticalPID = new PIDController(0.075, 0.0, 0.012);
         public static SimpleMotorFeedforward verticalFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
         public static PIDController rotationalPID = new PIDController(1.0, 0, 0.2);
         public static SimpleMotorFeedforward rotationalFF = new SimpleMotorFeedforward(0.13, 0.0, 0.0);
@@ -53,9 +53,9 @@ public class ActuationConstants { // ryan pergola is a gay
         // 1, 0.5, 0.003
 
         public static PIDFCoefficients flywheelPID = new PIDFCoefficients(150, 0, 0, 11);
-        public static PIDController turretPID = new PIDController(-0.35, -200, 0.0);
+        public static PIDController turretPID = new PIDController(-0.35, -100, 0.0);
         public static double turretTicks = 8192.0; // Ticks per revolution on the turret input shaft
-        public static double turretRatio = 119.0 / 34.0 / (2*Math.PI); // 119:34 gear ratio
+        public static double turretRatio = 119.0 / 34.0; // 119:34 gear ratio
         public static double turretMaxAngle = AngleUnit.normalizeRadians(Math.toRadians(130));
         public static double turretFF = 0.01;
         public static double sotmAdjustMult = 1.0;

@@ -13,7 +13,7 @@ public class FieldConstants {
         public static Pose redLong = new Pose(-62.2, -18.8, Math.toRadians(0.0));
         public static Pose redShort = new Pose(53.4, -47.25, Math.toRadians(-52.84));
         public static Pose redShort1 = new Pose(40.88, -54.707, Math.toRadians(-90.89));
-        public static Pose blueLong = new Pose(-62.2, 18.8, Math.toRadians(0.0));
+        public static Pose blueLong = new Pose(-63.5, 18.0, Math.toRadians(0.0));
         public static Pose blueShort = new Pose(53.4, 47.25, Math.toRadians(52.84));
         public static Pose blueShort1 = new Pose(41.4, 54.17, Math.toRadians(91.36));
     }
@@ -34,7 +34,7 @@ public class FieldConstants {
             public static Pose blue3 = new Pose(-45.3, 25, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-35.63, 59.8, Math.toRadians(145.0));
             public static Pose blue4long = new Pose(-35, 62, Math.toRadians(143.3));
-            public static Pose blue4straight = new Pose(-67.67, 23, Math.toRadians(90));
+            public static Pose blue4straight = new Pose(-74, 70, Math.toRadians(90));
         }
 
         public static class End {
@@ -48,16 +48,16 @@ public class FieldConstants {
             public static Pose blue3 = new Pose(-45.3, 56, Math.toRadians(90.0));
             public static Pose blue4short = new Pose(-56.7, 62.8, Math.toRadians(175.0));
             public static Pose blue4long = new Pose(-64, 62, Math.toRadians(90.0));
-            public static Pose blue4straight = new Pose(-67.67, 52, Math.toRadians(90));
+            public static Pose blue4straight = new Pose(-74, 57.5, Math.toRadians(90));
         }
     }
 
     // Launch Positions
     @Config
     public static class Launch {
-        public static Pose redLong = new Pose(-58, -15, Math.toRadians(-20));
+        public static Pose redLong = new Pose(-58, -15, Math.toRadians(-90));
         public static Pose redShort = new Pose(6.7, -15.3, Math.toRadians(-90));
-        public static Pose blueLong = new Pose(-59, 6.7, Math.toRadians(90));
+        public static Pose blueLong = new Pose(-63, 8, Math.toRadians(90));
         public static Pose blueShort = new Pose(2.3, 6.7, Math.toRadians(90));
     }
 
@@ -96,9 +96,9 @@ public class FieldConstants {
         public static Point redLong = new Point(62, -70);
         public static Point redShort = new Point(62, -70);
         public static Point blue = new Point(62, 54);
-        public static Point blueLong = new Point(62, 46);
-        public static Point blueLongAuto = new Point(62, 52);
-        public static Point blueShort = new Point(62, 58);
+        public static Point blueLong = new Point(64, 64);
+        public static Point blueLongAuto = new Point(64, 66);
+        public static Point blueShort = new Point(64, 64);
     }
 
     // End Positions

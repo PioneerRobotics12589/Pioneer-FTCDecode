@@ -365,7 +365,7 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretGlobal() {
-        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading;
+        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) + OttoCore.robotPose.heading * 2 * Math.PI;
     }
 
     /**
@@ -373,7 +373,7 @@ public class Actuation {
      * @return turret's global angle
      */
     public static double getTurretLocal() {
-        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio);
+        return (double) intake.getCurrentPosition() / (ActuationConstants.Launcher.turretTicks * ActuationConstants.Launcher.turretRatio) * 2 * Math.PI;
     }
 
     /**

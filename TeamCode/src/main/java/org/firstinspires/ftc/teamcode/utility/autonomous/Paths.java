@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utility.autonomous;
 
+import static org.firstinspires.ftc.teamcode.utility.Actuation.telemetry;
 import static java.lang.Thread.sleep;
 
 import org.firstinspires.ftc.teamcode.utility.Actuation;
@@ -26,8 +27,8 @@ public class Paths {
                 //.action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 //.action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
-                .lineTo(FieldConstants.Spike.Start.blue4straight, 1.0, 1.0)
-                .lineToTime(FieldConstants.Spike.End.blue4straight, 0.5, 1.0, 1500);
+//                .lineTo(FieldConstants.Spike.Start.blue4straight, 1.0, 1.0)
+                .lineToTime(FieldConstants.Spike.End.blue4straight, 1.0, 1.0, 2000);
 
         public static Trajectory spike4short = new Trajectory()
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
@@ -46,8 +47,8 @@ public class Paths {
                 //.action(() -> Actuation.setBlocker(true))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 //.action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.6))
-                .lineTo(FieldConstants.Spike.Start.blue3, 1.0, 1.0)
-                .lineToTime(FieldConstants.Spike.End.blue3, 1.0, 1.0, 2000);
+                .lineThrough(FieldConstants.Spike.Start.blue3, 0.75, 1.0)
+                .lineToTime(FieldConstants.Spike.End.blue3, 1.0, 1.0, 1000);
                 //.action(() -> Actuation.transfer.setPower(0));
 
         // Spike 2
@@ -88,13 +89,13 @@ public class Paths {
                 .addPeriodic(() -> AutoMovement.turretOperation("blue"))
                 .addPeriodic(() -> Actuation.setFlywheel(1500))
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
-                .lineTo(FieldConstants.Launch.blueLong, 0.5, 1.0)
+                .lineToTime(FieldConstants.Launch.blueLong, 1.0, 1.0, 2000)
                 //.action(() -> Actuation.setBlocker(false))
-                .sleepWithPeriodics(700)
+                .sleepWithPeriodics(1250)
                 .launchOp()
-                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed * 0.7))
+                .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed*0.75))
                 .sleepWithPeriodics(950)
-                .action(() -> Actuation.transfer.setPower(0.0));
+                .action(() -> Actuation.transfer.setPower(0.1));
                 //.action(() -> Actuation.setBlocker(true))
                 //.action(() -> Actuation.flywheel.setPower(0.8));
 
@@ -110,7 +111,7 @@ public class Paths {
                 .sleepWithPeriodics(670)
                 //.action(() -> Actuation.runTransfer(false))
                 //.action(() -> Actuation.setBlocker(true))
-                .action(() -> Actuation.transfer.setPower(0.0));
+                .action(() -> Actuation.transfer.setPower(0));
 
         // Gate
         public static Trajectory gateEnd = new Trajectory()
@@ -204,10 +205,10 @@ public class Paths {
                 .action(() -> Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed))
                 .lineTo(FieldConstants.Launch.redLong, 0.8, 1.0)
                 //.action(() -> Actuation.setBlocker(false))
-                .sleepWithPeriodics(500)
+                .sleepWithPeriodics(700)
                 .launchOp()
                 .action(() -> Actuation.transfer.setPower(-ActuationConstants.Intake.transferSpeed*0.8))
-                .sleepWithPeriodics(1300)
+                .sleepWithPeriodics(950)
                 .action(() -> Actuation.runTransfer(false));
                 //.action(() -> Actuation.setBlocker(true))
                 //.action(() -> Actuation.flywheel.setPower(0.8));

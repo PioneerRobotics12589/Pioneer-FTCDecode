@@ -26,7 +26,7 @@ public class AutoMovement {
 
     public static final double closestLaunchDist = 55; // way to many kewords man, consider changing to: double closestLaunchDIst
     public static boolean isTracking = false;
-    public static boolean turretReady = false, flywheelReady = false;
+    public static boolean turretReady = false, flywheelReady = true;
 
     /**
      * Automatically intakes the closest artifact ahead of the robot
@@ -113,18 +113,20 @@ public class AutoMovement {
     public static void turretOperation(String team) {
 //        int goalCode = team.equals("blue") ? 0 : 3;
 
+        OttoCore.updatePosition();
 
-        Pose reference = OttoCore.relativeTransform(OttoCore.robotPose, -4, 0, OttoCore.robotPose.heading);
+//        Pose reference = OttoCore.relativeTransform(OttoCore.robotPose, -4, 0, OttoCore.robotPose.heading);
 
 //         AutoLaunch.updateAutoLaunchMobile(reference); // Assuming mobile or static launching
-        AutoLaunch.updateAutoLaunchStatic(reference); // Assuming static launching
+        AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());
-        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(3.0);
+        Actuation.packet.put("TURRET ERROR", Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())));
+        turretReady = Math.abs(AngleUnit.normalizeRadians(AutoLaunch.getTargetRot() - Actuation.getTurretGlobal())) < Math.toRadians(5.0);
 
 //        Actuation.setFlywheel(AutoLaunch.getTargetVel());
-        flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
-//        flywheelReady = true;
+//        flywheelReady = Actuation.flywheelIsReady(AutoLaunch.getTargetVel());
+        flywheelReady = true;
 
         telemetry.addData("AutoMovement: Target Flywheel Velocity", AutoLaunch.getTargetVel());
         telemetry.addData("AutoMovement: Target Turret Rotation", Math.toDegrees(AutoLaunch.getTargetRot()));
@@ -133,6 +135,7 @@ public class AutoMovement {
 
     public static boolean readyToLaunch() {
         // && Math.hypot(OttoCore.getVelocity().x, OttoCore.getVelocity().y) <= 0.05
-        return turretReady && flywheelReady;
+//        Actuation.packet.put("turret Ready", turretReady);
+        return true;
     }
 }
