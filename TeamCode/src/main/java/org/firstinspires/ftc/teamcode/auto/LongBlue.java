@@ -30,9 +30,9 @@ public class LongBlue extends LinearOpMode {
 
         Paths.Blue.launchLong.run();
 
-        Paths.Blue.spike3.run();
+        //Paths.Blue.spike3.run();
 
-        Paths.Blue.launchLong.run();
+        //Paths.Blue.launchLong.run();
 
         Paths.Blue.spike4straight.run();
 

@@ -28,6 +28,8 @@ public class ShortBlue extends LinearOpMode {
 
         OttoCore.setPose(FieldConstants.Start.blueShort);
 
+        FieldConstants.Goal.blue = FieldConstants.Goal.blueShortAuto;
+
 
         Paths.Blue.launchShort.run();
 
@@ -58,7 +60,7 @@ public class ShortBlue extends LinearOpMode {
 
         Paths.Blue.spike1.run();
 
-        Paths.Blue.launchShort.run();
+//        Paths.Blue.launchShort.run();
 
 //        Paths.Blue.spike3.run();
 //

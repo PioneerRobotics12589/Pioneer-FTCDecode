@@ -24,25 +24,31 @@ public class LongRed extends LinearOpMode {
         waitForStart();
 
         OttoCore.setPose(FieldConstants.Start.redLong);
+        FieldConstants.Goal.red = FieldConstants.Goal.redLongAuto;
 
 
         Paths.Red.launchLong.run();
-//
-        Paths.Red.spike3.run();
-//
-        Paths.Red.launchLong.run();
-//
-//        Paths.Red.spike2.run();
+
+//        Paths.Red.spike3.run();
 //
 //        Paths.Red.launchLong.run();
 
-        Paths.Red.spike4long.run();
+        Paths.Red.spike4straight.run();
 
         Paths.Red.launchLong.run();
 
-        Paths.Red.spike4long.run();
+        Paths.Red.spike4straight.run();
 
         Paths.Red.launchLong.run();
+
+        Paths.Red.spike4straight.run();
+
+        Paths.Red.launchLong.run();
+
+
+//        Paths.Red.spike4straight.run();
+//
+//        Paths.Red.launchLong.run();
 
 //        Paths.Red.gateEnd.run();
 

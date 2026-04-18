@@ -25,6 +25,8 @@ public class ShortRed extends LinearOpMode {
         Actuation.setFlywheel(1360);
         //Actuation.intake.setPower(ActuationConstants.Intake.intakeSpeed);
 
+        FieldConstants.Goal.red = FieldConstants.Goal.redShort;
+
         OttoCore.setPose(FieldConstants.Start.redShort);
 
         Paths.Red.launchShort.run();
@@ -38,9 +40,9 @@ public class ShortRed extends LinearOpMode {
 
         Paths.Red.launchShort.run();
 
-        Paths.Red.gateIntake.run();
-
-        Paths.Red.launchShort.run();
+//        Paths.Red.gateIntake.run();
+//
+//        Paths.Red.launchShort.run();
 
         Paths.Red.gateIntake.run();
 

@@ -117,7 +117,7 @@ public class AutoMovement {
 
 //        Pose reference = OttoCore.relativeTransform(OttoCore.robotPose, -4, 0, OttoCore.robotPose.heading);
 
-//         AutoLaunch.updateAutoLaunchMobile(reference); // Assuming mobile or static launching
+//        AutoLaunch.updateAutoLaunchMobile(OttoCore.robotPose); // Assuming mobile or static launching
         AutoLaunch.updateAutoLaunchStatic(OttoCore.robotPose); // Assuming static launching
 
         Actuation.turretMoveTowards(AutoLaunch.getTargetRot());

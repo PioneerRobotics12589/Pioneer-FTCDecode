@@ -46,12 +46,16 @@ public class RobotTeleOpRed extends OpMode {
             shootingSpeed = ActuationConstants.Launcher.longLaunch;
             transferSpeed = -0.8;
             FieldConstants.Goal.red = FieldConstants.Goal.redLong;
+            AutoMovement.turretOperation("red");
 
         } else if (gamepad2.dpad_down) {
             // Speed up flywheel to shoot from the short launch zone
             shootingSpeed = ActuationConstants.Launcher.shortLaunch;
             transferSpeed = -1.0;
             FieldConstants.Goal.red = FieldConstants.Goal.redShort;
+            AutoMovement.turretOperation("red");
+        } else {
+            AutoMovement.turretOperation("red");
         }
 
         if (gamepad1.left_stick_button) {
@@ -78,7 +82,6 @@ public class RobotTeleOpRed extends OpMode {
         Actuation.checkFlywheelSpeed(gamepad1, shootingSpeed);
         Actuation.setFlywheel(shootingSpeed);
         Actuation.setLaunchIndicator(time);
-        AutoMovement.turretOperation("red");
 
 //        FieldConstants.Goal.red = new Point(FieldConstants.Goal.redX, FieldConstants.Goal.redY);
 
